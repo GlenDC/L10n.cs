@@ -34,9 +34,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="src\L20n.cs" />
     <Compile Include="src\Database.cs" />
     <Compile Include="thirdparty\SimpleJson.cs" />
+    <Compile Include="src\Locale.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,0 +1,6 @@
+{
+    "default_locale": "nl-BE",
+    "resources": [
+        "./{{locale}}.l20n",
+    ],
+}

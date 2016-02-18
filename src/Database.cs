@@ -18,6 +18,11 @@ namespace L20n
 			get { return m_Manifest.Locales; }
 		}
 
+		public Locale CurrentLocale
+		{
+			get { return m_CurrentLocale; }
+		}
+
 		private Locale m_CurrentLocale;
 		private Manifest m_Manifest;
 
@@ -34,14 +39,35 @@ namespace L20n
 				var json = sr.ReadToEnd();
 				var root = JSON.Parse(json);
 
-				foreach(var locale in root["locales"].Children)
+				var locales = root["locales"];
+				if(locales == null || locales.Count == 0)
+				{
+					string msg = string.Format("No locales were provided in: {0}.", manifest_path);
+					throw new IOException(msg);
+				}
+				foreach(var locale in locales.Children)
 				{
 					m_Manifest.AddLocale(locale.Value);
 				}
 
-				m_Manifest.DefaultLocale = root["default_locale"].Value;
-
-				foreach(var resource in root["resources"].Children)
+				var defaultLocale = root["default_locale"].Value;
+				if(defaultLocale != "")
+				{
+					m_Manifest.DefaultLocale = defaultLocale;
+				}
+				if(m_Manifest.DefaultLocale == null)
+				{
+					string msg = string.Format("No default locale was provided in: {0}.", manifest_path);
+					throw new IOException(msg);
+				}
+				
+				var resources = root["resources"];
+				if(resources == null || resources.Count == 0)
+				{
+					string msg = string.Format("No resources were provided in: {0}.", manifest_path);
+					throw new IOException(msg);
+				}
+				foreach(var resource in resources.Children)
 				{
 					m_Manifest.AddResoure(resource.Value);
 				}
@@ -62,6 +88,8 @@ namespace L20n
 
 		private class Manifest
 		{
+			private const string LOCALE_STRING_ID = "{{locale}}";
+
 			private List<string> m_Locales;
 			private string m_DefaultLocale;
 			private List<string> m_Resources;
@@ -74,7 +102,17 @@ namespace L20n
 			public string DefaultLocale
 			{
 				get { return m_DefaultLocale; }
-				set { m_DefaultLocale = value; }
+				set
+				{
+					if(!m_Locales.Contains(value))
+					{
+						string msg = string.Format("{0} is not a valid default locale as " +
+						                           "it couldn't be found in the list of locales.", value);
+						throw new IOException(msg);
+					}
+
+					m_DefaultLocale = value;
+				}
 			}
 
 			public Manifest()
@@ -91,6 +129,13 @@ namespace L20n
 
 			public void AddResoure(string resource)
 			{
+				if (!resource.Contains(LOCALE_STRING_ID))
+				{
+					string msg = string.Format("Resource '{0}' does not contain local string-id ({1}).",
+					                           resource, LOCALE_STRING_ID);
+					throw new IOException(msg);
+				}
+
 				m_Resources.Add(resource);
 			}
 
@@ -98,11 +143,6 @@ namespace L20n
 			{
 				return null;
 			}
-		}
-
-		private class Locale
-		{
-			public Locale() {}
 		}
 	}
 }
