@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5AA0473C-61F6-45E8-8019-CE1DEF0A973D}</ProjectGuid>
+    <ProjectGuid>{6237A165-2721-4FA5-A752-3D2F39FF9C49}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>L20n</RootNamespace>
-    <AssemblyName>L20n</AssemblyName>
+    <RootNamespace>L20nTests</RootNamespace>
+    <AssemblyName>L20nTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -31,19 +31,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="nunit.framework">
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="src\L20n.cs" />
-    <Compile Include="src\Database.cs" />
-    <Compile Include="thirdparty\SimpleJson.cs" />
+    <Compile Include="Test.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="src\" />
-    <Folder Include="src\io\" />
-    <Folder Include="src\parser\" />
-    <Folder Include="src\types\" />
-    <Folder Include="thirdparty\" />
+    <ProjectReference Include="..\..\L20n.csproj">
+      <Project>{5AA0473C-61F6-45E8-8019-CE1DEF0A973D}</Project>
+      <Name>L20n</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

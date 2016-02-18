@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "L20n", "L20n.csproj", "{5AA0473C-61F6-45E8-8019-CE1DEF0A973D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "L20nTests", "test\L20nTests\L20nTests.csproj", "{6237A165-2721-4FA5-A752-3D2F39FF9C49}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{5AA0473C-61F6-45E8-8019-CE1DEF0A973D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AA0473C-61F6-45E8-8019-CE1DEF0A973D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AA0473C-61F6-45E8-8019-CE1DEF0A973D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6237A165-2721-4FA5-A752-3D2F39FF9C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6237A165-2721-4FA5-A752-3D2F39FF9C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6237A165-2721-4FA5-A752-3D2F39FF9C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6237A165-2721-4FA5-A752-3D2F39FF9C49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = L20n.csproj
