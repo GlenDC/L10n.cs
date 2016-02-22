@@ -37,6 +37,7 @@
     <Compile Include="src\Database.cs" />
     <Compile Include="thirdparty\SimpleJson.cs" />
     <Compile Include="src\Locale.cs" />
+    <Compile Include="src\parser\CharStream.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

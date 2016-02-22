@@ -37,6 +37,8 @@ namespace L20nTests
 
 			Assert.AreEqual("en-US", database.DefaultLocale);
 			Assert.AreEqual(3, database.Locales.Count);
+
+			database.LoadLocale();
 		}
 	}
 }

@@ -42,7 +42,7 @@ namespace L20n
 				var locales = root["locales"];
 				if(locales == null || locales.Count == 0)
 				{
-					string msg = string.Format("No locales were provided in: {0}.", manifest_path);
+					string msg = string.Format("No locales were provided in: {0}", manifest_path);
 					throw new IOException(msg);
 				}
 				foreach(var locale in locales.Children)
@@ -57,24 +57,24 @@ namespace L20n
 				}
 				if(m_Manifest.DefaultLocale == null)
 				{
-					string msg = string.Format("No default locale was provided in: {0}.", manifest_path);
+					string msg = string.Format("No default locale was provided in: {0}", manifest_path);
 					throw new IOException(msg);
 				}
 				
 				var resources = root["resources"];
 				if(resources == null || resources.Count == 0)
 				{
-					string msg = string.Format("No resources were provided in: {0}.", manifest_path);
+					string msg = string.Format("No resources were provided in: {0}", manifest_path);
 					throw new IOException(msg);
 				}
 				foreach(var resource in resources.Children)
 				{
-					m_Manifest.AddResoure(resource.Value);
+					m_Manifest.AddResoure(resource.Value, manifest_path);
 				}
 			}
 		}
 
-		public void LoadLocale(string id)
+		public void LoadLocale(string id = null)
 		{
 			if (id == null)
 			{
@@ -82,8 +82,18 @@ namespace L20n
 			}
 
 			// get resources
+			var localeFiles = m_Manifest.GetLocaleFiles(id);
+			if (localeFiles.Count == 0)
+			{
+				string msg = string.Format("No resources were found for locale: {0}", id);
+				throw new IOException(msg);
+			}
 
 			m_CurrentLocale = new Locale();
+			foreach(var name in localeFiles)
+			{
+				m_CurrentLocale.Import(name);
+			}
 		}
 
 		private class Manifest
@@ -127,7 +137,7 @@ namespace L20n
 				m_Locales.Add(locale);
 			}
 
-			public void AddResoure(string resource)
+			public void AddResoure(string resource, string manifest)
 			{
 				if (!resource.Contains(LOCALE_STRING_ID))
 				{
@@ -136,12 +146,25 @@ namespace L20n
 					throw new IOException(msg);
 				}
 
+				resource = Path.Combine(new string[] {
+				    Path.GetDirectoryName(manifest),
+					resource});
+				    
 				m_Resources.Add(resource);
 			}
 
 			public List<String> GetLocaleFiles(string locale)
 			{
-				return null;
+				var files = new List<String>();
+				foreach(var resource in m_Resources) {
+					var file = resource.Replace(LOCALE_STRING_ID, locale);
+					if(File.Exists(file))
+					{
+						files.Add(file);
+					}
+				}
+
+				return files;
 			}
 		}
 	}
