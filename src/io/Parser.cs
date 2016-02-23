@@ -8,12 +8,10 @@ namespace L20n
 		public class Parser
 		{
 			private CharStream m_Stream;
-			private Parsers.Entry m_EntryParser;
 
 			public Parser(string file_name)
 			{
 				m_Stream = new CharStream(file_name);
-				m_EntryParser = new Parsers.Entry(m_Stream);
 			}
 			
 			public List<Types.Entity> Parse()
@@ -21,9 +19,13 @@ namespace L20n
 				var entities = new List<Types.Entity>();
 
 				Types.Entry entry;
-				while(!m_Stream.EndOfStream())
+				while(m_Stream.InputLeft())
 				{
-					entry = m_EntryParser.Parse();
+					// Skip WhiteSpace
+					Parsers.WhiteSpace.Parse(m_Stream);
+
+					// Read Entry
+					entry = Parsers.Entry.Parse(m_Stream);
 					Console.WriteLine(entry.ToString());
 					entities.AddRange(entry.Evaluate());
 				}

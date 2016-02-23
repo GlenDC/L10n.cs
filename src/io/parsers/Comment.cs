@@ -7,17 +7,13 @@ namespace L20n
 	{
 		namespace Parsers
 		{	
-			public class Comment : BaseParser
+			public class Comment
 			{
-				public Comment(CharStream stream)
-					: base(stream)
-				{}
-				
-				public override Types.Entry Parse()
+				public static Types.Entry Parse(CharStream stream)
 				{
 					char c; string content = "";
-					while (m_Stream.ReadNext(out c, true)) {
-						if(c == '*' && m_Stream.SkipIfPossible('/')) {
+					while (stream.ReadNext(out c)) {
+						if(c == '*' && stream.SkipIfPossible('/')) {
 							return new Types.Comment(content);
 						}
 						content += c;

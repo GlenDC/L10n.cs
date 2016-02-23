@@ -41,10 +41,10 @@
     <Compile Include="src\io\CharStream.cs" />
     <Compile Include="src\io\Parser.cs" />
     <Compile Include="src\io\parsers\Entry.cs" />
-    <Compile Include="src\io\parsers\BaseParser.cs" />
     <Compile Include="src\io\parsers\Comment.cs" />
     <Compile Include="src\types\Comment.cs" />
     <Compile Include="src\types\Entity.cs" />
+    <Compile Include="src\io\parsers\WhiteSpace.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

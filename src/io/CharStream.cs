@@ -1,12 +1,16 @@
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace L20n
 {
 	namespace IO
 	{
-		public class CharStream : IDisposable
+
+		public class CharStream
 		{
+			public delegate bool CharPredicate(char c);
+	
 			private String m_Buffer = null;
 			private int m_LastPosition;
 			private int m_Position;
@@ -26,21 +30,16 @@ namespace L20n
 				}
 			}
 
-			public bool ReadNext(out char c, bool keepWhiteSpace = false)
+			public bool ReadNext(out char c)
 			{
-				if(EndOfStream(keepWhiteSpace))
+				if(EndOfStream())
 				{
 					c = '\0';
 					return false;
 				}
 
-				bool lastResult;
-				do {
-					c = m_Buffer [m_Position++];
-				} while(!(lastResult = IsValidChar(c, keepWhiteSpace))
-				        && m_Position <= m_LastPosition);
-
-				return lastResult;
+				c = m_Buffer[m_Position++];
+				return true;
 			}
 
 			public char PeekNext()
@@ -50,33 +49,56 @@ namespace L20n
 					return '\0';
 				}
 
-				return m_Buffer [m_Position];
+				return m_Buffer[m_Position];
 			}
 
 			public char ForceReadNext(string msg)
 			{
 				char c;
-				if(!ReadNext(out c))
+				if(!ReadNext(out c)) // TODO: finalize this when we have decent error handling
 					throw new IOException(msg);
 				return c;
 			}
 
-			public bool Skip(char expected)
+			public void SkipCharacter(char expected)
 			{
 				char c;
-				if(!ReadNext(out c))
-					return false;
-				return c == expected;
+				if (!ReadNext (out c))
+					throw new IOException ("Couldn't find char in SkipCharacter: " + expected);
+				if (c != expected)
+					throw new IOException ("Skip has an unexpected character");
+			}
+
+			public void SkipWhile(CharPredicate pred)
+			{
+				while (!EndOfStream() && pred(m_Buffer[m_Position]))
+					++m_Position;
 			}
 
 			public bool SkipIfPossible(char expected)
 			{
 				if (PeekNext () == expected) {
-					Skip(expected);
+					SkipCharacter(expected);
 					return true;
 				}
 
 				return false;
+			}
+
+			public bool ReadReg(string reg, out string c)
+			{
+				var rx = new Regex("^" + reg);
+				var match = rx.Match(m_Buffer, m_Position);
+
+				if (match.Success) {
+					c = match.Value;
+					m_Position += c.Length;
+					return true;
+				}
+				
+				c = null;
+				return false;
+				
 			}
 			
 			public string ReadUntilEnd()
@@ -88,29 +110,16 @@ namespace L20n
 
 			public bool EndOfStream(bool keepWhiteSpace = false)
 			{
-				SkipInvalidChars(keepWhiteSpace);
 				return m_Position > m_LastPosition;
 			}
 
-			public void Dispose()
+			public bool InputLeft()
 			{
-				if (!EndOfStream())
-				{
-					throw new IOException("Forgot to read: " + ReadUntilEnd());
-				}
-			}
+				if (EndOfStream ())
+					return false;
 
-			private void SkipInvalidChars(bool keepWhiteSpace = false)
-			{
-				while (m_Position <= m_LastPosition
-				      && !IsValidChar(m_Buffer[m_Position], keepWhiteSpace)) {
-					m_Position++;
-				}
-			}
-
-			private bool IsValidChar(char c, bool keepWhiteSpace = false)
-			{
-				return (keepWhiteSpace || !Char.IsWhiteSpace (c));
+				var re = new Regex (@"[^\s]+");
+				return re.IsMatch(m_Buffer, m_Position);
 			}
 		}
 	}

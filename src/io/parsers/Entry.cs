@@ -7,34 +7,27 @@ namespace L20n
 	{
 		namespace Parsers
 		{
-			// entry	:	entity | macro | comment | statement ;
-			
-			// entity	:	'<' identifier index? WS+ value attributes? WS? '>' ;
-			// macro	:	'<' identifier '(' WS? ( variable WS? ( ',' WS? variable WS? )* )? ')' WS+ '{' WS? expression WS? '}' WS? '>' ;
-			// comment	:	'/*' .*? '*/' ;
-			// statement :	import_statement ;
-			// import_statement	:	'import(' WS? expression WS? ')' ;
-
-			public class Entry : BaseParser
+			public class Entry
 			{
-				public Entry(CharStream stream)
-					: base(stream)
-				{}
-
-				public override Types.Entry Parse()
+				public static Types.Entry Parse(CharStream stream)
 				{
-					char c;
-					c = m_Stream.ForceReadNext("Entry-Parser: first char not found");
-
+					char c = stream.ForceReadNext("Entry-Parser: No Input found");
 					switch (c) {
 					case '/':
-						c = m_Stream.ForceReadNext("Entry-Parser: second char not found");
-						if(c != '*')
-							throw new IOException("Entry-Parser: second char not valid: ");
-						return new Comment(m_Stream).Parse();
+						return ParseComment(stream);
+
 					default:
-						throw new IOException("Entry-Parser: first char not valid: ");
+						throw new IOException("Entry-Parser: first char not valid: " + c);
 					}
+				}
+
+				private static Types.Entry ParseComment(CharStream stream)
+				{
+					char c = stream.ForceReadNext("Entry-Parser: ParseComment has no Input Left!");
+					if(c != '*')
+						throw new IOException("Entry-Parser: ParseComment char is not valid: " + c);
+
+					return Comment.Parse(stream);
 				}
 			}
 		}
