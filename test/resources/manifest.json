@@ -2,7 +2,8 @@
   "locales": [
     "en-US",
     "fr",
-    "pl"
+    "pl",
+    "test",
   ],
   "default_locale": "en-US",
   "resources": [

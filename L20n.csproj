@@ -37,14 +37,21 @@
     <Compile Include="src\Database.cs" />
     <Compile Include="thirdparty\SimpleJson.cs" />
     <Compile Include="src\Locale.cs" />
-    <Compile Include="src\parser\CharStream.cs" />
+    <Compile Include="src\types\Entry.cs" />
+    <Compile Include="src\io\CharStream.cs" />
+    <Compile Include="src\io\Parser.cs" />
+    <Compile Include="src\io\parsers\Entry.cs" />
+    <Compile Include="src\io\parsers\BaseParser.cs" />
+    <Compile Include="src\io\parsers\Comment.cs" />
+    <Compile Include="src\types\Comment.cs" />
+    <Compile Include="src\types\Entity.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="src\" />
     <Folder Include="src\io\" />
-    <Folder Include="src\parser\" />
     <Folder Include="src\types\" />
     <Folder Include="thirdparty\" />
+    <Folder Include="src\io\parsers\" />
   </ItemGroup>
 </Project>
