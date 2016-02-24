@@ -25,7 +25,7 @@ namespace L20n
 	namespace IO
 	{
 
-		public class CharStream
+		public class CharStream : IDisposable
 		{
 			public delegate bool CharPredicate(char c);
 	
@@ -73,8 +73,8 @@ namespace L20n
 			public char ForceReadNext(string msg)
 			{
 				char c;
-				if(!ReadNext(out c)) // TODO: finalize this when we have decent error handling
-					throw new IOException(msg);
+				if (!ReadNext (out c))
+					throw new IOException(msg, CreateEOFException());
 				return c;
 			}
 
@@ -82,9 +82,9 @@ namespace L20n
 			{
 				char c;
 				if (!ReadNext (out c))
-					throw new IOException ("Couldn't find char in SkipCharacter: " + expected);
+					throw CreateEOFException();
 				if (c != expected)
-					throw new IOException ("Skip has an unexpected character");
+					throw CreateException(String.Format ("expected {0}", expected));
 			}
 
 			public void SkipWhile(CharPredicate pred)
@@ -139,6 +139,35 @@ namespace L20n
 				var re = new Regex (@"[^\s]+");
 				return re.IsMatch(m_Buffer, m_Position);
 			}
+
+			public string ComputeDetailedPosition(int pos) {
+				var re = new Regex(@"(\r\n|\n|\r)");
+				var matches = re.Matches(m_Buffer.Substring (0, pos));
+				int lineNumber = 1;
+				int linePosition = pos;
+				if (matches.Count > 0) {
+					lineNumber = matches.Count + 1;
+					var match = matches [matches.Count - 1];
+					linePosition -= match.Index + match.Length - 1;
+				}
+
+				return String.Format("L{0}:{1}", lineNumber, linePosition);
+			}
+
+			public IOException CreateException(string msg, int offset = 0)
+			{
+				int pos = m_Position + offset;
+				return new IOException(
+					String.Format("'{0}' at {1} is unexpected: {2}",
+				              m_Buffer[pos], ComputeDetailedPosition(pos), msg));
+			}
+
+			public IOException CreateEOFException()
+			{
+				return new IOException("end of stream was reached while a character was expected");
+			}
+
+			public void Dispose() {}
 		}
 	}
 }

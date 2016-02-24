@@ -37,7 +37,9 @@ namespace L20n
 						content += c;
 					}
 
-					throw new IOException("ERROR IN COMMENT");
+					throw new IOException(
+						"a comment entry was opened, but not closed ",
+						stream.CreateEOFException());
 				}
 			}
 		}

@@ -29,21 +29,31 @@ namespace L20n
 			{
 				public static Types.Entry Parse(CharStream stream)
 				{
-					char c = stream.ForceReadNext("Entry-Parser: No Input found");
-					switch (c) {
-					case '/':
-						return ParseComment(stream);
+					int startingPos = stream.Position;
+					try {
+						char c = stream.ForceReadNext("expected to read the first char of the opening tag for an <entry>");
+						switch (c) {
+						case '/':
+							return ParseComment(stream);
 
-					default:
-						throw new IOException("Entry-Parser: first char not valid: " + c);
+						default:
+							throw stream.CreateException("expected to read '/' to start a <comment>", -1);
+						}
+					}
+					catch(Exception exception) {
+						throw new IOException(
+							String.Format(
+								"something went wrong during parsing of an <entry> starting at {0}",
+								stream.ComputeDetailedPosition(startingPos)),
+							exception);
 					}
 				}
 
 				private static Types.Entry ParseComment(CharStream stream)
 				{
-					char c = stream.ForceReadNext("Entry-Parser: ParseComment has no Input Left!");
+					char c = stream.ForceReadNext("expected to read '*' to start a <comment>");
 					if(c != '*')
-						throw new IOException("Entry-Parser: ParseComment char is not valid: " + c);
+						throw stream.CreateException("expected to read '*' to start a <comment>", -1);
 
 					return Comment.Parse(stream);
 				}

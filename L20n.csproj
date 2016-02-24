@@ -39,7 +39,6 @@
     <Compile Include="src\Locale.cs" />
     <Compile Include="src\types\Entry.cs" />
     <Compile Include="src\io\CharStream.cs" />
-    <Compile Include="src\io\Parser.cs" />
     <Compile Include="src\io\parsers\Entry.cs" />
     <Compile Include="src\io\parsers\Comment.cs" />
     <Compile Include="src\types\Comment.cs" />

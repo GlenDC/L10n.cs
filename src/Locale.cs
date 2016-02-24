@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace L20n
 {
@@ -32,8 +33,25 @@ namespace L20n
 
 		public void Import(String file_name)
 		{
-			var parser = new IO.Parser(file_name);
-			m_Entities.AddRange(parser.Parse());
+			try {
+				using(IO.CharStream stream = new IO.CharStream(file_name)) {
+					Types.Entry entry;
+					while(stream.InputLeft()) {
+						// Skip WhiteSpace
+						IO.Parsers.WhiteSpace.Parse(stream);
+						
+						// Read Entry
+						entry = IO.Parsers.Entry.Parse(stream);
+						Console.WriteLine(entry.ToString());
+						m_Entities.AddRange(entry.Evaluate());
+					}
+				}
+			}
+			catch(Exception exception) {
+				throw new IOException(
+					String.Format("couldn't import locale file: {0}", file_name),
+					exception);
+			}
 		}
 	}
 }
