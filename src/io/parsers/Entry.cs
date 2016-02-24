@@ -37,7 +37,7 @@ namespace L20n
 							return ParseComment(stream);
 
 						default:
-							throw stream.CreateException("expected to read '/' to start a <comment>", -1);
+							throw stream.CreateException("expected to read the beginning of a valid <entry>", -1);
 						}
 					}
 					catch(Exception exception) {

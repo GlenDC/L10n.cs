@@ -164,7 +164,7 @@ namespace L20n
 
 			public IOException CreateEOFException()
 			{
-				return new IOException("end of stream was reached while a character was expected");
+				return new IOException("end of stream was reached while more input was expected");
 			}
 
 			public void Dispose() {}

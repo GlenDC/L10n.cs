@@ -33,6 +33,11 @@ namespace L20n
 
 		public void Import(String file_name)
 		{
+			// We first pass it all into this temporary list
+			// so that we only pass the entities on to the other entities,
+			// once we know sure that we could parse the entire file
+			// without any issues. (e.g. no parsing errors occured)
+			var entities = new List<Types.Entity>();
 			try {
 				using(IO.CharStream stream = new IO.CharStream(file_name)) {
 					Types.Entry entry;
@@ -43,7 +48,7 @@ namespace L20n
 						// Read Entry
 						entry = IO.Parsers.Entry.Parse(stream);
 						Console.WriteLine(entry.ToString());
-						m_Entities.AddRange(entry.Evaluate());
+						entities.AddRange(entry.Evaluate());
 					}
 				}
 			}
@@ -52,6 +57,8 @@ namespace L20n
 					String.Format("couldn't import locale file: {0}", file_name),
 					exception);
 			}
+
+			m_Entities.AddRange(entities);
 		}
 	}
 }
