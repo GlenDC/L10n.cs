@@ -18,36 +18,32 @@
 
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace L20n
 {
-	namespace Types
+	namespace IO
 	{
-		public class Entity : Entry
+		namespace Parsers
 		{	
-			private string m_Identifier;
-			private Types.Value m_Value;
+			public class Entity
+			{
+				public static Types.Entity Parse(CharStream stream, string identifier)
+				{
+					// TODO check for optional index first
 
-			public Entity(string id, Types.Value value)
-			{
-				m_Identifier = id;
-				m_Value = value;
-			}
-			
-			public override List<Entity> Evaluate()
-			{
-				var entities = new List<Entity>();
-				entities.Add(this);
-				return entities;
-			}
-			
-			public override string ToString()
-			{
-				return String.Format("<{0} {1}>",
-				                     m_Identifier, m_Value.ToString());
+					// White Space is required
+					WhiteSpace.Parse(stream, false);
+
+					// Now we need the actual value
+					var value = Value.Parse(stream);
+
+					// TODO more
+
+					stream.SkipCharacter('>');
+
+					return new Types.Entity(identifier, value);
+				}
 			}
 		}
 	}
 }
-

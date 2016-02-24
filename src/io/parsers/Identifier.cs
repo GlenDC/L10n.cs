@@ -18,36 +18,29 @@
 
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace L20n
 {
-	namespace Types
+	namespace IO
 	{
-		public class Entity : Entry
+		namespace Parsers
 		{	
-			private string m_Identifier;
-			private Types.Value m_Value;
+			public class Identifier
+			{
+				public static string Parse(CharStream stream)
+				{
+					string identifier;
+					int pos = stream.Position;
+					if (!stream.ReadReg (@"[_a-zA-Z]\w*", out identifier)) {
+						throw new IOException(
+							String.Format(
+								"expected to read an <identifier> (starting at {0}), but found invalid characters",
+								stream.ComputeDetailedPosition(pos)));
+					}
 
-			public Entity(string id, Types.Value value)
-			{
-				m_Identifier = id;
-				m_Value = value;
-			}
-			
-			public override List<Entity> Evaluate()
-			{
-				var entities = new List<Entity>();
-				entities.Add(this);
-				return entities;
-			}
-			
-			public override string ToString()
-			{
-				return String.Format("<{0} {1}>",
-				                     m_Identifier, m_Value.ToString());
+					return identifier;
+				}
 			}
 		}
 	}
 }
-

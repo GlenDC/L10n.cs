@@ -17,35 +17,49 @@
  */
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 
 namespace L20n
 {
 	namespace Types
 	{
-		public class Entity : Entry
-		{	
-			private string m_Identifier;
-			private Types.Value m_Value;
+		public class StringValue : Types.Value
+		{
+			private string m_Value;
+			private	List<Expression> m_Expressions;
+			private L20n.IO.Parsers.Quote.Info m_QuoteInfo;
 
-			public Entity(string id, Types.Value value)
+			public StringValue(L20n.IO.Parsers.Quote.Info info)
 			{
-				m_Identifier = id;
-				m_Value = value;
+				m_Value = "";
+				m_Expressions = new List<Expression>();
+				m_QuoteInfo = info;
 			}
-			
-			public override List<Entity> Evaluate()
+
+			public void appendChar(char c)
 			{
-				var entities = new List<Entity>();
-				entities.Add(this);
-				return entities;
+				m_Value += c;
 			}
-			
+
+			public void appendString(string s)
+			{
+				m_Value += s;
+			}
+
+			public void appendExpression(Expression e)
+			{
+				appendString(String.Format ("{{0}}", m_Expressions.Count));
+				m_Expressions.Add(e);
+			}
+
 			public override string ToString()
 			{
-				return String.Format("<{0} {1}>",
-				                     m_Identifier, m_Value.ToString());
+				string e =
+					m_Expressions.Count == 0
+						? m_Value
+						: String.Format (m_Value, m_Expressions);
+
+				return String.Format("{0}{1}{0}", m_QuoteInfo.ToString(), e);
 			}
 		}
 	}

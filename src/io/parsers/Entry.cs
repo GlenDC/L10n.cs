@@ -36,6 +36,9 @@ namespace L20n
 						case '/':
 							return ParseComment(stream);
 
+						case '<':
+							return ParseIdentifierEntry(stream);
+
 						default:
 							throw stream.CreateException("expected to read the beginning of a valid <entry>", -1);
 						}
@@ -56,6 +59,16 @@ namespace L20n
 						throw stream.CreateException("expected to read '*' to start a <comment>", -1);
 
 					return Comment.Parse(stream);
+				}
+
+				private static Types.Entry ParseIdentifierEntry(CharStream stream)
+				{
+					string identifier = Identifier.Parse(stream);
+					if (stream.SkipIfPossible('(')) {
+						return Macro.Parse(stream, identifier);
+					} else {
+						return Entity.Parse(stream, identifier);
+					}
 				}
 			}
 		}

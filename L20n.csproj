@@ -44,6 +44,18 @@
     <Compile Include="src\types\Comment.cs" />
     <Compile Include="src\types\Entity.cs" />
     <Compile Include="src\io\parsers\WhiteSpace.cs" />
+    <Compile Include="src\io\parsers\Identifier.cs" />
+    <Compile Include="src\io\parsers\Macro.cs" />
+    <Compile Include="src\io\parsers\Entity.cs" />
+    <Compile Include="src\io\parsers\Value.cs" />
+    <Compile Include="src\io\parsers\Quote.cs" />
+    <Compile Include="src\types\Value.cs" />
+    <Compile Include="src\io\parsers\StringValue.cs" />
+    <Compile Include="src\io\parsers\HashValue.cs" />
+    <Compile Include="src\types\Macro.cs" />
+    <Compile Include="src\types\StringValue.cs" />
+    <Compile Include="src\types\Expression.cs" />
+    <Compile Include="src\io\parsers\Expression.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

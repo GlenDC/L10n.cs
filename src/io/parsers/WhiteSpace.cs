@@ -27,9 +27,15 @@ namespace L20n
 		{	
 			public class WhiteSpace
 			{
-				public static void Parse(CharStream stream)
+				public static void Parse(CharStream stream, bool optional)
 				{
-					stream.SkipWhile(char.IsWhiteSpace);
+					int pos = stream.Position;
+					int n = stream.SkipWhile(char.IsWhiteSpace);
+					if (!optional && n == 0) {
+						throw stream.CreateException(
+							"at least one whitespace character is required",
+							pos - stream.Position);
+					}
 				}
 			}
 		}

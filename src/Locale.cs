@@ -43,7 +43,7 @@ namespace L20n
 					Types.Entry entry;
 					while(stream.InputLeft()) {
 						// Skip WhiteSpace
-						IO.Parsers.WhiteSpace.Parse(stream);
+						IO.Parsers.WhiteSpace.Parse(stream, true);
 						
 						// Read Entry
 						entry = IO.Parsers.Entry.Parse(stream);

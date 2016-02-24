@@ -70,8 +70,11 @@ namespace L20n
 				return m_Buffer[m_Position];
 			}
 
-			public char ForceReadNext(string msg)
+			public char ForceReadNext(string msg = null)
 			{
+				if (msg == null)
+					msg = "expected to read a char, but reached EOF instead";
+
 				char c;
 				if (!ReadNext (out c))
 					throw new IOException(msg, CreateEOFException());
@@ -87,10 +90,15 @@ namespace L20n
 					throw CreateException(String.Format ("expected {0}", expected));
 			}
 
-			public void SkipWhile(CharPredicate pred)
+			public int SkipWhile(CharPredicate pred)
 			{
-				while (!EndOfStream() && pred(m_Buffer[m_Position]))
+				int skipped = 0;
+				while (!EndOfStream() && pred(m_Buffer[m_Position])) {
 					++m_Position;
+					++skipped;
+				}
+
+				return skipped;
 			}
 
 			public bool SkipIfPossible(char expected)
@@ -105,10 +113,10 @@ namespace L20n
 
 			public bool ReadReg(string reg, out string c)
 			{
-				var rx = new Regex("^" + reg);
-				var match = rx.Match(m_Buffer, m_Position);
+				var re = new Regex(reg);
+				var match = re.Match(m_Buffer, m_Position);
 
-				if (match.Success) {
+				if (match.Success && match.Index == m_Position) {
 					c = match.Value;
 					m_Position += c.Length;
 					return true;

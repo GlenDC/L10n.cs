@@ -24,28 +24,22 @@ namespace L20n
 {
 	namespace Types
 	{
-		public class Entity : Entry
+		public class Macro : Entry
 		{	
-			private string m_Identifier;
-			private Types.Value m_Value;
-
-			public Entity(string id, Types.Value value)
+			public Macro()
 			{
-				m_Identifier = id;
-				m_Value = value;
+				// TODO
 			}
 			
 			public override List<Entity> Evaluate()
 			{
 				var entities = new List<Entity>();
-				entities.Add(this);
 				return entities;
 			}
 			
 			public override string ToString()
 			{
-				return String.Format("<{0} {1}>",
-				                     m_Identifier, m_Value.ToString());
+				throw new IOException("TODO");
 			}
 		}
 	}

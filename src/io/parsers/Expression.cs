@@ -18,36 +18,20 @@
 
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace L20n
 {
-	namespace Types
+	namespace IO
 	{
-		public class Entity : Entry
+		namespace Parsers
 		{	
-			private string m_Identifier;
-			private Types.Value m_Value;
-
-			public Entity(string id, Types.Value value)
+			public class Expression
 			{
-				m_Identifier = id;
-				m_Value = value;
-			}
-			
-			public override List<Entity> Evaluate()
-			{
-				var entities = new List<Entity>();
-				entities.Add(this);
-				return entities;
-			}
-			
-			public override string ToString()
-			{
-				return String.Format("<{0} {1}>",
-				                     m_Identifier, m_Value.ToString());
+				public static Types.Expression Parse(CharStream stream)
+				{
+					throw stream.CreateException("started to read an expression, but there is no supported for them");
+				}
 			}
 		}
 	}
 }
-
