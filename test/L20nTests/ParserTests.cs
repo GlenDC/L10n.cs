@@ -109,6 +109,30 @@ namespace L20nTests
 			Assert.Throws<IOException>(() => Quote.Parse(NC("")));
 		}
 
+		[Test()]
+		public void IdentifierTests()
+		{
+			// an identifier is a string that only contains word-characters
+			Assert.AreEqual("aBcDeFgH", Identifier.Parse(NC("aBcDeFgH")));
+			Assert.AreEqual("Hello_World", Identifier.Parse(NC("Hello_World")));
+
+			// white-spaces are not included in that
+			Assert.AreEqual("Hello", Identifier.Parse(NC("Hello World")));
+			// neither or dashes
+			Assert.AreEqual("glen", Identifier.Parse(NC("glen-dc")));
+			// starting with a non-word char will however make it fail
+			Assert.Throws<IOException>(() => Identifier.Parse(NC(" oh")));
+
+			// You can also Parse identifiers in a fail-safe way
+			string id;
+			Assert.IsTrue(Identifier.PeekAndParse(NC("Ho_Ho_Ho"), out id));
+			Assert.AreEqual("Ho_Ho_Ho", id);
+			Assert.IsFalse(Identifier.PeekAndParse(NC(" fails"), out id));
+
+			// passing in an EOF stream will give an <EOF> IOException
+			Assert.Throws<IOException>(() => Identifier.Parse(NC("")));
+		}
+
 		private CharStream NC(string buffer)
 		{
 			return new CharStream(buffer);
