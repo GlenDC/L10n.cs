@@ -27,7 +27,7 @@ namespace L20n
 		{	
 			public class Value
 			{
-				public static Types.Value Parse(CharStream stream)
+				public static Types.AST.Value Parse(CharStream stream)
 				{
 					if (stream.SkipIfPossible('{')) {	
 						return HashValue.Parse(stream);

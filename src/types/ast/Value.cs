@@ -17,22 +17,18 @@
  */
 
 using System;
-using System.IO;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
-		{	
-			public class HashValue
+		namespace AST
+		{
+			public abstract class Value : INode<L20n.Types.Internal.Value>
 			{
-				public static Types.AST.HashValue Parse(CharStream stream)
-				{
-					// TODO
-					throw stream.CreateException("started to read a hash, but there is no supported for them");
-				}
+				public abstract bool Evaluate (out L20n.Types.Internal.Value output);
 			}
 		}
 	}
 }
+

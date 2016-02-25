@@ -25,29 +25,24 @@ namespace L20n
 	{
 		namespace Parsers
 		{	
-			public class StringValue : Types.Value
+			public class StringValue
 			{
-				/**
-				 * string	:	'\'' ([^'] | escape | expander )* '\'' | '"' ([^"] | escape | expander )* '"' ; | '\'\'\'' ( . | escape | expander )*? '\'\'\'' ; | '"""' ( . | escape | expander )*? '"""' ;
-				 * escape	:	'\' ('\' | '\'' | '"' | '{{') ;
-				 * expander	:	'{{' expression '}}' ;
-				 **/
-
-				public static Types.Value Parse(CharStream stream)
+				public static Types.AST.StringValue Parse(CharStream stream)
 				{
 					var quote = Quote.Parse(stream);
+					var value = new Types.AST.StringValue();
 
+					Types.AST.Expression expression;
 					char c;
-					var value = new Types.StringValue(quote);
-					while ((c = stream.PeekNext()) != '\0') {
+		
+					while((c = stream.PeekNext()) != '\0') {
 						if(c == '\\') {
 							value.appendChar(stream.ForceReadNext());
 							value.appendChar(stream.ForceReadNext());
 						}
 						else {
-							if (c == '{') {
-								var e = Expression.Parse(stream);
-								value.appendExpression(e);
+							if(Expression.PeekAndParse(stream, out expression)) {
+								value.appendExpression(expression);
 							}
 							else if(c == '\'' || c == '"') {
 								break; // un-escaped quote means we're ending the string

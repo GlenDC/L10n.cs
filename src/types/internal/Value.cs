@@ -8,7 +8,6 @@
  * You may obtain a copy of the License at
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
-
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,31 +16,17 @@
  */
 
 using System;
-using System.IO;
-using System.Collections.Generic;
 
 namespace L20n
 {
 	namespace Types
 	{
-		public class Macro : Entry
-		{	
-			public Macro()
+		namespace Internal
+		{
+			public class Value
 			{
-				// TODO
-			}
-			
-			public override List<Entity> Evaluate()
-			{
-				var entities = new List<Entity>();
-				return entities;
-			}
-			
-			public override string ToString()
-			{
-				throw new IOException("TODO");
+				public Value() {}
 			}
 		}
 	}
 }
-

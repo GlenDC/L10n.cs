@@ -40,14 +40,16 @@ namespace L20n
 			var entities = new List<Types.Entity>();
 			try {
 				using(IO.CharStream stream = IO.CharStream.CreateFromFile(file_name)) {
-					Types.Entry entry;
+					Types.AST.Entry node;
+					List<Types.Entity> newEntities;
 					while(stream.InputLeft()) {
 						// Skip WhiteSpace
 						IO.Parsers.WhiteSpace.Parse(stream, true);
 						
 						// Read Entry
-						entry = IO.Parsers.Entry.Parse(stream);
-						entities.AddRange(entry.Evaluate());
+						node = IO.Parsers.Entry.Parse(stream);
+						if(node.Evaluate(out newEntities))
+							entities.AddRange(newEntities);
 					}
 				}
 			}

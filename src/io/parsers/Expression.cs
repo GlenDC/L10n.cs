@@ -27,9 +27,21 @@ namespace L20n
 		{	
 			public class Expression
 			{
-				public static Types.Expression Parse(CharStream stream)
+				public static Types.AST.Expression Parse(CharStream stream)
 				{
+					// TODO
 					throw stream.CreateException("started to read an expression, but there is no supported for them");
+				}
+
+				public static bool PeekAndParse(CharStream stream, out Types.AST.Expression expression)
+				{
+					if(stream.PeekNext() != '{') {
+						expression = null;
+						return false;
+					}
+
+					expression = Expression.Parse(stream);
+					return true;
 				}
 			}
 		}

@@ -57,16 +57,16 @@ namespace L20nTests
 			Assert.Throws<IOException> (
 				() => Comment.Parse(NC("Unfinished Comment */")));
 
-			L20n.Types.Entry comment;
+			L20n.Types.AST.Entry entry;
 			// PeekAndParse can be used to make sure that
 			// you only try to parse something that at least looks like a comment
-			Assert.IsTrue(Comment.PeekAndParse(NC("/* A Comment */"), out comment));
+			Assert.IsTrue(Comment.PeekAndParse(NC("/* A Comment */"), out entry));
 			// When the start doesn't look like a comment it will simply return false
-			Assert.IsFalse(Comment.PeekAndParse(NC("Hello"), out comment));
+			Assert.IsFalse(Comment.PeekAndParse(NC("Hello"), out entry));
 			// It will still throw an assert however,
 			// if the start looks like a comment, but it turned out to be a trap
 			Assert.Throws<IOException> (
-				() => Comment.PeekAndParse(NC("/* What can go wrong"), out comment));
+				() => Comment.PeekAndParse(NC("/* What can go wrong"), out entry));
 
 			// passing in an EOF stream will give an <EOF> IOException
 			Assert.Throws<IOException>(() => Comment.Parse(NC("")));

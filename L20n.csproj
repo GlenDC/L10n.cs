@@ -37,25 +37,32 @@
     <Compile Include="src\Database.cs" />
     <Compile Include="thirdparty\SimpleJson.cs" />
     <Compile Include="src\Locale.cs" />
-    <Compile Include="src\types\Entry.cs" />
     <Compile Include="src\io\CharStream.cs" />
     <Compile Include="src\io\parsers\Entry.cs" />
     <Compile Include="src\io\parsers\Comment.cs" />
-    <Compile Include="src\types\Comment.cs" />
-    <Compile Include="src\types\Entity.cs" />
     <Compile Include="src\io\parsers\WhiteSpace.cs" />
     <Compile Include="src\io\parsers\Identifier.cs" />
     <Compile Include="src\io\parsers\Macro.cs" />
     <Compile Include="src\io\parsers\Entity.cs" />
     <Compile Include="src\io\parsers\Value.cs" />
     <Compile Include="src\io\parsers\Quote.cs" />
-    <Compile Include="src\types\Value.cs" />
     <Compile Include="src\io\parsers\StringValue.cs" />
     <Compile Include="src\io\parsers\HashValue.cs" />
-    <Compile Include="src\types\Macro.cs" />
-    <Compile Include="src\types\StringValue.cs" />
-    <Compile Include="src\types\Expression.cs" />
     <Compile Include="src\io\parsers\Expression.cs" />
+    <Compile Include="src\io\parsers\Index.cs" />
+    <Compile Include="src\types\ast\INode.cs" />
+    <Compile Include="src\types\Entity.cs" />
+    <Compile Include="src\types\ast\Entry.cs" />
+    <Compile Include="src\types\internal\Value.cs" />
+    <Compile Include="src\types\ast\Value.cs" />
+    <Compile Include="src\types\ast\StringValue.cs" />
+    <Compile Include="src\types\ast\HashValue.cs" />
+    <Compile Include="src\types\ast\Expression.cs" />
+    <Compile Include="src\types\internal\Expression.cs" />
+    <Compile Include="src\types\ast\Macro.cs" />
+    <Compile Include="src\types\ast\Entity.cs" />
+    <Compile Include="src\types\ast\Index.cs" />
+    <Compile Include="src\types\ast\NullEntry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -64,5 +71,7 @@
     <Folder Include="src\types\" />
     <Folder Include="thirdparty\" />
     <Folder Include="src\io\parsers\" />
+    <Folder Include="src\types\ast\" />
+    <Folder Include="src\types\internal\" />
   </ItemGroup>
 </Project>

@@ -27,9 +27,9 @@ namespace L20n
 		{
 			public class Entry
 			{
-				public static Types.Entry Parse(CharStream stream)
+				public static Types.AST.Entry Parse(CharStream stream)
 				{
-					Types.Entry entry;
+					Types.AST.Entry entry;
 
 					if(Comment.PeekAndParse(stream, out entry))
 						return entry;

@@ -23,10 +23,40 @@ namespace L20n
 {
 	namespace Types
 	{
-		public abstract class Entry
+		namespace AST
 		{
-			public Entry() {}
-			public abstract List<Entity> Evaluate();
+			public class StringValue : Value
+			{
+				private string m_Value;
+				private	List<Expression> m_Expressions;
+
+				public StringValue()
+				{
+					m_Value = "";
+					m_Expressions = new List<Expression>();
+				}
+				
+				public void appendChar(char c)
+				{
+					m_Value += c;
+				}
+				
+				public void appendString(string s)
+				{
+					m_Value += s;
+				}
+				
+				public void appendExpression(Expression e)
+				{
+					appendString(String.Format ("{{0}}", m_Expressions.Count));
+					m_Expressions.Add(e);
+				}
+
+				public override bool Evaluate(out L20n.Types.Internal.Value output)
+				{
+					throw new Exception ("TODO");
+				}
+			}
 		}
 	}
 }

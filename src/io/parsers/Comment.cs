@@ -27,7 +27,7 @@ namespace L20n
 		{	
 			public class Comment
 			{
-				public static Types.Entry Parse(CharStream stream)
+				public static Types.AST.Entry Parse(CharStream stream)
 				{
 					if (!stream.SkipIfPossible ('/') || !(stream.SkipIfPossible ('*'))) {
 						throw stream.CreateException(
@@ -37,7 +37,7 @@ namespace L20n
 					char c; string content = "";
 					while (stream.ReadNext(out c)) {
 						if(c == '*' && stream.SkipIfPossible('/')) {
-							return new Types.Comment(content);
+							return new L20n.Types.AST.NullEntry();
 						}
 						content += c;
 					}
@@ -47,14 +47,14 @@ namespace L20n
 						stream.CreateEOFException());
 				}
 
-				public static bool PeekAndParse(CharStream stream, out Types.Entry comment)
+				public static bool PeekAndParse(CharStream stream, out Types.AST.Entry entry)
 				{
 					if (stream.PeekNext() != '/' || stream.PeekNext(1) != '*') {
-						comment = null;
+						entry = null;
 						return false;
 					}
 
-					comment = Comment.Parse(stream);
+					entry = Comment.Parse(stream);
 					return true;
 				}
 			}

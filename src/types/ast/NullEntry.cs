@@ -17,22 +17,23 @@
  */
 
 using System;
-using System.IO;
+using System.Collections.Generic;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
-		{	
-			public class HashValue
+		namespace AST
+		{
+			public sealed class NullEntry : Entry
 			{
-				public static Types.AST.HashValue Parse(CharStream stream)
+				public override bool Evaluate (out List<L20n.Types.Entity> output)
 				{
-					// TODO
-					throw stream.CreateException("started to read a hash, but there is no supported for them");
+					output = null;
+					return false;
 				}
 			}
 		}
 	}
 }
+

@@ -22,9 +22,15 @@ namespace L20n
 {
 	namespace Types
 	{
-		public class Value
+		namespace AST
 		{
-			public Value() {}
+			public class Expression : INode<L20n.Types.Internal.Expression>
+			{
+				public bool Evaluate (out L20n.Types.Internal.Expression output)
+				{
+					throw new Exception ("TODO");
+				}
+			}
 		}
 	}
 }

@@ -23,43 +23,11 @@ namespace L20n
 {
 	namespace Types
 	{
-		public class StringValue : Types.Value
+		namespace AST
 		{
-			private string m_Value;
-			private	List<Expression> m_Expressions;
-			private L20n.IO.Parsers.Quote.Info m_QuoteInfo;
-
-			public StringValue(L20n.IO.Parsers.Quote.Info info)
+			public abstract class Entry : INode<List<L20n.Types.Entity>>
 			{
-				m_Value = "";
-				m_Expressions = new List<Expression>();
-				m_QuoteInfo = info;
-			}
-
-			public void appendChar(char c)
-			{
-				m_Value += c;
-			}
-
-			public void appendString(string s)
-			{
-				m_Value += s;
-			}
-
-			public void appendExpression(Expression e)
-			{
-				appendString(String.Format ("{{0}}", m_Expressions.Count));
-				m_Expressions.Add(e);
-			}
-
-			public override string ToString()
-			{
-				string e =
-					m_Expressions.Count == 0
-						? m_Value
-						: String.Format (m_Value, m_Expressions);
-
-				return String.Format("{0}{1}{0}", m_QuoteInfo.ToString(), e);
+				public abstract bool Evaluate (out List<L20n.Types.Entity> output);
 			}
 		}
 	}

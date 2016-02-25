@@ -17,39 +17,48 @@
  */
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
-		{	
-			public class Entity
+		namespace AST
+		{
+			public class Index : INode<List<L20n.Types.Internal.Expression>>
 			{
-				public static Types.AST.Entity Parse(CharStream stream, string identifier)
+				private List<Expression> m_Expressions;
+
+				public Index()
 				{
-					Types.AST.Index index;
-					Index.PeekAndParse(stream, out index);
+					m_Expressions = new List<Expression>();
+				}
 
-					// White Space is required
-					WhiteSpace.Parse(stream, false);
+				public void AddExpression(Expression expression)
+				{
+					m_Expressions.Add(expression);
+				}
 
-					// Now we need the actual value
-					var value = Value.Parse(stream);
+				public bool Evaluate(out List<L20n.Types.Internal.Expression> output)
+				{
+					var list = new List<L20n.Types.Internal.Expression>(m_Expressions.Count);
+					L20n.Types.Internal.Expression expression;
 
-					// TODO attributes
-					
-					// White Space is optional
-					WhiteSpace.Parse(stream, true);
+					for(int i = 0; i < m_Expressions.Count; ++i) {
+						if(m_Expressions[i].Evaluate(out expression))
+							list.Add(expression);
+					}
 
-					stream.SkipCharacter('>');
+					if (list.Count > 0) {
+						output = list;
+						return true;
+					}
 
-					// TODO actually create a proper ast entity
-					return new Types.AST.Entity();
+					output = null;
+					return false;
 				}
 			}
 		}
 	}
 }
+

@@ -17,29 +17,16 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 namespace L20n
 {
 	namespace Types
 	{
-		public class Comment : Entry
+		namespace AST
 		{
-			private string m_Content;
-
-			public Comment(string content)
+			public interface INode<T>
 			{
-				m_Content = content;
-			}
-
-			public override List<Entity> Evaluate()
-			{
-				return new List<Entity>();
-			}
-			
-			public override string ToString()
-			{
-				return String.Format("/*{0}*/", m_Content);
+				bool Evaluate(out T output);
 			}
 		}
 	}
