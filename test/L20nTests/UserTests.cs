@@ -50,11 +50,22 @@ namespace L20nTests
 		[Test()]
 		public void SimpleDatabase()
 		{
+			var pc = new PerformanceClock("SimpleDatabase");
+
 			Database database = new Database();
 			database.Import("../../../resources/manifest.json");
 
+			pc.Clock("database imported");
+
+			pc.Pause();
 			Assert.AreEqual("en-US", database.DefaultLocale);
 			Assert.AreEqual(3, database.Locales.Count);
+			pc.Continue();
+
+			Assert.Throws<IOException>(() => database.LoadLocale());
+			pc.Clock("default locale loaded");
+			
+			pc.Stop();
 		}
 	}
 }

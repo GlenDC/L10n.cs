@@ -47,7 +47,6 @@ namespace L20n
 						
 						// Read Entry
 						entry = IO.Parsers.Entry.Parse(stream);
-						Console.WriteLine(entry.ToString());
 						entities.AddRange(entry.Evaluate());
 					}
 				}
