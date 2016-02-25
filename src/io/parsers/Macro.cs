@@ -27,9 +27,20 @@ namespace L20n
 		{	
 			public class Macro
 			{
-				public static Types.Macro Parse(CharStream stream, string identifier)
+				public static Types.Entry Parse(CharStream stream, string identifier)
 				{
 					throw stream.CreateException("started to read macro, but there is no supported for them");
+				}
+
+				public static bool PeekAndParse(CharStream stream, string identifier, out Types.Entry macro)
+				{
+					if (stream.PeekNext () != '(') {
+						macro = null;
+						return false;
+					}
+
+					macro = Macro.Parse(stream, identifier);
+					return true;
 				}
 			}
 		}

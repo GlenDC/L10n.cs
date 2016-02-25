@@ -29,6 +29,11 @@ namespace L20n
 			{
 				public static Types.Entry Parse(CharStream stream)
 				{
+					if (!stream.SkipIfPossible ('/') || !(stream.SkipIfPossible ('*'))) {
+						throw stream.CreateException(
+							"a comment has to be opened with '/*'");
+					}
+
 					char c; string content = "";
 					while (stream.ReadNext(out c)) {
 						if(c == '*' && stream.SkipIfPossible('/')) {
@@ -40,6 +45,17 @@ namespace L20n
 					throw new IOException(
 						"a comment entry was opened, but not closed ",
 						stream.CreateEOFException());
+				}
+
+				public static bool PeekAndParse(CharStream stream, out Types.Entry comment)
+				{
+					if (stream.PeekNext() != '/' || stream.PeekNext(1) != '*') {
+						comment = null;
+						return false;
+					}
+
+					comment = Comment.Parse(stream);
+					return true;
 				}
 			}
 		}

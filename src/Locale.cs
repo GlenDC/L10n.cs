@@ -39,7 +39,7 @@ namespace L20n
 			// without any issues. (e.g. no parsing errors occured)
 			var entities = new List<Types.Entity>();
 			try {
-				using(IO.CharStream stream = new IO.CharStream(file_name)) {
+				using(IO.CharStream stream = IO.CharStream.CreateFromFile(file_name)) {
 					Types.Entry entry;
 					while(stream.InputLeft()) {
 						// Skip WhiteSpace

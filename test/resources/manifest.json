@@ -3,10 +3,9 @@
     "en-US",
     "fr",
     "pl",
-    "test",
   ],
   "default_locale": "en-US",
   "resources": [
-    "./{{locale}}.l20n"
+    "./{{locale}}.l20n",
   ]
 }

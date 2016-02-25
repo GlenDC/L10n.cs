@@ -37,14 +37,19 @@ namespace L20n
 			{
 				get { return m_Position; }
 			}
+			
+			public CharStream(String buffer)
+			{
+				m_Buffer = buffer;
+				m_Position = 0;
+				m_LastPosition = m_Buffer.Length - 1;
+			}
 
-			public CharStream(String path)
+			public static CharStream CreateFromFile(String path)
 			{
 				using (var sr = new StreamReader(path, System.Text.Encoding.UTF8, false))
 				{
-					m_Buffer = sr.ReadToEnd();
-					m_LastPosition = m_Buffer.Length - 1;
-					m_Position = 0;
+					return new CharStream(sr.ReadToEnd());
 				}
 			}
 
@@ -60,14 +65,18 @@ namespace L20n
 				return true;
 			}
 
-			public char PeekNext()
+			public char PeekNext(int offset = 0)
 			{
 				if(EndOfStream())
 				{
 					return '\0';
 				}
 
-				return m_Buffer[m_Position];
+				int pos = m_Position + offset;
+				if (pos > m_LastPosition)
+					return '\0';
+
+				return m_Buffer[pos];
 			}
 
 			public char ForceReadNext(string msg = null)
@@ -134,7 +143,7 @@ namespace L20n
 				return content;
 			}
 
-			public bool EndOfStream(bool keepWhiteSpace = false)
+			public bool EndOfStream()
 			{
 				return m_Position > m_LastPosition;
 			}
@@ -165,6 +174,11 @@ namespace L20n
 			public IOException CreateException(string msg, int offset = 0)
 			{
 				int pos = m_Position + offset;
+				if (pos >= m_LastPosition) {
+					return new IOException(
+						String.Format("EOF is unexpected: {0}", msg));
+				}
+
 				return new IOException(
 					String.Format("'{0}' at {1} is unexpected: {2}",
 				              m_Buffer[pos], ComputeDetailedPosition(pos), msg));

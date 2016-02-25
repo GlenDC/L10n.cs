@@ -29,46 +29,30 @@ namespace L20n
 			{
 				public static Types.Entry Parse(CharStream stream)
 				{
-					int startingPos = stream.Position;
-					try {
-						char c = stream.ForceReadNext("expected to read the first char of the opening tag for an <entry>");
-						switch (c) {
-						case '/':
-							return ParseComment(stream);
+					Types.Entry entry;
 
-						case '<':
-							return ParseIdentifierEntry(stream);
+					if(Comment.PeekAndParse(stream, out entry))
+						return entry;
 
-						default:
-							throw stream.CreateException("expected to read the beginning of a valid <entry>", -1);
-						}
-					}
-					catch(Exception exception) {
-						throw new IOException(
-							String.Format(
-								"something went wrong during parsing of an <entry> starting at {0}",
-								stream.ComputeDetailedPosition(startingPos)),
-							exception);
-					}
-				}
+					// normally we keep the requirements of a format for a parser internal,
+					// but in this case we have the same start for both a <macro> and an <entity>
+					// so we simply have to make an exception in this case for performance reasons
+					if (stream.SkipIfPossible('<')) {
+						string identifier = Identifier.Parse(stream);
 
-				private static Types.Entry ParseComment(CharStream stream)
-				{
-					char c = stream.ForceReadNext("expected to read '*' to start a <comment>");
-					if(c != '*')
-						throw stream.CreateException("expected to read '*' to start a <comment>", -1);
+						if(Macro.PeekAndParse(stream, identifier, out entry))
+						   return entry;
 
-					return Comment.Parse(stream);
-				}
-
-				private static Types.Entry ParseIdentifierEntry(CharStream stream)
-				{
-					string identifier = Identifier.Parse(stream);
-					if (stream.SkipIfPossible('(')) {
-						return Macro.Parse(stream, identifier);
-					} else {
+						// now it NEEDS to be a entitiy, else our input is simply invalid
+						// knowing that we are already on a path of no return
+						// because of the fact that we started parsing '<' and an identifier.
 						return Entity.Parse(stream, identifier);
 					}
+
+					// TODO Statement.PeekAndParse 
+
+					throw stream.CreateException (
+						"no valid starting point for any type of <entry> could be found");
 				}
 			}
 		}

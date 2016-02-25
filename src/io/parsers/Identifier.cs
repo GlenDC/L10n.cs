@@ -30,15 +30,21 @@ namespace L20n
 				public static string Parse(CharStream stream)
 				{
 					string identifier;
-					int pos = stream.Position;
-					if (!stream.ReadReg (@"[_a-zA-Z]\w*", out identifier)) {
-						throw new IOException(
-							String.Format(
-								"expected to read an <identifier> (starting at {0}), but found invalid characters",
-								stream.ComputeDetailedPosition(pos)));
+					if(!Identifier.PeekAndParse(stream, out identifier)) {
+						throw stream.CreateException(
+							"expected to read an <identifier>, but non-word character was found");
 					}
 
 					return identifier;
+				}
+
+				public static bool PeekAndParse(CharStream stream, out string identifier)
+				{
+					if (!stream.EndOfStream() && stream.ReadReg (@"[_a-zA-Z]\w*", out identifier)) {
+						return true;
+					}
+
+					return false;
 				}
 			}
 		}

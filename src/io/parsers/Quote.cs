@@ -82,7 +82,7 @@ namespace L20n
 					string output;
 					int pos = stream.Position;
 
-					if (!stream.ReadReg("[\'|\"|\"\"\"|\'\'\']", out output)) {
+					if (!stream.ReadReg("(\"\"\"|\'\'\'|\'|\")", out output)) {
 						throw new IOException(
 							String.Format(
 							"expected to read a <quote> (starting at {0}), but found invalid characters",

@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,11 @@ namespace L20n
 			get { return m_Manifest.DefaultLocale; }
 		}
 
+		// TODO
+		// We probably always want the default locale in memory,
+		// as it should be used as a fall-back for
+		// missing locales in the target-language.
+
 		public List<string> Locales
 		{
 			get { return m_Manifest.Locales; }
@@ -52,7 +57,7 @@ namespace L20n
 
 		public void Import(string manifest_path)
 		{
-			using(var sr = new StreamReader(manifest_path)) 
+			using(var sr = new StreamReader(manifest_path))
 			{
 				var json = sr.ReadToEnd();
 				var root = JSON.Parse(json);
@@ -78,7 +83,7 @@ namespace L20n
 					string msg = string.Format("No default locale was provided in: {0}", manifest_path);
 					throw new IOException(msg);
 				}
-				
+
 				var resources = root["resources"];
 				if(resources == null || resources.Count == 0)
 				{
@@ -167,7 +172,7 @@ namespace L20n
 				resource = Path.Combine(new string[] {
 				    Path.GetDirectoryName(manifest),
 					resource});
-				    
+
 				m_Resources.Add(resource);
 			}
 
@@ -187,4 +192,3 @@ namespace L20n
 		}
 	}
 }
-
