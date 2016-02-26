@@ -22,6 +22,7 @@ using NUnit.Framework;
 
 using L20n.IO;
 using L20n.IO.Parsers;
+using L20n.IO.Parsers.Expressions;
 
 namespace L20nTests
 {
@@ -110,27 +111,27 @@ namespace L20nTests
 		}
 
 		[Test()]
-		public void IdentifierTests()
+		public void RawIdentifierTests()
 		{
 			// an identifier is a string that only contains word-characters
-			Assert.AreEqual("aBcDeFgH", Identifier.Parse(NC("aBcDeFgH")));
-			Assert.AreEqual("Hello_World", Identifier.Parse(NC("Hello_World")));
+			Assert.AreEqual("aBcDeFgH", RawIdentifier.Parse(NC("aBcDeFgH")));
+			Assert.AreEqual("Hello_World", RawIdentifier.Parse(NC("Hello_World")));
 
 			// white-spaces are not included in that
-			Assert.AreEqual("Hello", Identifier.Parse(NC("Hello World")));
+			Assert.AreEqual("Hello", RawIdentifier.Parse(NC("Hello World")));
 			// neither or dashes
-			Assert.AreEqual("glen", Identifier.Parse(NC("glen-dc")));
+			Assert.AreEqual("glen", RawIdentifier.Parse(NC("glen-dc")));
 			// starting with a non-word char will however make it fail
-			Assert.Throws<IOException>(() => Identifier.Parse(NC(" oh")));
+			Assert.Throws<IOException>(() => RawIdentifier.Parse(NC(" oh")));
 
 			// You can also Parse identifiers in a fail-safe way
 			string id;
-			Assert.IsTrue(Identifier.PeekAndParse(NC("Ho_Ho_Ho"), out id));
+			Assert.IsTrue(RawIdentifier.PeekAndParse(NC("Ho_Ho_Ho"), out id));
 			Assert.AreEqual("Ho_Ho_Ho", id);
-			Assert.IsFalse(Identifier.PeekAndParse(NC(" fails"), out id));
+			Assert.IsFalse(RawIdentifier.PeekAndParse(NC(" fails"), out id));
 
 			// passing in an EOF stream will give an <EOF> IOException
-			Assert.Throws<IOException>(() => Identifier.Parse(NC("")));
+			Assert.Throws<IOException>(() => RawIdentifier.Parse(NC("")));
 		}
 		
 		[Test()]
@@ -148,6 +149,35 @@ namespace L20nTests
 			
 			// passing in an EOF stream will give an <EOF> IOException
 			Assert.Throws<IOException>(() => Literal.Parse(NC("")));
+		}
+
+		[Test()]
+		public void IdentifierExpressionTests()
+		{
+			// One identifier parser to rule them all (4)
+			TypeAssert<L20n.Types.Internal.Expressions.Identifier>(
+				Identifier.Parse(NC("identifier")));
+			TypeAssert<L20n.Types.Internal.Expressions.Variable>(
+				Identifier.Parse(NC("$normal_variable")));
+			TypeAssert<L20n.Types.Internal.Expressions.Global>(
+				Identifier.Parse(NC("@global_variable")));
+			TypeAssert<L20n.Types.Internal.Expressions.This>(
+				Identifier.Parse(NC("~")));
+
+			// Anything that would fail the RawIdentifier tests
+			// would also fail this one, as it wraps around
+			Assert.Throws<IOException>(
+				() => Identifier.Parse(NC(" no_prefix_space_allowed")));
+			Assert.Throws<IOException>(
+				() => Identifier.Parse(NC("-only_underscores_and_letters_are_allowed")));
+			
+			// passing in an EOF stream will give an <EOF> IOException
+			Assert.Throws<IOException>(() => Identifier.Parse(NC("")));
+		}
+
+		private void TypeAssert<T>(object obj)
+		{
+			Assert.AreEqual(typeof(T), obj.GetType());
 		}
 
 		private CharStream NC(string buffer)

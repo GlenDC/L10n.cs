@@ -8,7 +8,6 @@
  * You may obtain a copy of the License at
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
-
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,34 +16,25 @@
  */
 
 using System;
-using System.IO;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
-		{	
-			public class RawIdentifier
+		namespace Internal
+		{
+			namespace Expressions
 			{
-				public static string Parse(CharStream stream)
+				public sealed class Global : Identifier
 				{
-					string identifier;
-					if(!RawIdentifier.PeekAndParse(stream, out identifier)) {
-						throw stream.CreateException(
-							"expected to read an <identifier>, but non-word character was found");
+					public Global(string identifier)
+						: base(identifier)
+					{}
+					
+					public override void GetValue()
+					{
+						throw new Exception("TODO - GLOBAL");
 					}
-
-					return identifier;
-				}
-
-				public static bool PeekAndParse(CharStream stream, out string identifier)
-				{
-					if (!stream.EndOfStream() && stream.ReadReg (@"[_a-zA-Z]\w*", out identifier)) {
-						return true;
-					}
-
-					return false;
 				}
 			}
 		}

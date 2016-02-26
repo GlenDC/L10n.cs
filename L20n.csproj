@@ -65,6 +65,14 @@
     <Compile Include="src\types\ast\NullEntry.cs" />
     <Compile Include="src\io\parsers\Literal.cs" />
     <Compile Include="src\types\internal\Literal.cs" />
+    <Compile Include="src\io\parsers\expressions\Variable.cs" />
+    <Compile Include="src\types\internal\expressions\Variable.cs" />
+    <Compile Include="src\types\internal\expressions\Global.cs" />
+    <Compile Include="src\io\parsers\expressions\Global.cs" />
+    <Compile Include="src\types\internal\expressions\This.cs" />
+    <Compile Include="src\io\parsers\expressions\This.cs" />
+    <Compile Include="src\types\internal\expressions\Identifier.cs" />
+    <Compile Include="src\io\parsers\expressions\Identifier.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -75,5 +83,7 @@
     <Folder Include="src\io\parsers\" />
     <Folder Include="src\types\ast\" />
     <Folder Include="src\types\internal\" />
+    <Folder Include="src\io\parsers\expressions\" />
+    <Folder Include="src\types\internal\expressions\" />
   </ItemGroup>
 </Project>

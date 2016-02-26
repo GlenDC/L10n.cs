@@ -24,27 +24,30 @@ namespace L20n
 	namespace IO
 	{
 		namespace Parsers
-		{	
-			public class RawIdentifier
+		{
+			namespace Expressions
 			{
-				public static string Parse(CharStream stream)
+				public class Identifier
 				{
-					string identifier;
-					if(!RawIdentifier.PeekAndParse(stream, out identifier)) {
-						throw stream.CreateException(
-							"expected to read an <identifier>, but non-word character was found");
+					public static Types.Internal.Expressions.Identifier Parse(CharStream stream)
+					{
+						string id;
+						if (RawIdentifier.PeekAndParse (stream, out id))
+							return new Types.Internal.Expressions.Identifier(id);
+						
+						Types.Internal.Expressions.Identifier identifier;
+						if (Variable.PeekAndParse (stream, out identifier))
+							return identifier;
+						
+						if (Global.PeekAndParse (stream, out identifier))
+							return identifier;
+						
+						if (This.PeekAndParse (stream, out identifier))
+							return identifier;
+
+						throw stream.CreateException (
+							"no valid start for an <identnfier_expression> could be found");
 					}
-
-					return identifier;
-				}
-
-				public static bool PeekAndParse(CharStream stream, out string identifier)
-				{
-					if (!stream.EndOfStream() && stream.ReadReg (@"[_a-zA-Z]\w*", out identifier)) {
-						return true;
-					}
-
-					return false;
 				}
 			}
 		}
