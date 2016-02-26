@@ -132,6 +132,23 @@ namespace L20nTests
 			// passing in an EOF stream will give an <EOF> IOException
 			Assert.Throws<IOException>(() => Identifier.Parse(NC("")));
 		}
+		
+		[Test()]
+		public void LiteralTests()
+		{
+			// any integer is a valid literal
+			Assert.AreEqual(-123, Literal.Parse(NC("-123")).Value);
+			Assert.AreEqual(42, Literal.Parse(NC("+42")).Value);
+			Assert.AreEqual(7, Literal.Parse(NC("7")).Value);
+
+			// decimals will be ignored and make for
+			// an invalid buffer later on
+			Assert.AreEqual(5, Literal.Parse(NC("5.2")).Value);
+			Assert.Throws<IOException>(() => Literal.Parse(NC(".2")));
+			
+			// passing in an EOF stream will give an <EOF> IOException
+			Assert.Throws<IOException>(() => Literal.Parse(NC("")));
+		}
 
 		private CharStream NC(string buffer)
 		{
