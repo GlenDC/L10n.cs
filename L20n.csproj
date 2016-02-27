@@ -89,6 +89,8 @@
     <Compile Include="src\io\parsers\HashItem.cs" />
     <Compile Include="src\types\internal\expressions\HashValue.cs" />
     <Compile Include="src\types\ast\HashItem.cs" />
+    <Compile Include="src\types\ast\KeyValuePair.cs" />
+    <Compile Include="src\io\parsers\KeyValuePair.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

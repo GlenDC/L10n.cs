@@ -194,6 +194,9 @@ namespace L20nTests
 
 			// exception is thrown when no default is defined
 			Assert.Throws<KeyNotFoundException> (() => hashValue.Get ("unknown"));
+			
+			// passing in an EOF stream will give an <EOF> IOException
+			Assert.Throws<IOException>(() => HashValue.Parse(NC("")));
 		}
 
 		[Test()]
@@ -261,6 +264,28 @@ namespace L20nTests
 			
 			// passing in an EOF stream will give an <EOF> IOException
 			Assert.Throws<IOException>(() => Primary.Parse(NC("")));
+		}
+
+		[Test()]
+		public void KeyValuePairTests()
+		{
+			// key value pairs can be used with simple string values
+			var pair = KeyValuePair.Parse(NC("hello: 'world'"));
+			Assert.AreEqual("hello", pair.Identifier);
+			Assert.AreEqual("world", pair.Value.ToString());
+			Assert.IsNull(pair.Index);
+
+			// hash values can also be used as values
+			var person =
+				KeyValuePair.Parse(NC("person: {age: '23', name: 'glen', *dummy: 'nope'}")).Value
+					as L20n.Types.Internal.Expressions.HashValue;
+			Assert.AreEqual("glen", person.Get("name").ToString());
+			Assert.AreEqual("nope", person.Get("job").ToString());
+
+			// TODO: test with indexes
+			
+			// passing in an EOF stream will give an <EOF> IOException
+			Assert.Throws<IOException>(() => KeyValuePair.Parse(NC("")));
 		}
 
 		private void TypeAssert<T>(object obj)
