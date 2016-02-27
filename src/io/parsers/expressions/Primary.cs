@@ -24,29 +24,33 @@ namespace L20n
 	namespace IO
 	{
 		namespace Parsers
-		{	
-			public class Literal
+		{
+			namespace Expressions
 			{
-				public static Types.Internal.Expressions.Primary Parse(CharStream stream)
+				public class Primary
 				{
-					string raw;
-					if (!stream.ReadReg (@"[\-\+]?[0-9]+", out raw)) {
-						throw stream.CreateException("a number literal whas expected");
+					public static Types.Internal.Expressions.Primary Parse(CharStream stream)
+					{
+						var startingPos = stream.Position;
+						
+						try {
+							Types.Internal.Expressions.Primary primary;
+
+							if (Literal.PeekAndParse(stream, out primary))
+								return primary;
+
+							if (Value.PeekAndParse(stream, out primary))
+								return primary;
+							
+							return Identifier.Parse(stream);
+						}
+						catch(Exception e) {
+							string msg = String.Format(
+								"something went wrong parsing a <primary> starting at {0}",
+								stream.ComputeDetailedPosition(startingPos));
+							throw new IOException(msg, e);
+						}
 					}
-
-					return new Types.Internal.Expressions.Literal(int.Parse(raw));
-				}
-
-				public static bool PeekAndParse(
-					CharStream stream, out Types.Internal.Expressions.Primary literal)
-				{
-					if (!stream.PeekReg (@"[\-\+0-9]")) {
-						literal = null;
-						return false;
-					}
-
-					literal = Literal.Parse(stream);
-					return true;
 				}
 			}
 		}

@@ -8,7 +8,6 @@
  * You may obtain a copy of the License at
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
-
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,36 +16,18 @@
  */
 
 using System;
-using System.IO;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
-		{	
-			public class Literal
+		namespace Internal
+		{
+			namespace Expressions
 			{
-				public static Types.Internal.Expressions.Primary Parse(CharStream stream)
+				public abstract class Primary
 				{
-					string raw;
-					if (!stream.ReadReg (@"[\-\+]?[0-9]+", out raw)) {
-						throw stream.CreateException("a number literal whas expected");
-					}
-
-					return new Types.Internal.Expressions.Literal(int.Parse(raw));
-				}
-
-				public static bool PeekAndParse(
-					CharStream stream, out Types.Internal.Expressions.Primary literal)
-				{
-					if (!stream.PeekReg (@"[\-\+0-9]")) {
-						literal = null;
-						return false;
-					}
-
-					literal = Literal.Parse(stream);
-					return true;
+					public Primary() {}
 				}
 			}
 		}

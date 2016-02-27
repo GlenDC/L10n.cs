@@ -109,6 +109,12 @@ namespace L20n
 
 					return info;
 				}
+
+				public static bool Peek(CharStream stream)
+				{
+					char next = stream.PeekNext ();
+					return (next == '\'' || next == '"');
+				}
 			}
 		}
 	}

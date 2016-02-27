@@ -23,18 +23,21 @@ namespace L20n
 	{
 		namespace Internal
 		{
-			public class Literal
+			namespace Expressions
 			{
-				public int Value
+				public class Literal : Primary
 				{
-					get { return m_Value; }
-				}
+					private int m_Value;
+					
+					public Literal(int value)
+					{
+						m_Value = value;
+					}
 
-				private int m_Value;
-
-				public Literal(int value)
-				{
-					m_Value = value;
+					public override string ToString()
+					{
+						return m_Value.ToString();
+					}
 				}
 			}
 		}

@@ -27,13 +27,48 @@ namespace L20n
 		{	
 			public class Value
 			{
-				public static Types.AST.Value Parse(CharStream stream)
+				public static L20n.Types.Internal.Expressions.Primary Parse(CharStream stream)
 				{
-					if (stream.SkipIfPossible('{')) {	
-						return HashValue.Parse(stream);
-					} else {
-						return StringValue.Parse(stream);
+					var startingPos = stream.Position;
+					
+					try {
+						L20n.Types.Internal.Expressions.Primary value;
+						if(Value.PeekAndParse(stream, out value)) {
+							return value;
+						}
+
+						throw new IOException("couldn't find valid <value> type");
 					}
+					catch(Exception e) {
+						string msg = String.Format(
+							"something went wrong parsing a <value> starting at {0}",
+							stream.ComputeDetailedPosition(startingPos));
+						throw new IOException(msg, e);
+					}
+				}
+
+				public static bool PeekAndParse(
+					CharStream stream, out L20n.Types.Internal.Expressions.Primary value)
+				{
+					L20n.Types.AST.Value intermediateValue;
+					L20n.Types.Internal.Expressions.Value evaluatedValue;
+
+					if (HashValue.PeekAndParse (stream, out intermediateValue)) {
+						if(intermediateValue.Evaluate(out evaluatedValue)) {
+							value = evaluatedValue;
+							return true;
+						}
+					}
+
+					if (StringValue.PeekAndParse (stream, out intermediateValue)) {
+						if(intermediateValue.Evaluate(out evaluatedValue)) {
+							value = evaluatedValue;
+							return true;
+						}
+					}
+
+					value = null;
+					return false;
 				}
 			}
 		}

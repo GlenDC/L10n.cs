@@ -24,9 +24,9 @@ namespace L20n
 	{
 		namespace AST
 		{
-			public abstract class Value : INode<L20n.Types.Internal.Value>
+			public abstract class Value : INode<L20n.Types.Internal.Expressions.Value>
 			{
-				public abstract bool Evaluate (out L20n.Types.Internal.Value output);
+				public abstract bool Evaluate (out L20n.Types.Internal.Expressions.Value output);
 			}
 		}
 	}

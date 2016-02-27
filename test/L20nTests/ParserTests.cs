@@ -138,13 +138,13 @@ namespace L20nTests
 		public void LiteralTests()
 		{
 			// any integer is a valid literal
-			Assert.AreEqual(-123, Literal.Parse(NC("-123")).Value);
-			Assert.AreEqual(42, Literal.Parse(NC("+42")).Value);
-			Assert.AreEqual(7, Literal.Parse(NC("7")).Value);
+			Assert.AreEqual("-123", Literal.Parse(NC("-123")).ToString());
+			Assert.AreEqual("42", Literal.Parse(NC("+42")).ToString());
+			Assert.AreEqual("7", Literal.Parse(NC("7")).ToString());
 
 			// decimals will be ignored and make for
 			// an invalid buffer later on
-			Assert.AreEqual(5, Literal.Parse(NC("5.2")).Value);
+			Assert.AreEqual("5", Literal.Parse(NC("5.2")).ToString());
 			Assert.Throws<IOException>(() => Literal.Parse(NC(".2")));
 			
 			// passing in an EOF stream will give an <EOF> IOException
@@ -173,6 +173,44 @@ namespace L20nTests
 			
 			// passing in an EOF stream will give an <EOF> IOException
 			Assert.Throws<IOException>(() => Identifier.Parse(NC("")));
+		}
+		
+		[Test()]
+		public void PrimaryExpressionTests()
+		{
+			// One primary expression to rule them all
+
+			// literals
+			TypeAssert<L20n.Types.Internal.Expressions.Literal>(
+				Primary.Parse(NC("-42")));
+			TypeAssert<L20n.Types.Internal.Expressions.Literal>(
+				Primary.Parse(NC("+10")));
+			TypeAssert<L20n.Types.Internal.Expressions.Literal>(
+				Primary.Parse(NC("123")));
+
+			// string values
+			TypeAssert<L20n.Types.Internal.Expressions.StringValue>(
+				Primary.Parse(NC("\"Hello Dude!\"")));
+			TypeAssert<L20n.Types.Internal.Expressions.StringValue>(
+				Primary.Parse(NC("'this works as well'")));
+
+			// hash values
+			// TODO
+
+			// identifier expressions
+			TypeAssert<L20n.Types.Internal.Expressions.Variable>(
+				Primary.Parse(NC("$ola")));
+			TypeAssert<L20n.Types.Internal.Expressions.Global>(
+				Primary.Parse(NC("@hello")));
+			TypeAssert<L20n.Types.Internal.Expressions.Identifier>(
+				Primary.Parse(NC("bom_dia")));
+
+			// all other type of input should fail
+			Assert.Throws<IOException>(() => Primary.Parse(NC("     ")));
+			Assert.Throws<IOException>(() => Primary.Parse(NC("<hello 'world'>")));
+			
+			// passing in an EOF stream will give an <EOF> IOException
+			Assert.Throws<IOException>(() => Primary.Parse(NC("")));
 		}
 
 		private void TypeAssert<T>(object obj)

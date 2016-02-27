@@ -26,7 +26,7 @@ namespace L20n
 		{
 			public class HashValue : Value
 			{
-				public override bool Evaluate(out L20n.Types.Internal.Value output)
+				public override bool Evaluate(out Internal.Expressions.Value output)
 				{
 					throw new Exception ("TODO");
 				}

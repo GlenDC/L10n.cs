@@ -79,6 +79,12 @@ namespace L20n
 				return m_Buffer[pos];
 			}
 
+			public bool PeekReg(string reg)
+			{
+				var re = new Regex(reg);
+				return re.IsMatch(m_Buffer, m_Position);
+			}
+
 			public char ForceReadNext(string msg = null)
 			{
 				if (msg == null)

@@ -27,34 +27,55 @@ namespace L20n
 		{	
 			public class StringValue
 			{
-				public static Types.AST.StringValue Parse(CharStream stream)
+				public static Types.AST.Value Parse(CharStream stream)
 				{
-					var quote = Quote.Parse(stream);
-					var value = new Types.AST.StringValue();
+					var startingPos = stream.Position;
+					
+					try {
+						var quote = Quote.Parse(stream);
+						var value = new Types.AST.StringValue();
 
-					Types.AST.Expression expression;
-					char c;
-		
-					while((c = stream.PeekNext()) != '\0') {
-						if(c == '\\') {
-							value.appendChar(stream.ForceReadNext());
-							value.appendChar(stream.ForceReadNext());
-						}
-						else {
-							if(Expression.PeekAndParse(stream, out expression)) {
-								value.appendExpression(expression);
-							}
-							else if(c == '\'' || c == '"') {
-								break; // un-escaped quote means we're ending the string
-							}
-							else {
+						Types.AST.Expression expression;
+						char c;
+			
+						while((c = stream.PeekNext()) != '\0') {
+							if(c == '\\') {
+								value.appendChar(stream.ForceReadNext());
 								value.appendChar(stream.ForceReadNext());
 							}
+							else {
+								if(Expression.PeekAndParse(stream, out expression)) {
+									value.appendExpression(expression);
+								}
+								else if(c == '\'' || c == '"') {
+									break; // un-escaped quote means we're ending the string
+								}
+								else {
+									value.appendChar(stream.ForceReadNext());
+								}
+							}
 						}
+
+						Quote.Parse(stream, quote);
+						return value;
+					}
+					catch(Exception e) {
+						string msg = String.Format(
+							"something went wrong parsing an <string_value> starting at {0}",
+							stream.ComputeDetailedPosition(startingPos));
+						throw new IOException(msg, e);
+					}
+				}
+				
+				public static bool PeekAndParse(CharStream stream, out Types.AST.Value value)
+				{
+					if(Quote.Peek(stream)) {
+						value = StringValue.Parse(stream);
+						return true;
 					}
 
-					Quote.Parse(stream, quote);
-					return value;
+					value = null;
+					return false;
 				}
 			}
 		}

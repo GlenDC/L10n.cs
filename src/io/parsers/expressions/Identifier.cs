@@ -31,19 +31,29 @@ namespace L20n
 				{
 					public static Types.Internal.Expressions.Identifier Parse(CharStream stream)
 					{
-						string id;
-						if (RawIdentifier.PeekAndParse (stream, out id))
-							return new Types.Internal.Expressions.Identifier(id);
-						
-						Types.Internal.Expressions.Identifier identifier;
-						if (Variable.PeekAndParse (stream, out identifier))
-							return identifier;
-						
-						if (Global.PeekAndParse (stream, out identifier))
-							return identifier;
-						
-						if (This.PeekAndParse (stream, out identifier))
-							return identifier;
+						var startingPos = stream.Position;
+
+						try {
+							string id;
+							if (RawIdentifier.PeekAndParse (stream, out id))
+								return new Types.Internal.Expressions.Identifier(id);
+							
+							Types.Internal.Expressions.Identifier identifier;
+							if (Variable.PeekAndParse (stream, out identifier))
+								return identifier;
+							
+							if (Global.PeekAndParse (stream, out identifier))
+								return identifier;
+							
+							if (This.PeekAndParse (stream, out identifier))
+								return identifier;
+						}
+						catch(Exception e) {
+							string msg = String.Format(
+								"something went wrong parsing an <identifier> starting at {0}",
+								stream.ComputeDetailedPosition(startingPos));
+							throw new IOException(msg, e);
+						}
 
 						throw stream.CreateException (
 							"no valid start for an <identnfier_expression> could be found");

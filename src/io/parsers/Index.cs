@@ -30,32 +30,42 @@ namespace L20n
 			{
 				public static Types.AST.Index Parse(CharStream stream)
 				{
-					var index = new Types.AST.Index();
+					var startingPos = stream.Position;
 					
-					// skip open char
-					stream.SkipCharacter('[');
+					try {
+						var index = new Types.AST.Index();
+						
+						// skip open char
+						stream.SkipCharacter('[');
 
-					// optional white space
-					WhiteSpace.Parse(stream, true);
-					// first expression
-					index.AddExpression(Expression.Parse (stream));
-					// optional white space
-					WhiteSpace.Parse(stream, true);
-
-					// add all other expressions
-					while (stream.SkipIfPossible(',')) {
 						// optional white space
 						WhiteSpace.Parse(stream, true);
-						// another expression
+						// first expression
 						index.AddExpression(Expression.Parse (stream));
 						// optional white space
 						WhiteSpace.Parse(stream, true);
+
+						// add all other expressions
+						while (stream.SkipIfPossible(',')) {
+							// optional white space
+							WhiteSpace.Parse(stream, true);
+							// another expression
+							index.AddExpression(Expression.Parse (stream));
+							// optional white space
+							WhiteSpace.Parse(stream, true);
+						}
+
+						// skip close char
+						stream.SkipCharacter(']');
+
+						return index;
 					}
-
-					// skip close char
-					stream.SkipCharacter(']');
-
-					return index;
+					catch(Exception e) {
+						string msg = String.Format(
+							"something went wrong parsing an <index> starting at {0}",
+							stream.ComputeDetailedPosition(startingPos));
+						throw new IOException(msg, e);
+					}
 				}
 				
 				public static bool PeekAndParse(CharStream stream, out Types.AST.Index index)

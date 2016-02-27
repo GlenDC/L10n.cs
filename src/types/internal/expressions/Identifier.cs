@@ -25,7 +25,7 @@ namespace L20n
 		{
 			namespace Expressions
 			{
-				public class Identifier
+				public class Identifier : Primary
 				{
 					protected readonly string m_Identifier;
 					

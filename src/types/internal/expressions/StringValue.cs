@@ -23,9 +23,22 @@ namespace L20n
 	{
 		namespace Internal
 		{
-			public class Value
+			namespace Expressions
 			{
-				public Value() {}
+				public class StringValue : Value
+				{
+					private readonly string m_Value;
+
+					public StringValue(string value)
+					{
+						m_Value = value;
+					}
+
+					public override string ToString()
+					{
+						return m_Value;
+					}
+				}
 			}
 		}
 	}

@@ -53,7 +53,6 @@
     <Compile Include="src\types\ast\INode.cs" />
     <Compile Include="src\types\Entity.cs" />
     <Compile Include="src\types\ast\Entry.cs" />
-    <Compile Include="src\types\internal\Value.cs" />
     <Compile Include="src\types\ast\Value.cs" />
     <Compile Include="src\types\ast\StringValue.cs" />
     <Compile Include="src\types\ast\HashValue.cs" />
@@ -64,7 +63,6 @@
     <Compile Include="src\types\ast\Index.cs" />
     <Compile Include="src\types\ast\NullEntry.cs" />
     <Compile Include="src\io\parsers\Literal.cs" />
-    <Compile Include="src\types\internal\Literal.cs" />
     <Compile Include="src\io\parsers\expressions\Variable.cs" />
     <Compile Include="src\types\internal\expressions\Variable.cs" />
     <Compile Include="src\types\internal\expressions\Global.cs" />
@@ -73,6 +71,11 @@
     <Compile Include="src\io\parsers\expressions\This.cs" />
     <Compile Include="src\types\internal\expressions\Identifier.cs" />
     <Compile Include="src\io\parsers\expressions\Identifier.cs" />
+    <Compile Include="src\types\internal\expressions\Literal.cs" />
+    <Compile Include="src\types\internal\expressions\Value.cs" />
+    <Compile Include="src\types\internal\expressions\Primary.cs" />
+    <Compile Include="src\io\parsers\expressions\Primary.cs" />
+    <Compile Include="src\types\internal\expressions\StringValue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

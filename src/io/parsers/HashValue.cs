@@ -27,10 +27,22 @@ namespace L20n
 		{	
 			public class HashValue
 			{
-				public static Types.AST.HashValue Parse(CharStream stream)
+				public static Types.AST.Value Parse(CharStream stream)
 				{
 					// TODO
 					throw stream.CreateException("started to read a hash, but there is no supported for them");
+				}
+
+				public static bool PeekAndParse(
+					CharStream stream, out Types.AST.Value value)
+				{
+					if (stream.PeekNext () == '{') {
+						value = HashValue.Parse(stream);
+						return true;
+					}
+
+					value = null;
+					return false;
 				}
 			}
 		}

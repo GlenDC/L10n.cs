@@ -30,24 +30,34 @@ namespace L20n
 			{
 				public static Types.AST.Entity Parse(CharStream stream, string identifier)
 				{
-					Types.AST.Index index;
-					Index.PeekAndParse(stream, out index);
-
-					// White Space is required
-					WhiteSpace.Parse(stream, false);
-
-					// Now we need the actual value
-					var value = Value.Parse(stream);
-
-					// TODO attributes
+					var startingPos = stream.Position;
 					
-					// White Space is optional
-					WhiteSpace.Parse(stream, true);
+					try {
+						Types.AST.Index index;
+						Index.PeekAndParse(stream, out index);
 
-					stream.SkipCharacter('>');
+						// White Space is required
+						WhiteSpace.Parse(stream, false);
 
-					// TODO actually create a proper ast entity
-					return new Types.AST.Entity();
+						// Now we need the actual value
+						var value = Value.Parse(stream);
+
+						// TODO attributes
+						
+						// White Space is optional
+						WhiteSpace.Parse(stream, true);
+
+						stream.SkipCharacter('>');
+
+						// TODO actually create a proper ast entity
+						return new Types.AST.Entity();
+					}
+					catch(Exception e) {
+						string msg = String.Format(
+							"something went wrong parsing an <entity> starting at {0}",
+							stream.ComputeDetailedPosition(startingPos));
+						throw new IOException(msg, e);
+					}
 				}
 			}
 		}
