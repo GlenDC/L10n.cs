@@ -18,7 +18,6 @@
 
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace L20n
 {
@@ -26,41 +25,36 @@ namespace L20n
 	{
 		namespace Parsers
 		{	
-			public class Entity
+			public class Attributes
 			{
-				public static Types.AST.Entity Parse(CharStream stream, string identifier)
+				public static Types.AST.Attributes Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
 					try {
-						// an optional index is possible
-						Types.AST.Index index = null;
-						Index.PeekAndParse(stream, out index);
-
-						// White Space is required
-						WhiteSpace.Parse(stream, false);
-
-						// Now we need the actual value
-						var value = Value.Parse(stream);
-
-						// Optionally we can also have attributes at the end
-						Types.AST.Attributes attributes = null;
-						Attributes.PeekAndParse(stream, out attributes);
-						
-						// White Space is optional
-						WhiteSpace.Parse(stream, true);
-
-						stream.SkipCharacter('>');
-
-						// TODO actually create a proper ast entity
-						return new Types.AST.Entity();
+						var attributes = new Types.AST.Attributes();
+						while(WhiteSpace.Parse(stream, true) > 0)
+							attributes.Add(KeyValuePair.Parse(stream));
+						return attributes;
 					}
 					catch(Exception e) {
 						string msg = String.Format(
-							"something went wrong parsing an <entity> starting at {0}",
+							"something went wrong parsing <attributes> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
 						throw new IOException(msg, e);
 					}
+				}
+
+				public static bool PeekAndParse(
+					CharStream stream, out Types.AST.Attributes attributes)
+				{
+					if (stream.PeekReg (@"\s+[_a-zA-Z]")) {
+						attributes = Attributes.Parse(stream);
+						return true;
+					}
+
+					attributes = null;
+					return false;
 				}
 			}
 		}

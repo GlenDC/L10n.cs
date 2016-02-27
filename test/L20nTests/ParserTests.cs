@@ -287,6 +287,31 @@ namespace L20nTests
 			// passing in an EOF stream will give an <EOF> IOException
 			Assert.Throws<IOException>(() => KeyValuePair.Parse(NC("")));
 		}
+		
+		[Test()]
+		public void AttributesTests()
+		{
+			// Attributes can be empty,
+			// so passing in an EOF stream is actually OK for once
+			Attributes.Parse(NC(""));
+			
+			// Make sure to always have whitespace as a prefix,
+			// else nothing will be parsed
+			Assert.IsEmpty(Attributes.Parse(NC("no : 'whitespace prefix'")).Values);
+
+			// In the end it should never be empty
+			// and so it should always be a list of KeyValuePair's
+			Assert.AreEqual(1, Attributes.Parse(NC(" hello: 'world'")).Values.Count);
+			// any keyValuePair in the Attribute List has to have whitespace in front
+			// of the identifier
+			var attributes = Attributes.Parse(NC(" hello: 'world' name: 'danny'"));
+			Assert.AreEqual(2, attributes.Values.Count);
+			Assert.AreEqual("danny", attributes.Values[1].Value.ToString());
+
+			// It can handle any KeyValuePair, also the ones containing a HashValue
+			Assert.AreEqual(2, Attributes.Parse(NC(@" hello: 'world'
+													  person: {age: '23', location: 'unknown'}")).Values.Count);
+		}
 
 		private void TypeAssert<T>(object obj)
 		{

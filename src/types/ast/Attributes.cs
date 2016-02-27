@@ -17,29 +17,34 @@
  */
 
 using System;
-using System.IO;
+using System.Collections.Generic;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
-		{	
-			public class WhiteSpace
+		namespace AST
+		{
+			public class Attributes
 			{
-				public static int Parse(CharStream stream, bool optional)
+				public List<KeyValuePair> Values
 				{
-					int pos = stream.Position;
-					int n = stream.SkipWhile(char.IsWhiteSpace);
-					if (!optional && n == 0) {
-						throw stream.CreateException(
-							"at least one whitespace character is required",
-							pos - stream.Position);
-					}
+					get { return m_Values; }
+				}
+				
+				private List<KeyValuePair> m_Values;
+				
+				public Attributes()
+				{
+					m_Values = new List<KeyValuePair>();
+				}
 
-					return n;
+				public void Add(KeyValuePair pair)
+				{
+					m_Values.Add(pair);
 				}
 			}
 		}
 	}
 }
+
