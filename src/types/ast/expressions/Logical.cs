@@ -21,43 +21,50 @@ using System.IO;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
+		namespace AST
 		{
 			namespace Expressions
 			{
-				public class Member
+				public class Logical : Expression
 				{
-					public static Types.AST.Expression Parse(CharStream stream)
+					private enum Operation
 					{
-						var startingPos = stream.Position;
+						And, // &&
+						Or, // ||
+					}
+					
+					private readonly Expression m_First;
+					private readonly Expression m_Second;
+					private readonly Operation m_Operation;
+					
+					public Logical(Expression first, Expression second, string op)
+					{
+						switch (op) {
+						case "&&":
+							m_Operation = Operation.And;
+							break;
+						case "||":
+							m_Operation = Operation.Or;
+							break;
+						default:
+							var msg = String.Format(
+								"expected ('&&'|'||'), got {0}", op);
+							throw new IOException(msg);
+						}
 						
-						try {
-							Types.AST.Expression expression;
-
-							var member = Parenthesis.Parse(stream);
-
-							if(Call.PeekAndParse(stream, member, out expression))
-								return expression;
-
-							if(Property.PeekAndParse(stream, member, out expression))
-								return expression;
-
-							if(Attribute.PeekAndParse(stream, member, out expression))
-								return expression;
-
-							return member;
-						}
-						catch(Exception e) {
-							string msg = String.Format(
-								"something went wrong parsing an <member_expression> starting at {0}",
-								stream.ComputeDetailedPosition(startingPos));
-							throw new IOException(msg, e);
-						}
+						m_First = first;
+						m_Second = second;
+					}
+					
+					public override bool Evaluate(out Internal.Expression output)
+					{
+						throw new Exception("TODO");
 					}
 				}
 			}
 		}
 	}
 }
+

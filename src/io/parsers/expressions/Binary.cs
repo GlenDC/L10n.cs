@@ -34,9 +34,16 @@ namespace L20n
 						var startingPos = stream.Position;
 						
 						try {
-							// TODO
-							throw stream.CreateException (
-								"no valid start for an <binary_expression> could be found");
+							var first = Unary.Parse(stream);
+							string op;
+							if(stream.ReadReg(@"\s*(\=\=|\!\=|\<\=|\>\=|\<|\>|\+|\-|\*|\/|\%)", out op)) {
+								WhiteSpace.Parse(stream, true);
+								var second = Binary.Parse(stream);
+								return new Types.AST.Expressions.Binary(first, second, op.Trim());
+							}
+							else {
+								return first;
+							}
 						}
 						catch(Exception e) {
 							string msg = String.Format(

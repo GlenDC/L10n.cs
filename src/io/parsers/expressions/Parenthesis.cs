@@ -34,9 +34,15 @@ namespace L20n
 						var startingPos = stream.Position;
 						
 						try {
-							// TODO
-							throw stream.CreateException (
-								"no valid start for an <parenthesis_expression> could be found");
+							if(stream.SkipIfPossible('(')) {
+								var e = Expression.Parse(stream);
+								stream.SkipCharacter(')');
+								return e;
+							}
+							else { // than we /should/ have a primary expressions
+								return new Types.AST.Expressions.Primary(
+									Primary.Parse(stream));
+							}
 						}
 						catch(Exception e) {
 							string msg = String.Format(
@@ -44,6 +50,17 @@ namespace L20n
 								stream.ComputeDetailedPosition(startingPos));
 							throw new IOException(msg, e);
 						}
+					}
+
+					public static bool PeekAndParse(CharStream stream, out Types.AST.Expression expression)
+					{
+						if (stream.PeekNext () == '(' || Primary.Peek(stream)) {
+							expression = Parenthesis.Parse(stream);
+							return true;
+						}
+
+						expression = null;
+						return false;
 					}
 				}
 			}

@@ -34,9 +34,15 @@ namespace L20n
 						var startingPos = stream.Position;
 						
 						try {
-							// TODO
-							throw stream.CreateException (
-								"no valid start for an <unary_expression> could be found");
+							char op;
+							if(stream.SkipAnyIfPossible(new char[3]{'+', '-', '!'}, out op)) {
+								WhiteSpace.Parse(stream, true);
+								var expression = Unary.Parse(stream);
+								return new Types.AST.Expressions.Unary(expression, op);
+							}
+							else {
+								return Member.Parse(stream);
+							}
 						}
 						catch(Exception e) {
 							string msg = String.Format(

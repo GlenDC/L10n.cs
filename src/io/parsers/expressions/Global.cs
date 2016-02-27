@@ -35,11 +35,16 @@ namespace L20n
 						var identifier = RawIdentifier.Parse(stream);
 						return new Types.Internal.Expressions.Global(identifier);
 					}
+
+					public static bool Peek(CharStream stream)
+					{
+						return stream.PeekNext() == '@';
+					}
 					
 					public static bool PeekAndParse(
 						CharStream stream, out Types.Internal.Expressions.Identifier variable)
 					{
-						if (stream.PeekNext () != '@') {
+						if (!Global.Peek(stream)) {
 							variable = null;
 							return false;
 						}

@@ -47,20 +47,26 @@ namespace L20n
 					}
 				}
 
+				public static bool Peek(CharStream stream)
+				{
+					return StringValue.Peek(stream)
+						|| HashValue.Peek(stream);
+				}
+
 				public static bool PeekAndParse(
 					CharStream stream, out L20n.Types.Internal.Expressions.Primary value)
 				{
 					L20n.Types.AST.Value intermediateValue;
 					L20n.Types.Internal.Expressions.Value evaluatedValue;
 
-					if (HashValue.PeekAndParse (stream, out intermediateValue)) {
+					if (StringValue.PeekAndParse (stream, out intermediateValue)) {
 						if(intermediateValue.Evaluate(out evaluatedValue)) {
 							value = evaluatedValue;
 							return true;
 						}
 					}
-
-					if (StringValue.PeekAndParse (stream, out intermediateValue)) {
+					
+					if (HashValue.PeekAndParse (stream, out intermediateValue)) {
 						if(intermediateValue.Evaluate(out evaluatedValue)) {
 							value = evaluatedValue;
 							return true;

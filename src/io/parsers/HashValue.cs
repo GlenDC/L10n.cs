@@ -63,10 +63,15 @@ namespace L20n
 					}
 				}
 
+				public static bool Peek(CharStream stream)
+				{
+					return stream.PeekNext () == '{';
+				}
+
 				public static bool PeekAndParse(
 					CharStream stream, out Types.AST.Value value)
 				{
-					if (stream.PeekNext () == '{') {
+					if (HashValue.Peek(stream)) {
 						value = HashValue.Parse(stream);
 						return true;
 					}

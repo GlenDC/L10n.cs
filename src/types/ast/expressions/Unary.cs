@@ -21,43 +21,51 @@ using System.IO;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
+		namespace AST
 		{
 			namespace Expressions
 			{
-				public class Member
+				public class Unary : Expression
 				{
-					public static Types.AST.Expression Parse(CharStream stream)
+					private enum Operation
 					{
-						var startingPos = stream.Position;
-						
-						try {
-							Types.AST.Expression expression;
+						Plus,
+						Minus,
+						Negate,
+					}
 
-							var member = Parenthesis.Parse(stream);
+					private readonly Expression m_Expression;
+					private readonly Operation m_Operation;
 
-							if(Call.PeekAndParse(stream, member, out expression))
-								return expression;
-
-							if(Property.PeekAndParse(stream, member, out expression))
-								return expression;
-
-							if(Attribute.PeekAndParse(stream, member, out expression))
-								return expression;
-
-							return member;
+					public Unary(Expression e, char op)
+					{
+						switch (op) {
+						case '+':
+							m_Operation = Operation.Plus;
+							break;
+						case '-':
+							m_Operation = Operation.Minus;
+							break;
+						case '!':
+							m_Operation = Operation.Negate;
+							break;
+						default:
+							var msg = String.Format("expected ('+'|'-'|'!'), got {0}", op);
+							throw new IOException(msg);
 						}
-						catch(Exception e) {
-							string msg = String.Format(
-								"something went wrong parsing an <member_expression> starting at {0}",
-								stream.ComputeDetailedPosition(startingPos));
-							throw new IOException(msg, e);
-						}
+
+						m_Expression = e;
+					}
+					
+					public override bool Evaluate(out Internal.Expression output)
+					{
+						throw new Exception("TODO");
 					}
 				}
 			}
 		}
 	}
 }
+

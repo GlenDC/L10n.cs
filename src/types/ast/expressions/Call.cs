@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace L20n
 {
@@ -26,19 +27,20 @@ namespace L20n
 		{
 			namespace Expressions
 			{
-				public class Identifier : Expression
+				public class Call : Expression
 				{
-					private readonly Internal.Expressions.Identifier m_Identifier;
-
-					public Identifier(Internal.Expressions.Identifier identifier)
+					private readonly List<Expression> m_Parameters;
+					private readonly Expression m_Member;
+					
+					public Call(Expression member, List<Expression> parameters)
 					{
-						m_Identifier = identifier;
+						m_Member = member;
+						m_Parameters = parameters;
 					}
-
+					
 					public override bool Evaluate(out Internal.Expression output)
 					{
-						output = m_Identifier;
-						return (m_Identifier != null);
+						throw new Exception("TODO");
 					}
 				}
 			}

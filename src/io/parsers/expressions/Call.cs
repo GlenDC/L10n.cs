@@ -18,6 +18,7 @@
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace L20n
 {
@@ -29,14 +30,27 @@ namespace L20n
 			{
 				public class Call
 				{
-					public static Types.AST.Expression Parse(CharStream stream)
+					public static Types.AST.Expression Parse(CharStream stream, Types.AST.Expression member)
 					{
 						var startingPos = stream.Position;
 						
 						try {
-							// TODO
-							throw stream.CreateException (
-								"no valid start for an <call_expression> could be found");
+							// skip opening tag
+							stream.SkipCharacter('(');
+
+							// we need at least one Parameter
+							var parameters = new List<Types.AST.Expression>();
+							parameters.Add(ParseExpression(stream));
+
+							// but we can also have more
+							while(stream.SkipIfPossible(',')) {
+								parameters.Add(ParseExpression(stream));
+							}
+
+							// skip closing tag
+							stream.SkipCharacter(')');
+
+							return new Types.AST.Expressions.Call(member, parameters);
 						}
 						catch(Exception e) {
 							string msg = String.Format(
@@ -44,6 +58,27 @@ namespace L20n
 								stream.ComputeDetailedPosition(startingPos));
 							throw new IOException(msg, e);
 						}
+					}
+
+					private static Types.AST.Expression ParseExpression(CharStream stream)
+					{
+						WhiteSpace.Parse(stream, true);
+						var expression = Expression.Parse(stream);
+						WhiteSpace.Parse(stream, true);
+						return expression;
+					}
+
+					public static bool PeekAndParse(
+						CharStream stream, Types.AST.Expression member,
+						out Types.AST.Expression expression)
+					{
+						if (stream.PeekNext () == '(') {
+							expression = Call.Parse(stream, member);
+							return true;
+						}
+
+						expression = null;
+						return false;
 					}
 				}
 			}

@@ -129,6 +129,22 @@ namespace L20n
 					throw CreateException(String.Format ("expected {0}, got {1}", expected, c));
 			}
 
+			public void SkipAnyCharacter(char[] expected)
+			{
+				char c;
+
+				if (!ReadNext (out c))
+					throw CreateEOFException();
+
+				for (int i = 0; i < expected.Length; ++i) {
+					if (expected [i] == c) {
+						return;
+					}
+				}
+
+				throw CreateException(String.Format ("expected {0}, got {1}", expected, c));
+			}
+
 			public void SkipString(int length, string expected)
 			{
 				string s;
@@ -160,6 +176,19 @@ namespace L20n
 				return false;
 			}
 
+			public bool SkipAnyIfPossible(char[] expected, out char c)
+			{
+				c = PeekNext();
+				for (int i = 0; i < expected.Length; ++i) {
+					if(c == expected[i]) {
+						++m_Position;
+						return true;
+					}
+				}
+
+				return false;
+			}
+
 			public bool ReadReg(string reg, out string c)
 			{
 				var re = new Regex(reg);
@@ -173,7 +202,6 @@ namespace L20n
 				
 				c = null;
 				return false;
-				
 			}
 			
 			public string ReadUntilEnd()

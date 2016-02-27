@@ -58,6 +58,14 @@ namespace L20n
 						throw stream.CreateException (
 							"no valid start for an <identnfier_expression> could be found");
 					}
+
+					public static bool Peek(CharStream stream)
+					{
+						return RawIdentifier.Peek(stream)
+							|| Variable.Peek(stream)
+							|| Global.Peek(stream)
+							|| This.Peek(stream);
+					}
 				}
 			}
 		}

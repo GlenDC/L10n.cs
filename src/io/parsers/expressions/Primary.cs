@@ -51,6 +51,13 @@ namespace L20n
 							throw new IOException(msg, e);
 						}
 					}
+
+					public static bool Peek(CharStream stream)
+					{
+						return Literal.Peek(stream)
+							|| Value.Peek(stream)
+							|| Identifier.Peek(stream);
+					}
 				}
 			}
 		}

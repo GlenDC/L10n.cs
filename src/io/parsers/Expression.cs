@@ -30,10 +30,34 @@ namespace L20n
 			// so there is no need to make 2 seperate parsers for it
 			public class Expression
 			{
+				// logical_expression WS? ( '?' WS? expression ':' WS? expression )? ;
+
 				public static Types.AST.Expression Parse(CharStream stream)
 				{
-					// TODO
-					throw stream.CreateException("started to read an expression, but there is no supported for them");
+					var startingPos = stream.Position;
+					
+					try {
+						var condition = Expressions.Logical.Parse(stream);
+
+						// check if we have an IfElse case or simply a logical expression
+						string s;
+						if (stream.ReadReg(@"\s*\?\s*", out s)) {
+							var first = Expression.Parse (stream);
+							WhiteSpace.Parse (stream, true);
+							stream.SkipCharacter (':');
+							WhiteSpace.Parse (stream, true);
+							var second = Expression.Parse (stream);
+							return new L20n.Types.AST.Expressions.IfElse (condition, first, second);
+						} else { // it's simply a logical expression
+							return condition;
+						}
+					}
+					catch(Exception e) {
+						string msg = String.Format(
+							"something went wrong parsing an <expression> starting at {0}",
+							stream.ComputeDetailedPosition(startingPos));
+						throw new IOException(msg, e);
+					}
 				}
 			}
 		}

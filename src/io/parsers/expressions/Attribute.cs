@@ -29,14 +29,27 @@ namespace L20n
 			{
 				public class Attribute
 				{
-					public static Types.AST.Expression Parse(CharStream stream)
+					public static Types.AST.Expression Parse(
+						CharStream stream, Types.AST.Expression member)
 					{
 						var startingPos = stream.Position;
 						
 						try {
-							// TODO
-							throw stream.CreateException (
-								"no valid start for an <attribute_expression> could be found");
+							Types.AST.Expression expression;
+							
+							// could be a raw-identifier (2) OR any other expression (1)
+							stream.SkipString(2, "::");
+							if(stream.SkipIfPossible('[')) {
+								expression = Expression.Parse(stream);
+								stream.SkipCharacter(']');
+							}
+							else {
+								var id = RawIdentifier.Parse(stream);
+								var identifier = new Types.Internal.Expressions.Identifier(id);
+								expression = new Types.AST.Expressions.Primary(identifier);
+							}
+
+							return new Types.AST.Expressions.Attribute(member, expression);
 						}
 						catch(Exception e) {
 							string msg = String.Format(
@@ -44,6 +57,19 @@ namespace L20n
 								stream.ComputeDetailedPosition(startingPos));
 							throw new IOException(msg, e);
 						}
+					}
+
+					public static bool PeekAndParse(
+						CharStream stream, Types.AST.Expression member,
+						out Types.AST.Expression expression)
+					{
+						if (stream.PeekNext () == ':') {
+							expression = Attribute.Parse(stream, member);
+							return true;
+						}
+
+						expression = null;
+						return false;
 					}
 				}
 			}

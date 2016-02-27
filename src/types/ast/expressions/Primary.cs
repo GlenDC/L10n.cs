@@ -17,43 +17,32 @@
  */
 
 using System;
-using System.IO;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
-		{	
-			public class Literal
+		namespace AST
+		{
+			namespace Expressions
 			{
-				public static Types.Internal.Expressions.Primary Parse(CharStream stream)
+				public class Primary : Expression
 				{
-					string raw;
-					if (!stream.ReadReg (@"[\-\+]?[0-9]+", out raw)) {
-						throw stream.CreateException("a number literal whas expected");
+					private readonly Internal.Expressions.Primary m_Primary;
+
+					public Primary(Internal.Expressions.Primary primary)
+					{
+						m_Primary = primary;
 					}
 
-					return new Types.Internal.Expressions.Literal(int.Parse(raw));
-				}
-
-				public static bool Peek(CharStream stream)
-				{
-					return stream.PeekReg(@"[\-\+0-9]");
-				}
-
-				public static bool PeekAndParse(
-					CharStream stream, out Types.Internal.Expressions.Primary literal)
-				{
-					if (!Literal.Peek(stream)) {
-						literal = null;
-						return false;
+					public override bool Evaluate(out Internal.Expression output)
+					{
+						output = m_Primary;
+						return (m_Primary != null);
 					}
-
-					literal = Literal.Parse(stream);
-					return true;
 				}
 			}
 		}
 	}
 }
+

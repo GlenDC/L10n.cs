@@ -66,10 +66,15 @@ namespace L20n
 						throw new IOException(msg, e);
 					}
 				}
+
+				public static bool Peek(CharStream stream)
+				{
+					return Quote.Peek(stream);
+				}
 				
 				public static bool PeekAndParse(CharStream stream, out Types.AST.Value value)
 				{
-					if(Quote.Peek(stream)) {
+					if(StringValue.Peek(stream)) {
 						value = StringValue.Parse(stream);
 						return true;
 					}

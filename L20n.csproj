@@ -41,7 +41,6 @@
     <Compile Include="src\io\parsers\Entry.cs" />
     <Compile Include="src\io\parsers\Comment.cs" />
     <Compile Include="src\io\parsers\WhiteSpace.cs" />
-    <Compile Include="src\io\parsers\Identifier.cs" />
     <Compile Include="src\io\parsers\Macro.cs" />
     <Compile Include="src\io\parsers\Entity.cs" />
     <Compile Include="src\io\parsers\Value.cs" />
@@ -85,7 +84,6 @@
     <Compile Include="src\io\parsers\expressions\Property.cs" />
     <Compile Include="src\io\parsers\expressions\Attribute.cs" />
     <Compile Include="src\io\parsers\expressions\Parenthesis.cs" />
-    <Compile Include="src\types\ast\expressions\Identifier.cs" />
     <Compile Include="src\io\parsers\HashItem.cs" />
     <Compile Include="src\types\internal\expressions\HashValue.cs" />
     <Compile Include="src\types\ast\HashItem.cs" />
@@ -93,6 +91,15 @@
     <Compile Include="src\io\parsers\KeyValuePair.cs" />
     <Compile Include="src\types\ast\Attributes.cs" />
     <Compile Include="src\io\parsers\Attributes.cs" />
+    <Compile Include="src\io\parsers\RawIdentifier.cs" />
+    <Compile Include="src\types\ast\expressions\Primary.cs" />
+    <Compile Include="src\types\ast\expressions\Attribute.cs" />
+    <Compile Include="src\types\ast\expressions\Property.cs" />
+    <Compile Include="src\types\ast\expressions\Call.cs" />
+    <Compile Include="src\types\ast\expressions\Unary.cs" />
+    <Compile Include="src\types\ast\expressions\Binary.cs" />
+    <Compile Include="src\types\ast\expressions\Logical.cs" />
+    <Compile Include="src\types\ast\expressions\IfElse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

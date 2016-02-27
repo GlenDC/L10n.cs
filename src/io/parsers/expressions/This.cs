@@ -34,11 +34,16 @@ namespace L20n
 						stream.SkipCharacter('~');
 						return new Types.Internal.Expressions.This();
 					}
+
+					public static bool Peek(CharStream stream)
+					{
+						return stream.PeekNext() == '~';
+					}
 					
 					public static bool PeekAndParse(
 						CharStream stream, out Types.Internal.Expressions.Identifier variable)
 					{
-						if (stream.PeekNext () != '~') {
+						if (!This.Peek(stream)) {
 							variable = null;
 							return false;
 						}

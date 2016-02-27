@@ -313,6 +313,123 @@ namespace L20nTests
 													  person: {age: '23', location: 'unknown'}")).Values.Count);
 		}
 
+		[Test()]
+		public void ExpressionParseTests()
+		{
+			// this is a simple test to see if we can actually parse all the different expressions
+			// this test does NOT guarantee that they also evaluate correctly
+
+			// Primary/Identifier Expressions
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("$id")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("@id")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("~")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("whatever")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("42")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("'Hello, World!'")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("{age: '23', location: 'unknown'}")));
+
+			// Parenthesis Expressions
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("42")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("whatever")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("(42)")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("((($OK)))")));
+			TypeAssert<L20n.Types.AST.Expressions.Primary> (
+				Expression.Parse (NC ("((((((((((((((5))))))))))))))")));
+
+			// Attribute Expressions
+			TypeAssert<L20n.Types.AST.Expressions.Attribute> (
+				Expression.Parse (NC ("hello::_world")));
+			TypeAssert<L20n.Types.AST.Expressions.Attribute> (
+				Expression.Parse (NC ("hello::[world]")));
+			TypeAssert<L20n.Types.AST.Expressions.Attribute> (
+				Expression.Parse (NC ("one::two::three")));
+			TypeAssert<L20n.Types.AST.Expressions.Attribute> (
+				Expression.Parse (NC ("one::[two::[world]]")));
+			
+			// Property Expressions
+			TypeAssert<L20n.Types.AST.Expressions.Property> (
+				Expression.Parse (NC ("hello.world")));
+			TypeAssert<L20n.Types.AST.Expressions.Property> (
+				Expression.Parse (NC ("hello[world]")));
+			TypeAssert<L20n.Types.AST.Expressions.Property> (
+				Expression.Parse (NC ("one.two.three")));
+			TypeAssert<L20n.Types.AST.Expressions.Property> (
+				Expression.Parse (NC ("one[two[three]]")));
+			
+			// Call Expressions
+			TypeAssert<L20n.Types.AST.Expressions.Call> (
+				Expression.Parse (NC ("hello(world)")));
+			TypeAssert<L20n.Types.AST.Expressions.Call> (
+				Expression.Parse (NC ("hello(bonjour(oi(world)))")));
+			TypeAssert<L20n.Types.AST.Expressions.Call> (
+				Expression.Parse (NC ("greetings('hello', 'oi', 'bom dia', 'bonjour')")));
+			TypeAssert<L20n.Types.AST.Expressions.Call> (
+				Expression.Parse (NC ("echo('hello world', 5)")));
+
+			// Unary Expressions
+			TypeAssert<L20n.Types.AST.Expressions.Unary> (
+				Expression.Parse (NC ("-42")));
+			TypeAssert<L20n.Types.AST.Expressions.Unary> (
+				Expression.Parse (NC ("+42")));
+			TypeAssert<L20n.Types.AST.Expressions.Unary> (
+				Expression.Parse (NC ("!true")));
+			TypeAssert<L20n.Types.AST.Expressions.Unary> (
+				Expression.Parse (NC ("!(!(!(!(!$what))))")));
+
+			// Binary Expressions
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("-52-10")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("(32+10)")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("(21*2)")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("102%60")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("102%(30*2)")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("1+2+3+4+5")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("10 > 2")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("10 >= 2")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("10 < (5 * 100)")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("10 <= (5 + (8 - 3))")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> ( // parenthesis are overrated
+				Expression.Parse (NC ("5 + 5 == 3 * 2 + 4")));
+			TypeAssert<L20n.Types.AST.Expressions.Binary> (
+				Expression.Parse (NC ("41 != answer")));
+
+			// Logical Expressions
+			TypeAssert<L20n.Types.AST.Expressions.Logical> (
+				Expression.Parse (NC ("0 && 1 && 2")));
+			TypeAssert<L20n.Types.AST.Expressions.Logical> (
+				Expression.Parse (NC ("false || true")));
+			TypeAssert<L20n.Types.AST.Expressions.Logical> (
+				Expression.Parse (NC ("false || false || false || 42")));
+			
+			// Logical Expressions
+			TypeAssert<L20n.Types.AST.Expressions.IfElse> (
+				Expression.Parse (NC ("true ? 42 : 41")));
+			TypeAssert<L20n.Types.AST.Expressions.IfElse> (
+				Expression.Parse (NC ("true ? shit : 'I would rather want this'")));
+			TypeAssert<L20n.Types.AST.Expressions.IfElse> (
+				Expression.Parse (NC ("true || false ? (ok) : 42")));
+		}
+
 		private void TypeAssert<T>(object obj)
 		{
 			Assert.AreEqual(typeof(T), obj.GetType());

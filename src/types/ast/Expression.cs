@@ -24,12 +24,9 @@ namespace L20n
 	{
 		namespace AST
 		{
-			public class Expression : INode<L20n.Types.Internal.Expression>
+			public abstract class Expression : INode<L20n.Types.Internal.Expression>
 			{
-				public virtual bool Evaluate (out L20n.Types.Internal.Expression output)
-				{
-					throw new Exception ("TODO");
-				}
+				public abstract bool Evaluate (out L20n.Types.Internal.Expression output);
 			}
 		}
 	}
