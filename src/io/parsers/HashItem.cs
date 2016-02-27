@@ -25,56 +25,48 @@ namespace L20n
 	{
 		namespace Parsers
 		{	
-			public class StringValue
+			public class HashItem
 			{
-				public static Types.AST.Value Parse(CharStream stream)
+				public static Types.AST.HashItem Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
 					try {
-						var quote = Quote.Parse(stream);
-						var value = new Types.AST.StringValue();
-
-						Types.AST.Expression expression;
-						char c;
-			
-						while((c = stream.PeekNext()) != '\0') {
-							if(c == '\\') {
-								value.appendChar(stream.ForceReadNext());
-								value.appendChar(stream.ForceReadNext());
-							}
-							else {
-								if(Expander.PeekAndParse(stream, out expression)) {
-									value.appendExpression(expression);
-								}
-								else if(c == '\'' || c == '"') {
-									break; // un-escaped quote means we're ending the string
-								}
-								else {
-									value.appendChar(stream.ForceReadNext());
-								}
-							}
-						}
-
-						Quote.Parse(stream, quote);
-						return value;
+						// check if a hash item is supposed to be a default
+						bool isDefault = stream.SkipIfPossible('*');
+						
+						// parse the raw identifier (key)
+						var identifier = RawIdentifier.Parse(stream);
+						
+						// whitespace is optional
+						WhiteSpace.Parse(stream, true);
+						// the seperator char is required as it seperates the key and the value
+						stream.SkipCharacter(':');
+						// more optional whitespace
+						WhiteSpace.Parse(stream, true);
+						
+						// get the actual value, which is identified by the key
+						var value = Value.Parse(stream);
+						
+						return new Types.AST.HashItem(
+							identifier, value, isDefault);
 					}
 					catch(Exception e) {
 						string msg = String.Format(
-							"something went wrong parsing an <string_value> starting at {0}",
+							"something went wrong parsing a <hash_item> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
 						throw new IOException(msg, e);
 					}
 				}
-				
-				public static bool PeekAndParse(CharStream stream, out Types.AST.Value value)
+
+				public static bool PeekAndParse(CharStream stream, out Types.AST.HashItem item)
 				{
-					if(Quote.Peek(stream)) {
-						value = StringValue.Parse(stream);
+					if (stream.PeekNext () == '*' || RawIdentifier.Peek (stream)) {
+						item = HashItem.Parse(stream);
 						return true;
 					}
 
-					value = null;
+					item = null;
 					return false;
 				}
 			}

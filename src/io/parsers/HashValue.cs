@@ -24,13 +24,43 @@ namespace L20n
 	namespace IO
 	{
 		namespace Parsers
-		{	
+		{
+			// '{' WS? hashItem WS? ( ',' WS? hashItem WS? )* ','? '}' ;
 			public class HashValue
 			{
 				public static Types.AST.Value Parse(CharStream stream)
 				{
-					// TODO
-					throw stream.CreateException("started to read a hash, but there is no supported for them");
+					var startingPos = stream.Position;
+					
+					try {
+						// skip opening tag
+						stream.SkipCharacter('{');
+
+						// at least 1 hashItem is required with optional whitespace surrounding it
+						var hashValue = new Types.AST.HashValue();
+						WhiteSpace.Parse(stream, true);
+						hashValue.AddItem(HashItem.Parse(stream));
+						WhiteSpace.Parse(stream, true);
+
+						// parse all other (optional) hashItems
+						while (stream.SkipIfPossible(',')) {
+							if(!HashValue.ParseHashItem(stream, hashValue)) {
+								// if we have a  trailing comma, it will be break here
+								break;
+							}
+						}
+
+						// skip closing tag
+						stream.SkipCharacter('}');
+
+						return hashValue;
+					}
+					catch(Exception e) {
+						string msg = String.Format(
+							"something went wrong parsing a <hash_value> starting at {0}",
+							stream.ComputeDetailedPosition(startingPos));
+						throw new IOException(msg, e);
+					}
 				}
 
 				public static bool PeekAndParse(
@@ -43,6 +73,27 @@ namespace L20n
 
 					value = null;
 					return false;
+				}
+				
+				private static bool ParseHashItem(CharStream stream, Types.AST.HashValue value)
+				{
+					// optional whitespace
+					WhiteSpace.Parse(stream, true);
+					// parse actual hashItem
+					Types.AST.HashItem item;
+
+					// we might be dealing with a trailing comma
+					if (!HashItem.PeekAndParse(stream, out item)) {
+						return false;
+					}
+
+					// add acutal item
+					value.AddItem (item);
+
+					// optional whitespace
+					WhiteSpace.Parse(stream, true);
+
+					return true;
 				}
 			}
 		}

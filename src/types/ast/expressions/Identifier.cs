@@ -17,41 +17,32 @@
  */
 
 using System;
-using System.IO;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
-		{	
-			public class RawIdentifier
+		namespace AST
+		{
+			namespace Expressions
 			{
-				public static string Parse(CharStream stream)
+				public class Identifier : Expression
 				{
-					string identifier;
-					if(!RawIdentifier.PeekAndParse(stream, out identifier)) {
-						throw stream.CreateException(
-							"expected to read an <identifier>, but non-word character was found");
+					private readonly Internal.Expressions.Identifier m_Identifier;
+
+					public Identifier(Internal.Expressions.Identifier identifier)
+					{
+						m_Identifier = identifier;
 					}
 
-					return identifier;
-				}
-
-				public static bool Peek(CharStream stream)
-				{
-					return stream.PeekReg(@"[_a-zA-Z]");
-				}
-
-				public static bool PeekAndParse(CharStream stream, out string identifier)
-				{
-					if (!stream.EndOfStream() && stream.ReadReg (@"[_a-zA-Z]\w*", out identifier)) {
-						return true;
+					public override bool Evaluate(out Internal.Expression output)
+					{
+						output = m_Identifier;
+						return (m_Identifier != null);
 					}
-
-					return false;
 				}
 			}
 		}
 	}
 }
+

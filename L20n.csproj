@@ -76,6 +76,19 @@
     <Compile Include="src\types\internal\expressions\Primary.cs" />
     <Compile Include="src\io\parsers\expressions\Primary.cs" />
     <Compile Include="src\types\internal\expressions\StringValue.cs" />
+    <Compile Include="src\io\parsers\Expander.cs" />
+    <Compile Include="src\io\parsers\expressions\Logical.cs" />
+    <Compile Include="src\io\parsers\expressions\Binary.cs" />
+    <Compile Include="src\io\parsers\expressions\Unary.cs" />
+    <Compile Include="src\io\parsers\expressions\Member.cs" />
+    <Compile Include="src\io\parsers\expressions\Call.cs" />
+    <Compile Include="src\io\parsers\expressions\Property.cs" />
+    <Compile Include="src\io\parsers\expressions\Attribute.cs" />
+    <Compile Include="src\io\parsers\expressions\Parenthesis.cs" />
+    <Compile Include="src\types\ast\expressions\Identifier.cs" />
+    <Compile Include="src\io\parsers\HashItem.cs" />
+    <Compile Include="src\types\internal\expressions\HashValue.cs" />
+    <Compile Include="src\types\ast\HashItem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -88,5 +101,6 @@
     <Folder Include="src\types\internal\" />
     <Folder Include="src\io\parsers\expressions\" />
     <Folder Include="src\types\internal\expressions\" />
+    <Folder Include="src\types\ast\expressions\" />
   </ItemGroup>
 </Project>

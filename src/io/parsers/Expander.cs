@@ -18,6 +18,7 @@
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace L20n
 {
@@ -25,56 +26,39 @@ namespace L20n
 	{
 		namespace Parsers
 		{	
-			public class StringValue
+			public class Expander
 			{
-				public static Types.AST.Value Parse(CharStream stream)
+				public static Types.AST.Expression Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
+					Types.AST.Expression expression;
 					
 					try {
-						var quote = Quote.Parse(stream);
-						var value = new Types.AST.StringValue();
+						// skip opening tags
+						stream.SkipString(2, "{{");
+						// parse actual expression
+						expression = Expression.Parse(stream);
+						// skip closing tags
+						stream.SkipString(2, "}}");
 
-						Types.AST.Expression expression;
-						char c;
-			
-						while((c = stream.PeekNext()) != '\0') {
-							if(c == '\\') {
-								value.appendChar(stream.ForceReadNext());
-								value.appendChar(stream.ForceReadNext());
-							}
-							else {
-								if(Expander.PeekAndParse(stream, out expression)) {
-									value.appendExpression(expression);
-								}
-								else if(c == '\'' || c == '"') {
-									break; // un-escaped quote means we're ending the string
-								}
-								else {
-									value.appendChar(stream.ForceReadNext());
-								}
-							}
-						}
-
-						Quote.Parse(stream, quote);
-						return value;
+						return expression;
 					}
 					catch(Exception e) {
 						string msg = String.Format(
-							"something went wrong parsing an <string_value> starting at {0}",
+							"something went wrong parsing an <expander> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
 						throw new IOException(msg, e);
 					}
 				}
 				
-				public static bool PeekAndParse(CharStream stream, out Types.AST.Value value)
+				public static bool PeekAndParse(CharStream stream, out Types.AST.Expression expression)
 				{
-					if(Quote.Peek(stream)) {
-						value = StringValue.Parse(stream);
+					if(stream.PeekNextRange(2) == "{{") {
+						expression = Expander.Parse(stream);
 						return true;
 					}
-
-					value = null;
+					
+					expression = null;
 					return false;
 				}
 			}

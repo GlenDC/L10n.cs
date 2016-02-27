@@ -17,41 +17,42 @@
  */
 
 using System;
-using System.IO;
 
 namespace L20n
 {
-	namespace IO
+	namespace Types
 	{
-		namespace Parsers
-		{	
-			public class RawIdentifier
+		namespace AST
+		{
+			public class HashItem
 			{
-				public static string Parse(CharStream stream)
+				public bool IsDefault
 				{
-					string identifier;
-					if(!RawIdentifier.PeekAndParse(stream, out identifier)) {
-						throw stream.CreateException(
-							"expected to read an <identifier>, but non-word character was found");
-					}
-
-					return identifier;
+					get { return m_IsDefault; }
 				}
 
-				public static bool Peek(CharStream stream)
+				public string Identifier
 				{
-					return stream.PeekReg(@"[_a-zA-Z]");
+					get { return m_Identifier; }
 				}
 
-				public static bool PeekAndParse(CharStream stream, out string identifier)
+				public Internal.Expressions.Primary Value
 				{
-					if (!stream.EndOfStream() && stream.ReadReg (@"[_a-zA-Z]\w*", out identifier)) {
-						return true;
-					}
+					get { return m_Value; }
+				}
 
-					return false;
+				private readonly bool m_IsDefault;
+				private readonly string m_Identifier;
+				private readonly Internal.Expressions.Primary m_Value;
+
+				public HashItem(string id, Internal.Expressions.Primary value, bool is_default)
+				{
+					m_Identifier = id;
+					m_Value = value;
+					m_IsDefault = is_default;
 				}
 			}
 		}
 	}
 }
+

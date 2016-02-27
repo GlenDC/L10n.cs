@@ -23,6 +23,7 @@ using NUnit.Framework;
 using L20n.IO;
 using L20n.IO.Parsers;
 using L20n.IO.Parsers.Expressions;
+using System.Collections.Generic;
 
 namespace L20nTests
 {
@@ -152,6 +153,50 @@ namespace L20nTests
 		}
 
 		[Test()]
+		public void HashValueTests()
+		{
+			L20n.Types.Internal.Expressions.HashValue hashValue;
+
+			// hash tables can be pretty easy
+			hashValue = Primary.Parse(NC("{hello:'world'}"))
+				as L20n.Types.Internal.Expressions.HashValue;
+			Assert.AreEqual("world", hashValue.Get("hello").ToString ());
+
+			// hash tables cannot be empty though
+			Assert.Throws<IOException>(() => HashValue.Parse(NC("{}")));
+
+			// hash tables can also have a default
+			hashValue = Primary.Parse(NC("{*what:'ok', yes: 'no'}"))
+				as L20n.Types.Internal.Expressions.HashValue;
+			Assert.AreEqual("ok", hashValue.Get("what").ToString());
+			Assert.AreEqual("ok", hashValue.Get("something").ToString());
+			Assert.AreEqual("no", hashValue.Get("yes").ToString());
+			
+			// hash tables cannot contain duplicate identifiers
+			Assert.Throws<IOException>(() => Primary.Parse(NC("{a: 'a', a: 'b'}")));
+			// multiple defaults are also not allowed
+			Assert.Throws<IOException>(() => Primary.Parse(NC("{*a: 'a', *b: 'b'}")));
+			
+			// hash tables can also be nested
+			hashValue = Primary.Parse(NC (@"{
+				short: {
+				  	*subjective: 'Loki',
+				    objective: 'Loki',
+				    possessive: 'Lokis',
+				},
+				long: 'Loki Mobile Client'
+			}")) as L20n.Types.Internal.Expressions.HashValue;
+
+			Assert.AreEqual("Loki Mobile Client", hashValue.Get("long").ToString());
+			var shortValue = hashValue.Get("short") as L20n.Types.Internal.Expressions.HashValue;
+			Assert.AreEqual("Lokis", shortValue.Get("possessive").ToString());
+			Assert.AreEqual("Loki", shortValue.Get("unknown").ToString());
+
+			// exception is thrown when no default is defined
+			Assert.Throws<KeyNotFoundException> (() => hashValue.Get ("unknown"));
+		}
+
+		[Test()]
 		public void IdentifierExpressionTests()
 		{
 			// One identifier parser to rule them all (4)
@@ -195,7 +240,12 @@ namespace L20nTests
 				Primary.Parse(NC("'this works as well'")));
 
 			// hash values
-			// TODO
+			TypeAssert<L20n.Types.Internal.Expressions.HashValue>(
+				Primary.Parse(NC("{hello:'world'}")));
+			TypeAssert<L20n.Types.Internal.Expressions.HashValue>(
+				Primary.Parse(NC("{dev: 'go develop' , debug: 'go debug',}")));
+			TypeAssert<L20n.Types.Internal.Expressions.HashValue>(
+				Primary.Parse(NC("{one:{a:'a',b:'b'},two:'2', three:'3'}")));
 
 			// identifier expressions
 			TypeAssert<L20n.Types.Internal.Expressions.Variable>(

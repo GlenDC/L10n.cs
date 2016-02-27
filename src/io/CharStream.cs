@@ -65,6 +65,19 @@ namespace L20n
 				return true;
 			}
 
+			public bool ReadNextRange(int len, out string s)
+			{
+				if(EndOfStream() || (m_Position+len) > m_LastPosition)
+				{
+					s = null;
+					return false;
+				}
+
+				s = m_Buffer.Substring(m_Position, len);
+				m_Position += len;
+				return true;
+			}
+
 			public char PeekNext(int offset = 0)
 			{
 				if(EndOfStream())
@@ -79,10 +92,21 @@ namespace L20n
 				return m_Buffer[pos];
 			}
 
+			public string PeekNextRange(int length, int offset = 0)
+			{
+				int pos = m_Position + offset;
+				if(EndOfStream() || (pos+length) > m_LastPosition)
+					return null;
+
+				return m_Buffer.Substring (pos, length);
+			}
+
 			public bool PeekReg(string reg)
 			{
 				var re = new Regex(reg);
-				return re.IsMatch(m_Buffer, m_Position);
+				var match = re.Match(m_Buffer, m_Position);
+
+				return match.Success && (match.Index == m_Position);
 			}
 
 			public char ForceReadNext(string msg = null)
@@ -102,8 +126,18 @@ namespace L20n
 				if (!ReadNext (out c))
 					throw CreateEOFException();
 				if (c != expected)
-					throw CreateException(String.Format ("expected {0}", expected));
+					throw CreateException(String.Format ("expected {0}, got {1}", expected, c));
 			}
+
+			public void SkipString(int length, string expected)
+			{
+				string s;
+				if (!this.ReadNextRange(length, out s))
+					throw CreateEOFException();
+				if (s != expected)
+					throw CreateException(String.Format ("expected {0}, got {1}", expected, s));
+			}
+
 
 			public int SkipWhile(CharPredicate pred)
 			{
@@ -182,7 +216,7 @@ namespace L20n
 				int pos = m_Position + offset;
 				if (pos >= m_LastPosition) {
 					return new IOException(
-						String.Format("EOF is unexpected: {0}", msg));
+						String.Format("parsing error: {0}", msg));
 				}
 
 				return new IOException(

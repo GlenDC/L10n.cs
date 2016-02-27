@@ -17,6 +17,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace L20n
 {
@@ -26,9 +28,55 @@ namespace L20n
 		{
 			public class HashValue : Value
 			{
+				private List<HashItem> m_Items;
+
+				public HashValue()
+				{
+					m_Items = new List<HashItem>();
+				}
+
+				public void AddItem(HashItem item)
+				{
+					m_Items.Add(item);
+				}
+
 				public override bool Evaluate(out Internal.Expressions.Value output)
 				{
-					throw new Exception ("TODO");
+					var table = new Dictionary<string, Types.Internal.Expressions.Primary>(m_Items.Count);
+					Types.Internal.Expressions.Primary defaultItem = null;
+
+					foreach(var item in m_Items) {
+						// make sure we don't have duplicates
+						if(table.ContainsKey(item.Identifier)) {
+							string msg = String.Format(
+								"unexpected <identifier> {0}, <hash_value> can not contain a duplicate <identifier>",
+								item.Identifier);
+							throw new IOException(msg);
+						}
+
+						// add to table
+						table.Add(item.Identifier, item.Value);
+
+						// mark as default if we don't have one yet
+						if(item.IsDefault) {
+							if(defaultItem != null) {
+								string msg = String.Format(
+									"unexpected default <hash_item> {0}, <hash_value> can only contain one default <hash_item>",
+									item.Identifier);
+								throw new IOException(msg);
+							}
+
+							defaultItem = item.Value;
+						}
+					}
+
+					if (table.Count != 0) {
+						output = new Internal.Expressions.HashValue(table, defaultItem);
+						return true;
+					}
+
+					output = null;
+					return false;
 				}
 			}
 		}

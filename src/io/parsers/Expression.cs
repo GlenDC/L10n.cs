@@ -25,23 +25,15 @@ namespace L20n
 	{
 		namespace Parsers
 		{	
+			// An expression is the same as a conditional expression,
+			// according to the L20n spec it can ONLY ever be a conditional expression
+			// so there is no need to make 2 seperate parsers for it
 			public class Expression
 			{
 				public static Types.AST.Expression Parse(CharStream stream)
 				{
 					// TODO
 					throw stream.CreateException("started to read an expression, but there is no supported for them");
-				}
-
-				public static bool PeekAndParse(CharStream stream, out Types.AST.Expression expression)
-				{
-					if(stream.PeekNext() != '{') {
-						expression = null;
-						return false;
-					}
-
-					expression = Expression.Parse(stream);
-					return true;
 				}
 			}
 		}
