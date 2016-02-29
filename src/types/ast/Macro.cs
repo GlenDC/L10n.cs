@@ -27,9 +27,20 @@ namespace L20n
 		{
 			public class Macro : Entry
 			{
-				public override bool Evaluate (out List<L20n.Types.Entity> output)
+				private readonly List<Types.Internal.Expressions.Variable> m_Variables;
+				private readonly Expression m_Expression;
+				
+				public Macro(
+					List<Types.Internal.Expressions.Variable> variables,
+					Expression expression)
 				{
-					throw new Exception ("TODO");
+					m_Variables = variables;
+					m_Expression = expression;
+				}
+				
+				public override bool Evaluate(out List<L20n.Types.Entity> output)
+				{
+					throw new Exception("TODO");
 				}
 			}
 		}

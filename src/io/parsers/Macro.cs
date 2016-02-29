@@ -18,6 +18,7 @@
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace L20n
 {
@@ -29,8 +30,50 @@ namespace L20n
 			{
 				public static Types.AST.Entry Parse(CharStream stream, string identifier)
 				{
-					// TODO
-					throw stream.CreateException("started to read macro, but there is no supported for them");
+					var startingPos = stream.Position;
+					
+					try {
+						stream.SkipCharacter('(');
+						WhiteSpace.Parse(stream, true);
+
+						List<Types.Internal.Expressions.Variable> variables = null;
+
+						// variables are optional,
+						// but we do have them, we need at least one (duh)
+						if (Expressions.Variable.Peek (stream)) {
+							variables = new List<Types.Internal.Expressions.Variable>();
+							variables.Add(Macro.ParseVariable(stream));
+
+							// more than 1 is possible as well
+							while(stream.SkipIfPossible(',')) {
+								WhiteSpace.Parse(stream, true);
+								variables.Add(Macro.ParseVariable(stream));
+							}
+						}
+
+						stream.SkipCharacter(')');
+						WhiteSpace.Parse(stream, false);
+
+						stream.SkipCharacter('{');
+						WhiteSpace.Parse(stream, true);
+
+						// Parse the Actual Macro Expression
+						var expression = Expression.Parse(stream);
+
+						WhiteSpace.Parse(stream, true);
+						stream.SkipCharacter('}');
+						WhiteSpace.Parse(stream, true);
+						stream.SkipCharacter('>');
+
+						// return the fully parsed macro
+						return new L20n.Types.AST.Macro(variables, expression);
+					}
+					catch(Exception e) {
+						string msg = String.Format(
+							"something went wrong parsing a <macro> starting at {0}",
+							stream.ComputeDetailedPosition(startingPos));
+						throw new IOException(msg, e);
+					}
 				}
 
 				public static bool PeekAndParse(CharStream stream, string identifier, out Types.AST.Entry macro)
@@ -42,6 +85,14 @@ namespace L20n
 
 					macro = Macro.Parse(stream, identifier);
 					return true;
+				}
+				
+				private static Types.Internal.Expressions.Variable ParseVariable(CharStream stream)
+				{
+					var variable = Expressions.Variable.Parse (stream)
+						as Types.Internal.Expressions.Variable;
+					WhiteSpace.Parse(stream, true);
+					return variable;
 				}
 			}
 		}

@@ -433,11 +433,70 @@ namespace L20nTests
 		[Test()]
 		public void EntryParseTests()
 		{
+			// an entry can be a comment (evaluated to a null-entry and thus ignored)
 			EntryParseTest<L20n.Types.AST.NullEntry>("/* A Comment */");
+
+			// it can be an entity (should be most of the times)
 			EntryParseTest<L20n.Types.AST.Entity>("<hello 'world'>");
+
+			// it can be an import statement, importing other L.O.L. files
 			EntryParseTest<L20n.Types.AST.ImportStatement>("import( 'file')");
 			EntryParseTest<L20n.Types.AST.ImportStatement>("import('file')");
+			EntryParseTest<L20n.Types.AST.ImportStatement>("import('file')");
+
+			// or it can be a macro
+			EntryParseTest<L20n.Types.AST.Macro>("<answer() {42}>");
+			EntryParseTest<L20n.Types.AST.Macro>("<sum($one, $two) { $one + $two }>");
 		}
+
+		[Test()]
+		public void InvalidEntryParseTests()
+		{
+			// invalid comment examples
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("/* non-closed comment")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("non-opened comment*/")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("/* almost a correct comment *")));
+
+			// invalid import examples
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("import 'nope'")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("import ('nope')")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("import('nope'")));
+			
+			// invalid macro examples
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<foo () {'no space allowed before first parenthesis'}>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<foo() {'invalid expression}>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<foo(nope) {'non-variable as identifier'}>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<foo($no_expression_defined) {}>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<foo() {'closing curly brace missing'>")));
+
+			// invalid entity examples
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<'no identifier given'>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<onlyAnIdentifierGiven>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<no'space'>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<attribute before:'the value itself' 'world'>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<invalid('index') 'should be enclosed by [], not ()'>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<invalid ['index'] 'no space allowed before the first ['>")));
+			Assert.Throws<IOException>(
+				() => Entry.Parse(NC("<invalid['value'] 42>")));
+		}
+
 
 		private void ExpressionParseTest<T>(string input) {
 			var stream = new CharStream (input);
@@ -464,4 +523,3 @@ namespace L20nTests
 		}
 	}
 }
-
