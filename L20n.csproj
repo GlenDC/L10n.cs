@@ -100,6 +100,9 @@
     <Compile Include="src\types\ast\expressions\Binary.cs" />
     <Compile Include="src\types\ast\expressions\Logical.cs" />
     <Compile Include="src\types\ast\expressions\IfElse.cs" />
+    <Compile Include="src\io\parsers\ImportStatement.cs" />
+    <Compile Include="src\types\ast\ImportStatement.cs" />
+    <Compile Include="src\io\LocalizbleObjectsList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -29,7 +29,10 @@ namespace L20n
 			{
 				public override bool Evaluate (out List<L20n.Types.Entity> output)
 				{
-					throw new Exception ("TODO");
+					// TODO
+					output = new List<L20n.Types.Entity> ();
+					output.Add(new L20n.Types.Entity());
+					return true;
 				}
 			}
 		}

@@ -29,17 +29,24 @@ namespace L20n
 		{
 			public delegate bool CharPredicate(char c);
 	
+			private readonly string m_Path = null;
+			private readonly int m_LastPosition;
 			private String m_Buffer = null;
-			private int m_LastPosition;
 			private int m_Position;
+
+			public string Path
+			{
+				get { return m_Path; }
+			}
 
 			public int Position
 			{
 				get { return m_Position; }
 			}
 			
-			public CharStream(String buffer)
+			public CharStream(String buffer, string path = null)
 			{
+				m_Path = path;
 				m_Buffer = buffer;
 				m_Position = 0;
 				m_LastPosition = m_Buffer.Length - 1;
@@ -49,7 +56,7 @@ namespace L20n
 			{
 				using (var sr = new StreamReader(path, System.Text.Encoding.UTF8, false))
 				{
-					return new CharStream(sr.ReadToEnd());
+					return new CharStream(sr.ReadToEnd(), path);
 				}
 			}
 
@@ -145,10 +152,10 @@ namespace L20n
 				throw CreateException(String.Format ("expected {0}, got {1}", expected, c));
 			}
 
-			public void SkipString(int length, string expected)
+			public void SkipString(string expected)
 			{
 				string s;
-				if (!this.ReadNextRange(length, out s))
+				if (!this.ReadNextRange(expected.Length, out s))
 					throw CreateEOFException();
 				if (s != expected)
 					throw CreateException(String.Format ("expected {0}, got {1}", expected, s));

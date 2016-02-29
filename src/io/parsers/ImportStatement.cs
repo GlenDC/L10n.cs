@@ -26,40 +26,29 @@ namespace L20n
 	{
 		namespace Parsers
 		{	
-			public class Expander
+			public class ImportStatement
 			{
-				public static Types.AST.Expression Parse(CharStream stream)
+				public static Types.AST.Entry Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					Types.AST.Expression expression;
 					
 					try {
-						// skip opening tags
-						stream.SkipString("{{");
-						// parse actual expression
+						stream.SkipString("import(");
+						WhiteSpace.Parse(stream, true);
 						expression = Expression.Parse(stream);
-						// skip closing tags
-						stream.SkipString("}}");
+						WhiteSpace.Parse(stream, true);
+						stream.SkipCharacter(')');
 
-						return expression;
+						return new Types.AST.ImportStatement(
+							expression, Path.GetDirectoryName(stream.Path));
 					}
 					catch(Exception e) {
 						string msg = String.Format(
-							"something went wrong parsing an <expander> starting at {0}",
+							"something went wrong parsing an <import_statement> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
 						throw new IOException(msg, e);
 					}
-				}
-				
-				public static bool PeekAndParse(CharStream stream, out Types.AST.Expression expression)
-				{
-					if(stream.PeekNextRange(2) == "{{") {
-						expression = Expander.Parse(stream);
-						return true;
-					}
-					
-					expression = null;
-					return false;
 				}
 			}
 		}

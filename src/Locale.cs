@@ -33,33 +33,17 @@ namespace L20n
 
 		public void Import(String file_name)
 		{
-			// We first pass it all into this temporary list
-			// so that we only pass the entities on to the other entities,
-			// once we know sure that we could parse the entire file
-			// without any issues. (e.g. no parsing errors occured)
-			var entities = new List<Types.Entity>();
 			try {
-				using(IO.CharStream stream = IO.CharStream.CreateFromFile(file_name)) {
-					Types.AST.Entry node;
-					List<Types.Entity> newEntities;
-					while(stream.InputLeft()) {
-						// Skip WhiteSpace
-						IO.Parsers.WhiteSpace.Parse(stream, true);
-						
-						// Read Entry
-						node = IO.Parsers.Entry.Parse(stream);
-						if(node.Evaluate(out newEntities))
-							entities.AddRange(newEntities);
-					}
+				if (!IO.LocalizbleObjectsList.Parse (file_name, m_Entities)) {
+					throw new IOException("no entities got imported");
 				}
 			}
-			catch(Exception exception) {
-				throw new IOException(
-					String.Format("couldn't import locale file: {0}", file_name),
-					exception);
+			catch(Exception e) {
+				string msg = String.Format(
+					"something went wrong importing locale file: {0}",
+					file_name);
+				throw new IOException(msg, e);
 			}
-
-			m_Entities.AddRange(entities);
 		}
 	}
 }

@@ -39,6 +39,7 @@
     <Compile Include="UserTests.cs" />
     <Compile Include="ParserTests.cs" />
     <Compile Include="PerformanceClock.cs" />
+    <Compile Include="ASTEvalTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

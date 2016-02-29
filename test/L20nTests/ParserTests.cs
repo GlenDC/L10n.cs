@@ -430,9 +430,25 @@ namespace L20nTests
 				("true || false ? (ok) : 42");
 		}
 
+		[Test()]
+		public void EntryParseTests()
+		{
+			EntryParseTest<L20n.Types.AST.NullEntry>("/* A Comment */");
+			EntryParseTest<L20n.Types.AST.Entity>("<hello 'world'>");
+			EntryParseTest<L20n.Types.AST.ImportStatement>("import( 'file')");
+			EntryParseTest<L20n.Types.AST.ImportStatement>("import('file')");
+		}
+
 		private void ExpressionParseTest<T>(string input) {
 			var stream = new CharStream (input);
 			TypeAssert<T>(Expression.Parse(stream));
+			if (stream.InputLeft ())
+				throw new IOException("stream is non-empty: " + stream.ReadUntilEnd());
+		}
+		
+		private void EntryParseTest<T>(string input) {
+			var stream = new CharStream (input);
+			TypeAssert<T>(Entry.Parse(stream));
 			if (stream.InputLeft ())
 				throw new IOException("stream is non-empty: " + stream.ReadUntilEnd());
 		}

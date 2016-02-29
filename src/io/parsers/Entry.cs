@@ -52,7 +52,8 @@ namespace L20n
 							return Entity.Parse(stream, identifier);
 						}
 
-						// TODO Statement.PeekAndParse 
+						// it has to be an import statement at this point
+						return ImportStatement.Parse(stream);
 					}
 					catch(Exception e) {
 						string msg = String.Format(
@@ -60,9 +61,6 @@ namespace L20n
 							stream.ComputeDetailedPosition(startingPos));
 						throw new IOException(msg, e);
 					}
-
-					throw stream.CreateException (
-						"no valid starting point for any type of <entry> could be found");
 				}
 			}
 		}

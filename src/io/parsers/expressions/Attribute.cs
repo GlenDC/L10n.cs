@@ -38,7 +38,7 @@ namespace L20n
 							Types.AST.Expression expression;
 							
 							// could be a raw-identifier (2) OR any other expression (1)
-							stream.SkipString(2, "::");
+							stream.SkipString("::");
 							if(stream.SkipIfPossible('[')) {
 								expression = Expression.Parse(stream);
 								stream.SkipCharacter(']');
