@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,22 @@ namespace L20n
 		{
 			public class Entity : Entry
 			{
-				public override bool Evaluate (out List<L20n.Types.Entity> output)
+				private readonly string m_Identifier;
+				private readonly Index m_Index;
+				private readonly Internal.Expressions.Primary m_Value;
+				private readonly Attributes m_Attributes;
+
+				public Entity(
+					string identifier, Index index,
+					Internal.Expressions.Primary value, Attributes attributes)
+				{
+					m_Identifier = identifier;
+					m_Index = index;
+					m_Value = value;
+					m_Attributes = attributes;
+				}
+
+				public override bool Evaluate(out List<L20n.Types.Entity> output)
 				{
 					// TODO
 					output = new List<L20n.Types.Entity> ();
@@ -38,4 +53,3 @@ namespace L20n
 		}
 	}
 }
-

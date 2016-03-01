@@ -48,6 +48,8 @@ namespace L20nTests
 		[Test()]
 		public void CommentTests()
 		{
+			// Parsing an empty comment
+			Comment.Parse(NC("/**/"));
 			// Parsing a normal comment
 			Comment.Parse(NC("/* A Comment */"));
 			// Parsing a comment with a lot of stars

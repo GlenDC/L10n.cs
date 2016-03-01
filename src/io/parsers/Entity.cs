@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,13 +25,13 @@ namespace L20n
 	namespace IO
 	{
 		namespace Parsers
-		{	
+		{
 			public class Entity
 			{
 				public static Types.AST.Entity Parse(CharStream stream, string identifier)
 				{
 					var startingPos = stream.Position;
-					
+
 					try {
 						// an optional index is possible
 						Types.AST.Index index = null;
@@ -46,14 +46,14 @@ namespace L20n
 						// Optionally we can also have attributes at the end
 						Types.AST.Attributes attributes = null;
 						Attributes.PeekAndParse(stream, out attributes);
-						
+
 						// White Space is optional
 						WhiteSpace.Parse(stream, true);
 
 						stream.SkipCharacter('>');
 
-						// TODO actually create a proper ast entity
-						return new Types.AST.Entity();
+						return new Types.AST.Entity(
+							identifier, index, value, attributes);
 					}
 					catch(Exception e) {
 						string msg = String.Format(
