@@ -23,6 +23,7 @@ using NUnit.Framework;
 using L20n.IO;
 using L20n.IO.Parsers;
 using L20n.IO.Parsers.Expressions;
+using L20n.Exceptions;
 using System.Collections.Generic;
 
 namespace L20nTests
@@ -41,7 +42,7 @@ namespace L20nTests
 			// so it will not give an exception
 			WhiteSpace.Parse(stream, true);
 			// This will fail as it's not optional
-			Assert.Throws<IOException> (
+			Assert.Throws<ParseException> (
 				() => WhiteSpace.Parse(stream, false));
 		}
 
@@ -55,10 +56,10 @@ namespace L20nTests
 			// Parsing a comment with a lot of stars
 			Comment.Parse(NC("/********* Bling Bling **********/"));
 			// This will fail as a comment was never found
-			Assert.Throws<IOException> (
+			Assert.Throws<ParseException> (
 				() => Comment.Parse(NC("No Comment */")));
 			// This will fail as the comment was never terminated
-			Assert.Throws<IOException> (
+			Assert.Throws<ParseException> (
 				() => Comment.Parse(NC("Unfinished Comment */")));
 
 			L20n.Types.AST.Entry entry;
@@ -69,11 +70,11 @@ namespace L20nTests
 			Assert.IsFalse(Comment.PeekAndParse(NC("Hello"), out entry));
 			// It will still throw an assert however,
 			// if the start looks like a comment, but it turned out to be a trap
-			Assert.Throws<IOException> (
+			Assert.Throws<ParseException> (
 				() => Comment.PeekAndParse(NC("/* What can go wrong"), out entry));
 
 			// passing in an EOF stream will give an <EOF> IOException
-			Assert.Throws<IOException>(() => Comment.Parse(NC("")));
+			Assert.Throws<ParseException>(() => Comment.Parse(NC("")));
 		}
 
 		[Test()]
@@ -95,12 +96,12 @@ namespace L20nTests
 			var quote = Quote.Parse(s);
 			// will fail now because we try to match a multi-line
 			// with a single-line quote
-			Assert.Throws<IOException> (
+			Assert.Throws<ParseException> (
 				() => Quote.Parse (s, quote));
 			
 			// Single Quotes can't be matched with Double Quotes
 			s = NC("'\""); quote = Quote.Parse(s);
-			Assert.Throws<IOException> (
+			Assert.Throws<ParseException> (
 				() => Quote.Parse (s, quote));
 			
 			// Matching pairs should give you a good night sleep
@@ -110,7 +111,7 @@ namespace L20nTests
 				Quote.Parse(s, quote).ToString());
 			
 			// passing in an EOF stream will give an <EOF> IOException
-			Assert.Throws<IOException>(() => Quote.Parse(NC("")));
+			Assert.Throws<ParseException>(() => Quote.Parse(NC("")));
 		}
 
 		[Test()]
@@ -125,7 +126,7 @@ namespace L20nTests
 			// neither or dashes
 			Assert.AreEqual("glen", RawIdentifier.Parse(NC("glen-dc")));
 			// starting with a non-word char will however make it fail
-			Assert.Throws<IOException>(() => RawIdentifier.Parse(NC(" oh")));
+			Assert.Throws<ParseException>(() => RawIdentifier.Parse(NC(" oh")));
 
 			// You can also Parse identifiers in a fail-safe way
 			string id;
@@ -133,8 +134,8 @@ namespace L20nTests
 			Assert.AreEqual("Ho_Ho_Ho", id);
 			Assert.IsFalse(RawIdentifier.PeekAndParse(NC(" fails"), out id));
 
-			// passing in an EOF stream will give an <EOF> IOException
-			Assert.Throws<IOException>(() => RawIdentifier.Parse(NC("")));
+			// passing in an EOF stream will give an <EOF> ParseException
+			Assert.Throws<ParseException>(() => RawIdentifier.Parse(NC("")));
 		}
 		
 		[Test()]
@@ -148,10 +149,10 @@ namespace L20nTests
 			// decimals will be ignored and make for
 			// an invalid buffer later on
 			Assert.AreEqual("5", Literal.Parse(NC("5.2")).ToString());
-			Assert.Throws<IOException>(() => Literal.Parse(NC(".2")));
+			Assert.Throws<ParseException>(() => Literal.Parse(NC(".2")));
 			
-			// passing in an EOF stream will give an <EOF> IOException
-			Assert.Throws<IOException>(() => Literal.Parse(NC("")));
+			// passing in an EOF stream will give an <EOF> ParseException
+			Assert.Throws<ParseException>(() => Literal.Parse(NC("")));
 		}
 
 		[Test()]
@@ -165,7 +166,7 @@ namespace L20nTests
 			Assert.AreEqual("world", hashValue.Get("hello").ToString ());
 
 			// hash tables cannot be empty though
-			Assert.Throws<IOException>(() => HashValue.Parse(NC("{}")));
+			Assert.Throws<ParseException>(() => HashValue.Parse(NC("{}")));
 
 			// hash tables can also have a default
 			hashValue = Primary.Parse(NC("{*what:'ok', yes: 'no'}"))
@@ -175,9 +176,9 @@ namespace L20nTests
 			Assert.AreEqual("no", hashValue.Get("yes").ToString());
 			
 			// hash tables cannot contain duplicate identifiers
-			Assert.Throws<IOException>(() => Primary.Parse(NC("{a: 'a', a: 'b'}")));
+			Assert.Throws<ParseException>(() => Primary.Parse(NC("{a: 'a', a: 'b'}")));
 			// multiple defaults are also not allowed
-			Assert.Throws<IOException>(() => Primary.Parse(NC("{*a: 'a', *b: 'b'}")));
+			Assert.Throws<ParseException>(() => Primary.Parse(NC("{*a: 'a', *b: 'b'}")));
 			
 			// hash tables can also be nested
 			hashValue = Primary.Parse(NC (@"{
@@ -195,10 +196,10 @@ namespace L20nTests
 			Assert.AreEqual("Loki", shortValue.Get("unknown").ToString());
 
 			// exception is thrown when no default is defined
-			Assert.Throws<KeyNotFoundException> (() => hashValue.Get ("unknown"));
+			Assert.Throws<ObjectNotFoundException> (() => hashValue.Get ("unknown"));
 			
-			// passing in an EOF stream will give an <EOF> IOException
-			Assert.Throws<IOException>(() => HashValue.Parse(NC("")));
+			// passing in an EOF stream will give an <EOF> ParseException
+			Assert.Throws<ParseException>(() => HashValue.Parse(NC("")));
 		}
 
 		[Test()]
@@ -216,13 +217,13 @@ namespace L20nTests
 
 			// Anything that would fail the RawIdentifier tests
 			// would also fail this one, as it wraps around
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Identifier.Parse(NC(" no_prefix_space_allowed")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Identifier.Parse(NC("-only_underscores_and_letters_are_allowed")));
 			
-			// passing in an EOF stream will give an <EOF> IOException
-			Assert.Throws<IOException>(() => Identifier.Parse(NC("")));
+			// passing in an EOF stream will give an <EOF> ParseException
+			Assert.Throws<ParseException>(() => Identifier.Parse(NC("")));
 		}
 		
 		[Test()]
@@ -261,11 +262,11 @@ namespace L20nTests
 				Primary.Parse(NC("bom_dia")));
 
 			// all other type of input should fail
-			Assert.Throws<IOException>(() => Primary.Parse(NC("     ")));
-			Assert.Throws<IOException>(() => Primary.Parse(NC("<hello 'world'>")));
+			Assert.Throws<ParseException>(() => Primary.Parse(NC("     ")));
+			Assert.Throws<ParseException>(() => Primary.Parse(NC("<hello 'world'>")));
 			
-			// passing in an EOF stream will give an <EOF> IOException
-			Assert.Throws<IOException>(() => Primary.Parse(NC("")));
+			// passing in an EOF stream will give an <EOF> ParseException
+			Assert.Throws<ParseException>(() => Primary.Parse(NC("")));
 		}
 
 		[Test()]
@@ -286,8 +287,8 @@ namespace L20nTests
 
 			// TODO: test with indexes
 			
-			// passing in an EOF stream will give an <EOF> IOException
-			Assert.Throws<IOException>(() => KeyValuePair.Parse(NC("")));
+			// passing in an EOF stream will give an <EOF> ParseException
+			Assert.Throws<ParseException>(() => KeyValuePair.Parse(NC("")));
 		}
 		
 		[Test()]
@@ -455,47 +456,47 @@ namespace L20nTests
 		public void InvalidEntryParseTests()
 		{
 			// invalid comment examples
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("/* non-closed comment")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("non-opened comment*/")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("/* almost a correct comment *")));
 
 			// invalid import examples
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("import 'nope'")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("import ('nope')")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("import('nope'")));
 			
 			// invalid macro examples
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<foo () {'no space allowed before first parenthesis'}>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<foo() {'invalid expression}>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<foo(nope) {'non-variable as identifier'}>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<foo($no_expression_defined) {}>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<foo() {'closing curly brace missing'>")));
 
 			// invalid entity examples
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<'no identifier given'>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<onlyAnIdentifierGiven>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<no'space'>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<attribute before:'the value itself' 'world'>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<invalid('index') 'should be enclosed by [], not ()'>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<invalid ['index'] 'no space allowed before the first ['>")));
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<invalid['value'] 42>")));
 		}
 
@@ -504,14 +505,14 @@ namespace L20nTests
 			var stream = new CharStream (input);
 			TypeAssert<T>(Expression.Parse(stream));
 			if (stream.InputLeft ())
-				throw new IOException("stream is non-empty: " + stream.ReadUntilEnd());
+				throw new ParseException("stream is non-empty: " + stream.ReadUntilEnd());
 		}
 		
 		private void EntryParseTest<T>(string input) {
 			var stream = new CharStream (input);
 			TypeAssert<T>(Entry.Parse(stream));
 			if (stream.InputLeft ())
-				throw new IOException("stream is non-empty: " + stream.ReadUntilEnd());
+				throw new ParseException("stream is non-empty: " + stream.ReadUntilEnd());
 		}
 
 		private void TypeAssert<T>(object obj)

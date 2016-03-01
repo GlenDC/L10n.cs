@@ -103,6 +103,11 @@
     <Compile Include="src\io\parsers\ImportStatement.cs" />
     <Compile Include="src\types\ast\ImportStatement.cs" />
     <Compile Include="src\io\LocalizbleObjectsList.cs" />
+    <Compile Include="src\exceptions\ParseException.cs" />
+    <Compile Include="src\exceptions\EvaluateException.cs" />
+    <Compile Include="src\exceptions\UnexpectedObjectException.cs" />
+    <Compile Include="src\exceptions\ImportException.cs" />
+    <Compile Include="src\exceptions\ObjectNotFoundException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -116,5 +121,6 @@
     <Folder Include="src\io\parsers\expressions\" />
     <Folder Include="src\types\internal\expressions\" />
     <Folder Include="src\types\ast\expressions\" />
+    <Folder Include="src\exceptions\" />
   </ItemGroup>
 </Project>

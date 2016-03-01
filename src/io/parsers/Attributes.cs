@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.IO;
 
 namespace L20n
 {
@@ -41,7 +40,7 @@ namespace L20n
 						string msg = String.Format(
 							"something went wrong parsing <attributes> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
-						throw new IOException(msg, e);
+						throw new L20n.Exceptions.ParseException(msg, e);
 					}
 				}
 

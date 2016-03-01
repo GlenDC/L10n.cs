@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace L20n
 {
@@ -51,7 +50,7 @@ namespace L20n
 							string msg = String.Format(
 								"unexpected <identifier> {0}, <hash_value> can not contain a duplicate <identifier>",
 								item.Identifier);
-							throw new IOException(msg);
+							throw new L20n.Exceptions.EvaluateException(msg);
 						}
 
 						// add to table
@@ -63,7 +62,7 @@ namespace L20n
 								string msg = String.Format(
 									"unexpected default <hash_item> {0}, <hash_value> can only contain one default <hash_item>",
 									item.Identifier);
-								throw new IOException(msg);
+								throw new L20n.Exceptions.EvaluateException(msg);
 							}
 
 							defaultItem = item.Value;

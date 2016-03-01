@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 
 namespace L20n
@@ -64,7 +63,7 @@ namespace L20n
 						string msg = String.Format(
 							"something went wrong parsing an <index> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
-						throw new IOException(msg, e);
+						throw new L20n.Exceptions.ParseException(msg, e);
 					}
 				}
 				

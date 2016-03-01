@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 
 namespace L20n
@@ -52,7 +51,7 @@ namespace L20n
 					return false;
 				}
 				catch(Exception exception) {
-					throw new IOException(
+					throw new L20n.Exceptions.ParseException(
 						String.Format("couldn't parse <localizble_objects_list> from file: {0}", path),
 						exception);
 				}

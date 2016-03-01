@@ -246,22 +246,23 @@ namespace L20n
 				return String.Format("L{0}:{1}", lineNumber, linePosition);
 			}
 
-			public IOException CreateException(string msg, int offset = 0)
+			public L20n.Exceptions.ParseException CreateException(string msg, int offset = 0)
 			{
 				int pos = m_Position + offset;
 				if (pos >= m_LastPosition) {
-					return new IOException(
+					return new L20n.Exceptions.ParseException(
 						String.Format("parsing error: {0}", msg));
 				}
 
-				return new IOException(
+				return new L20n.Exceptions.ParseException(
 					String.Format("'{0}' at {1} is unexpected: {2}",
 				              m_Buffer[pos], ComputeDetailedPosition(pos), msg));
 			}
 
-			public IOException CreateEOFException()
+			public L20n.Exceptions.ParseException CreateEOFException()
 			{
-				return new IOException("end of stream was reached while more input was expected");
+				return new L20n.Exceptions.ParseException(
+					"end of stream was reached while more input was expected");
 			}
 
 			public void Dispose() {}

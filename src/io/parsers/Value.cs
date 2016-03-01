@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.IO;
 
 namespace L20n
 {
@@ -37,13 +36,13 @@ namespace L20n
 							return value;
 						}
 
-						throw new IOException("couldn't find valid <value> type");
+						throw new L20n.Exceptions.ParseException("couldn't find valid <value> type");
 					}
 					catch(Exception e) {
 						string msg = String.Format(
 							"something went wrong parsing a <value> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
-						throw new IOException(msg, e);
+						throw new L20n.Exceptions.ParseException(msg, e);
 					}
 				}
 

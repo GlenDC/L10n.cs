@@ -50,7 +50,7 @@ namespace L20n
 								"an <expression> within an <import_statement> should be a {0}, got {1}",
 								typeof(Internal.Expressions.StringValue),
 								result.GetType());
-							throw new IOException(msg);
+							throw new L20n.Exceptions.EvaluateException(msg);
 						}
 						
 						string path = Path.Combine(m_Root, str.ToString());

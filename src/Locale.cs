@@ -35,14 +35,14 @@ namespace L20n
 		{
 			try {
 				if (!IO.LocalizbleObjectsList.Parse (file_name, m_Entities)) {
-					throw new IOException("no entities got imported");
+					throw new L20n.Exceptions.ImportException("no entities got imported");
 				}
 			}
 			catch(Exception e) {
 				string msg = String.Format(
 					"something went wrong importing locale file: {0}",
 					file_name);
-				throw new IOException(msg, e);
+				throw new L20n.Exceptions.ImportException(msg, e);
 			}
 		}
 	}

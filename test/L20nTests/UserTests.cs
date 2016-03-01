@@ -21,6 +21,7 @@ using System.IO;
 using NUnit.Framework;
 
 using L20n;
+using L20n.Exceptions;
 
 namespace L20nTests
 {
@@ -32,13 +33,13 @@ namespace L20nTests
 		{
 			Database database = new Database();
 			
-			Assert.Throws<IOException>(
+			Assert.Throws<ImportException>(
 				() => database.Import("../../../resources/manifest-without-default.json"));
-			Assert.Throws<IOException>(
+			Assert.Throws<ImportException>(
 				() => database.Import("../../../resources/manifest-with-invalid-default.json"));
-			Assert.Throws<IOException>(
+			Assert.Throws<ImportException>(
 				() => database.Import("../../../resources/manifest-without-locales.json"));
-			Assert.Throws<IOException>(
+			Assert.Throws<ImportException>(
 				() => database.Import("../../../resources/manifest-without-resources.json"));
 
 			// if you have multiple manifest files (not recommended),
@@ -62,7 +63,7 @@ namespace L20nTests
 			Assert.AreEqual(3, database.Locales.Count);
 			pc.Continue();
 
-			Assert.Throws<IOException>(() => database.LoadLocale());
+			Assert.Throws<ImportException>(() => database.LoadLocale());
 			pc.Clock("default locale loaded");
 			
 			pc.Stop();

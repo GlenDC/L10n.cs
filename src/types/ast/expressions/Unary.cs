@@ -53,7 +53,7 @@ namespace L20n
 							break;
 						default:
 							var msg = String.Format("expected ('+'|'-'|'!'), got {0}", op);
-							throw new IOException(msg);
+							throw new L20n.Exceptions.ParseException(msg);
 						}
 
 						m_Expression = e;

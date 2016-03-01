@@ -66,7 +66,7 @@ namespace L20n
 				if(locales == null || locales.Count == 0)
 				{
 					string msg = string.Format("No locales were provided in: {0}", manifest_path);
-					throw new IOException(msg);
+					throw new L20n.Exceptions.ImportException(msg);
 				}
 				foreach(var locale in locales.Children)
 				{
@@ -81,14 +81,14 @@ namespace L20n
 				if(m_Manifest.DefaultLocale == null)
 				{
 					string msg = string.Format("No default locale was provided in: {0}", manifest_path);
-					throw new IOException(msg);
+					throw new L20n.Exceptions.ImportException(msg);
 				}
 
 				var resources = root["resources"];
 				if(resources == null || resources.Count == 0)
 				{
 					string msg = string.Format("No resources were provided in: {0}", manifest_path);
-					throw new IOException(msg);
+					throw new L20n.Exceptions.ImportException(msg);
 				}
 				foreach(var resource in resources.Children)
 				{
@@ -109,7 +109,7 @@ namespace L20n
 			if (localeFiles.Count == 0)
 			{
 				string msg = string.Format("No resources were found for locale: {0}", id);
-				throw new IOException(msg);
+				throw new L20n.Exceptions.ImportException(msg);
 			}
 
 			m_CurrentLocale = new Locale();
@@ -141,7 +141,7 @@ namespace L20n
 					{
 						string msg = string.Format("{0} is not a valid default locale as " +
 						                           "it couldn't be found in the list of locales.", value);
-						throw new IOException(msg);
+						throw new L20n.Exceptions.ImportException(msg);
 					}
 
 					m_DefaultLocale = value;
@@ -166,7 +166,7 @@ namespace L20n
 				{
 					string msg = string.Format("Resource '{0}' does not contain local string-id ({1}).",
 					                           resource, LOCALE_STRING_ID);
-					throw new IOException(msg);
+					throw new L20n.Exceptions.ImportException(msg);
 				}
 
 				resource = Path.Combine(new string[] {

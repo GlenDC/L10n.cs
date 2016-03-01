@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.IO;
 
 namespace L20n
 {
@@ -25,7 +24,6 @@ namespace L20n
 	{
 		namespace Parsers
 		{
-			// '{' WS? hashItem WS? ( ',' WS? hashItem WS? )* ','? '}' ;
 			public class HashValue
 			{
 				public static Types.AST.Value Parse(CharStream stream)
@@ -59,7 +57,7 @@ namespace L20n
 						string msg = String.Format(
 							"something went wrong parsing a <hash_value> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
-						throw new IOException(msg, e);
+						throw new L20n.Exceptions.ParseException(msg, e);
 					}
 				}
 

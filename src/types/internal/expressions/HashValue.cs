@@ -48,10 +48,7 @@ namespace L20n
 							string msg = String.Format(
 								"<hash_item> could not be found for <identifier> {0}, and no default was been set for this <hash_value>",
 								identifier);
-							// TODO: We might want to wrap around all the different exceptions
-							// so that people can always use the same L20n module for any exception type
-							// rather than all kind of different .NET ones
-							throw new KeyNotFoundException(msg);
+							throw new L20n.Exceptions.ObjectNotFoundException(msg);
 						}
 
 						return value;

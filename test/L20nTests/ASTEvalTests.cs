@@ -23,6 +23,7 @@ using NUnit.Framework;
 using L20n.IO;
 using L20n.IO.Parsers;
 using L20n.IO.Parsers.Expressions;
+using L20n.Exceptions;
 using System.Collections.Generic;
 
 namespace L20nTests
@@ -42,7 +43,7 @@ namespace L20nTests
 			// otherwise you'll get an exception at evaluation time
 			var invalid = ImportStatement.Parse (NC ("import(42)"))
 				as L20n.Types.AST.ImportStatement;
-			Assert.Throws<IOException>(
+			Assert.Throws<EvaluateException>(
 				() => invalid.Evaluate(out entities));
 
 			ImportStatement.Parse(NC("import('some path')"));
@@ -54,12 +55,12 @@ namespace L20nTests
 			var entities = new List<L20n.Types.Entity>();
 
 			// non-existing main file
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => L20n.IO.LocalizbleObjectsList.Parse(
 				"../../../resources/eval/import/nope.l20n", entities));
 
 			// non-existing import file
-			Assert.Throws<IOException>(
+			Assert.Throws<ParseException>(
 				() => L20n.IO.LocalizbleObjectsList.Parse(
 				"../../../resources/eval/import/invalid-import.l20n", entities));
 		}
