@@ -36,9 +36,13 @@ namespace L20n
 
 						// skip opening tags
 						stream.SkipString("{{");
+						WhiteSpace.Parse(stream, true);
+
 						// parse actual expression
 						expression = Expression.Parse(stream);
+
 						// skip closing tags
+						WhiteSpace.Parse(stream, true);
 						stream.SkipString("}}");
 
 						return expression;

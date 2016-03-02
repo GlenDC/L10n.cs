@@ -28,14 +28,14 @@ namespace L20n
 	{
 		public sealed class PropertyExpression : L20nObject
 		{
-			public Identifier[] Identifiers
+			public L20nObject[] Identifiers
 			{
 				get { return m_Identifiers; }
 			}
 
-			private readonly Identifier[] m_Identifiers;
+			private readonly L20nObject[] m_Identifiers;
 			
-			public PropertyExpression(List<Identifier> identifiers)
+			public PropertyExpression(List<L20nObject> identifiers)
 			{
 				m_Identifiers = identifiers.ToArray();
 			}
@@ -46,14 +46,14 @@ namespace L20n
 					return argv[0].As<HashValue>().Eval(ctx, this);
 				}
 				
-				Entity entity = ctx.GetEntity(m_Identifiers[0].Value);
+				var entity = Identifiers[0].Eval(ctx);
 				return entity.Eval(ctx, new PropertyExpression(SliceIdentifiers(1)));
 			}
 
-			private List<Identifier> SliceIdentifiers(int start)
+			private List<L20nObject> SliceIdentifiers(int start)
 			{	
 				// Return new array.
-				var res = new List<Identifier>(m_Identifiers.Length - start);
+				var res = new List<L20nObject>(m_Identifiers.Length - start);
 				for (int i = start; i < m_Identifiers.Length; i++)
 					res.Add(m_Identifiers [i]);
 

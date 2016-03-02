@@ -53,16 +53,16 @@ namespace L20n
 				L20nObject obj;
 				var index = argv[0].Eval(ctx);
 				
-				Identifier id = index as Identifier;
-				if(id != null) {
+				Identifier id;
+				if(index.As(out id)) {
 					obj = m_Items[id.Value].Eval(ctx);
 				}
 				else {
 					var identifiers = index.As<PropertyExpression>().Identifiers;
 					obj = this;
 					for(int i = 0; i < identifiers.Length; ++i) {
-						id = identifiers[i];
-						obj = obj.As<HashValue>().Eval(ctx, id);
+						var identifier = identifiers[i];
+						obj = obj.As<HashValue>().Eval(ctx, identifier);
 					}
 				}
 				

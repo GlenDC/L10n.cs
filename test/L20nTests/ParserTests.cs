@@ -235,9 +235,12 @@ namespace L20nTests
 				Primary.Parse(NC("\"Hello Dude!\"")));
 			TypeAssert<L20n.Objects.StringValue>(
 				Primary.Parse(NC("'this works as well'")));
-			// TODO: FIX THIS CASE
-			/*TypeAssert<L20n.Objects.StringValue>(
-				Primary.Parse(NC("'Hello {{ $person.name }}'")));*/
+			TypeAssert<L20n.Objects.StringValue>(
+				Primary.Parse(NC("'Hello {{ foo.bar }}'")));
+			TypeAssert<L20n.Objects.StringValue>(
+				Primary.Parse(NC("'Hello {{ $person.name }}'")));
+			TypeAssert<L20n.Objects.StringValue>(
+				Primary.Parse(NC("'It is {{ @time.hour }} o\' clock.'")));
 
 			// hash values
 			TypeAssert<L20n.Objects.HashValue>(

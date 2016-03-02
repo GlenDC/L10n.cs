@@ -34,13 +34,11 @@ namespace L20n
 						var startingPos = stream.Position;
 						
 						try {
-							var identifiers = new List<L20n.Objects.Identifier>();
-							var identifier = RawIdentifier.Parse(stream);
-							identifiers.Add(identifier.As<L20n.Objects.Identifier>());
+							var identifiers = new List<L20n.Objects.L20nObject>();
+							identifiers.Add(Identifier.Parse(stream));
 
 							while(stream.SkipIfPossible('.')) {
-								identifier = RawIdentifier.Parse(stream);
-								identifiers.Add(identifier.As<L20n.Objects.Identifier>());
+								identifiers.Add(RawIdentifier.Parse(stream));
 							}
 							
 							return new L20n.Objects.PropertyExpression(identifiers);
@@ -56,7 +54,7 @@ namespace L20n
 					public static bool PeekAndParse(
 						CharStream stream, out L20n.Objects.L20nObject expression)
 					{
-						if (stream.PeekReg(@"[_a-zA-Z]\w*\.")) {
+						if (stream.PeekReg(@"[$@_a-zA-Z]\w*\.")) {
 							expression = Property.Parse(stream);
 							return true;
 						}
