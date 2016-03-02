@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 namespace L20n
 {
@@ -25,30 +24,18 @@ namespace L20n
 	{
 		public class LocalizbleObjectsList
 		{
-			public static bool Parse(string path, List<L20n.Types.Entity> entities)
+			public static void Parse(string path, Internal.ContextBuilder builder)
 			{
 				try {
-					// We first pass it all into this temporary list
-					// so that we only pass the entities on to the other entities,
-					// once we know sure that we could parse the entire file
-					// without any issues. (e.g. no parsing errors occured)
 					using(CharStream stream = CharStream.CreateFromFile(path)) {
-						Types.AST.Entry node;
-						List<Types.Entity> newEntities = null;
 						while(stream.InputLeft()) {
 							// Skip WhiteSpace
 							IO.Parsers.WhiteSpace.Parse(stream, true);
 							
 							// Read Entry
-							node = Parsers.Entry.Parse(stream);
-							if(node.Evaluate(out newEntities))
-								entities.AddRange(newEntities);
+							Parsers.Entry.Parse(stream, builder);
 						}
-
-						return newEntities != null && newEntities.Count > 0;
 					}
-
-					return false;
 				}
 				catch(Exception exception) {
 					throw new L20n.Exceptions.ParseException(

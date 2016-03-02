@@ -31,6 +31,7 @@ namespace L20nTests
 	[TestFixture()]
 	public class ASTEvalTests
 	{
+		/*
 		[Test()]
 		public void ImportStatements()
 		{
@@ -69,5 +70,6 @@ namespace L20nTests
 		{
 			return new CharStream(buffer);
 		}
+		*/
 	}
 }

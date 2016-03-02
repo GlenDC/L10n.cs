@@ -17,6 +17,7 @@
  */
 
 using System;
+using L20n.Exceptions;
 
 namespace L20n
 {
@@ -28,7 +29,7 @@ namespace L20n
 			{
 				public class Logical
 				{
-					public static Types.AST.Expression Parse(CharStream stream)
+					public static L20n.Objects.L20nObject Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 
@@ -38,7 +39,7 @@ namespace L20n
 							if(stream.ReadReg(@"\s*(\|\||\&\&)", out op)) {
 								WhiteSpace.Parse(stream, true);
 								var second = Logical.Parse(stream);
-								return new Types.AST.Expressions.Logical(first, second, op.Trim());
+								return Logical.CreateLogicalExpression(first, second, op.Trim());
 							}
 							else {
 								return first;
@@ -49,6 +50,23 @@ namespace L20n
 								"something went wrong parsing an <logical_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
 							throw new L20n.Exceptions.ParseException(msg, e);
+						}
+					}
+					
+					private static L20n.Objects.L20nObject CreateLogicalExpression(
+						L20n.Objects.L20nObject first, L20n.Objects.L20nObject second,
+						string op)
+					{
+						switch (op) {
+						case "&&":
+							return new L20n.Objects.AndExpression(first, second);
+							
+						case "||":
+							return new L20n.Objects.OrExpression(first, second);
+							
+						default:
+							throw new ParseException(
+								String.Format("{0} is not a valid <logical> operation", op));
 						}
 					}
 				}

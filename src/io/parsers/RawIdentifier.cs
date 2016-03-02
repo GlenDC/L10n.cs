@@ -26,9 +26,9 @@ namespace L20n
 		{	
 			public class RawIdentifier
 			{
-				public static string Parse(CharStream stream)
+				public static L20n.Objects.L20nObject Parse(CharStream stream)
 				{
-					string identifier;
+					L20n.Objects.L20nObject identifier;
 					if(!RawIdentifier.PeekAndParse(stream, out identifier)) {
 						throw stream.CreateException(
 							"expected to read an <identifier>, but non-word character was found");
@@ -42,12 +42,15 @@ namespace L20n
 					return stream.PeekReg(@"[_a-zA-Z]");
 				}
 
-				public static bool PeekAndParse(CharStream stream, out string identifier)
+				public static bool PeekAndParse(CharStream stream, out L20n.Objects.L20nObject identifier)
 				{
-					if (!stream.EndOfStream() && stream.ReadReg (@"[_a-zA-Z]\w*", out identifier)) {
+					string id;
+					if (!stream.EndOfStream() && stream.ReadReg(@"[_a-zA-Z]\w*", out id)) {
+						identifier = new L20n.Objects.Identifier(id);
 						return true;
 					}
 
+					identifier = null;
 					return false;
 				}
 			}

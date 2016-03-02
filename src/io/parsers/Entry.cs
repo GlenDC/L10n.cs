@@ -26,33 +26,32 @@ namespace L20n
 		{
 			public class Entry
 			{
-				public static Types.AST.Entry Parse(CharStream stream)
+				public static void Parse(CharStream stream, Internal.ContextBuilder builder)
 				{
 					var startingPos = stream.Position;
 					
 					try {
-						Types.AST.Entry entry;
-
-						if(Comment.PeekAndParse(stream, out entry))
-							return entry;
+						if(Comment.PeekAndParse(stream))
+							return;
 
 						// normally we keep the requirements of a format for a parser internal,
 						// but in this case we have the same start for both a <macro> and an <entity>
 						// so we simply have to make an exception in this case for performance reasons
 						if (stream.SkipIfPossible('<')) {
-							string identifier = RawIdentifier.Parse(stream);
+							string identifier = RawIdentifier.Parse(stream)
+								.As<L20n.Objects.Identifier>().Value;
 
-							if(Macro.PeekAndParse(stream, identifier, out entry))
-							   return entry;
+							if(Macro.PeekAndParse(stream, identifier, builder))
+							   return;
 
 							// now it NEEDS to be a entitiy, else our input is simply invalid
 							// knowing that we are already on a path of no return
 							// because of the fact that we started parsing '<' and an identifier.
-							return Entity.Parse(stream, identifier);
+							Entity.Parse(stream, identifier, builder);
 						}
 
 						// it has to be an import statement at this point
-						return ImportStatement.Parse(stream);
+						ImportStatement.Parse(stream, builder);
 					}
 					catch(Exception e) {
 						string msg = String.Format(

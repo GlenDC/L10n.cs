@@ -28,11 +28,12 @@ namespace L20n
 			{
 				public class Variable
 				{
-					public static Types.Internal.Expressions.Identifier Parse(CharStream stream)
+					public static L20n.Objects.L20nObject Parse(CharStream stream)
 					{
 						stream.SkipCharacter('$');
 						var identifier = RawIdentifier.Parse(stream);
-						return new Types.Internal.Expressions.Variable(identifier);
+						return new L20n.Objects.Variable(
+							identifier.As<L20n.Objects.Identifier>());
 					}
 
 					public static bool Peek(CharStream stream)
@@ -41,7 +42,7 @@ namespace L20n
 					}
 
 					public static bool PeekAndParse(
-						CharStream stream, out Types.Internal.Expressions.Identifier variable)
+						CharStream stream, out L20n.Objects.L20nObject variable)
 					{
 						if (!Variable.Peek(stream)) {
 							variable = null;

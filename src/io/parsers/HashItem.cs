@@ -17,16 +17,17 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace L20n
 {
 	namespace IO
 	{
 		namespace Parsers
-		{	
+		{
 			public class HashItem
 			{
-				public static Types.AST.HashItem Parse(CharStream stream)
+				public static HashItemValue Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
@@ -47,8 +48,9 @@ namespace L20n
 						// get the actual value, which is identified by the key
 						var value = Value.Parse(stream);
 						
-						return new Types.AST.HashItem(
-							identifier, value, isDefault);
+						return new HashItemValue(
+							identifier.As<L20n.Objects.Identifier>().Value,
+							value, isDefault);
 					}
 					catch(Exception e) {
 						string msg = String.Format(
@@ -58,7 +60,7 @@ namespace L20n
 					}
 				}
 
-				public static bool PeekAndParse(CharStream stream, out Types.AST.HashItem item)
+				public static bool PeekAndParse(CharStream stream, out HashItemValue item)
 				{
 					if (stream.PeekNext () == '*' || RawIdentifier.Peek (stream)) {
 						item = HashItem.Parse(stream);
@@ -67,6 +69,20 @@ namespace L20n
 
 					item = null;
 					return false;
+				}
+
+				public class HashItemValue
+				{
+					public string Identifier { get; private set; }
+					public L20n.Objects.L20nObject Value { get; private set; }
+					public bool IsDefault { get; private set; }
+
+					public HashItemValue(string id, L20n.Objects.L20nObject val, bool is_def)
+					{
+						Identifier = id;
+						Value = val;
+						IsDefault = is_def;
+					}
 				}
 			}
 		}

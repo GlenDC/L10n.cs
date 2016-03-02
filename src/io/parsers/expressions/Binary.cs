@@ -17,6 +17,7 @@
  */
 
 using System;
+using L20n.Exceptions;
 
 namespace L20n
 {
@@ -28,7 +29,7 @@ namespace L20n
 			{
 				public class Binary
 				{
-					public static Types.AST.Expression Parse(CharStream stream)
+					public static L20n.Objects.L20nObject Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
@@ -38,7 +39,7 @@ namespace L20n
 							if(stream.ReadReg(@"\s*(\=\=|\!\=|\<\=|\>\=|\<|\>|\+|\-|\*|\/|\%)", out op)) {
 								WhiteSpace.Parse(stream, true);
 								var second = Binary.Parse(stream);
-								return new Types.AST.Expressions.Binary(first, second, op.Trim());
+								return Binary.CreateBinaryExpression(first, second, op.Trim());
 							}
 							else {
 								return first;
@@ -49,6 +50,50 @@ namespace L20n
 								"something went wrong parsing an <binary_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
 							throw new L20n.Exceptions.ParseException(msg, e);
+						}
+					}
+
+					private static L20n.Objects.L20nObject CreateBinaryExpression(
+						L20n.Objects.L20nObject first, L20n.Objects.L20nObject second,
+						string op)
+					{
+						switch (op) {
+						case "<":
+							return new L20n.Objects.LessThanExpression(first, second);
+
+						case ">":
+							return new L20n.Objects.GreaterThanExpression(first, second);
+
+						case "<=":
+							return new L20n.Objects.LessThanOrEqualExpression(first, second);
+
+						case ">=":
+							return new L20n.Objects.GreaterThanOrEqualExpression(first, second);
+							
+						case "+":
+							return new L20n.Objects.AddExpression(first, second);
+							
+						case "-":
+							return new L20n.Objects.SubstractExpression(first, second);
+							
+						case "*":
+							return new L20n.Objects.MultiplyExpression(first, second);
+							
+						case "/":
+							return new L20n.Objects.DivideExpression(first, second);
+							
+						case "%":
+							return new L20n.Objects.ModuloExpression(first, second);
+
+						case "==":
+							return new L20n.Objects.IsEqualExpression(first, second);
+
+						case "!=":
+							return new L20n.Objects.IsNotEqualExpression(first, second);
+
+						default:
+							throw new ParseException(
+								String.Format("{0} is not a valid <binary> operation", op));
 						}
 					}
 				}

@@ -28,24 +28,21 @@ namespace L20n
 			{
 				public class Identifier
 				{
-					public static Types.Internal.Expressions.Identifier Parse(CharStream stream)
+					public static L20n.Objects.L20nObject Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 
 						try {
-							string id;
-							if (RawIdentifier.PeekAndParse (stream, out id))
-								return new Types.Internal.Expressions.Identifier(id);
+							L20n.Objects.L20nObject expression;
+
+							if (RawIdentifier.PeekAndParse(stream, out expression))
+								return expression;
+
+							if (Variable.PeekAndParse(stream, out expression))
+								return expression;
 							
-							Types.Internal.Expressions.Identifier identifier;
-							if (Variable.PeekAndParse (stream, out identifier))
-								return identifier;
-							
-							if (Global.PeekAndParse (stream, out identifier))
-								return identifier;
-							
-							if (This.PeekAndParse (stream, out identifier))
-								return identifier;
+							if (Global.PeekAndParse(stream, out expression))
+								return expression;
 						}
 						catch(Exception e) {
 							string msg = String.Format(
@@ -60,10 +57,9 @@ namespace L20n
 
 					public static bool Peek(CharStream stream)
 					{
-						return RawIdentifier.Peek(stream)
-							|| Variable.Peek(stream)
-							|| Global.Peek(stream)
-							|| This.Peek(stream);
+						return RawIdentifier.Peek (stream)
+							|| Variable.Peek (stream)
+							|| Global.Peek (stream);
 					}
 				}
 			}

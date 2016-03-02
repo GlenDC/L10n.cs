@@ -18,41 +18,30 @@
 
 using System;
 
+using L20n.Internal;
+using L20n.Exceptions;
+
 namespace L20n
 {
-	namespace IO
+	namespace Objects
 	{
-		namespace Parsers
+		public sealed class BooleanValue : L20nObject
 		{
-			namespace Expressions
+			public bool Value
 			{
-				public class Global
-				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
-					{
-						stream.SkipCharacter('@');
-						var identifier = RawIdentifier.Parse(stream);
-						return new L20n.Objects.Global(
-							identifier.As<L20n.Objects.Identifier>());
-					}
-
-					public static bool Peek(CharStream stream)
-					{
-						return stream.PeekNext() == '@';
-					}
-					
-					public static bool PeekAndParse(
-						CharStream stream, out L20n.Objects.L20nObject variable)
-					{
-						if (!Global.Peek(stream)) {
-							variable = null;
-							return false;
-						}
-						
-						variable = Global.Parse(stream);
-						return true;
-					}
-				}
+				get { return m_Value; }
+			}
+			
+			private readonly bool m_Value;
+			
+			public BooleanValue(bool value)
+			{
+				m_Value = value;
+			}
+			
+			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			{
+				return this;
 			}
 		}
 	}

@@ -17,6 +17,7 @@
  */
 
 using System;
+using L20n.Exceptions;
 
 namespace L20n
 {
@@ -28,7 +29,7 @@ namespace L20n
 			{
 				public class Unary
 				{
-					public static Types.AST.Expression Parse(CharStream stream)
+					public static L20n.Objects.L20nObject Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
@@ -37,7 +38,7 @@ namespace L20n
 							if(stream.SkipAnyIfPossible(new char[3]{'+', '-', '!'}, out op)) {
 								WhiteSpace.Parse(stream, true);
 								var expression = Unary.Parse(stream);
-								return new Types.AST.Expressions.Unary(expression, op);
+								return Unary.CreateUnaryExpression(expression, op);
 							}
 							else {
 								return Member.Parse(stream);
@@ -48,6 +49,25 @@ namespace L20n
 								"something went wrong parsing an <unary_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
 							throw new L20n.Exceptions.ParseException(msg, e);
+						}
+					}
+
+					private static L20n.Objects.L20nObject CreateUnaryExpression(
+						L20n.Objects.L20nObject expression, char op)
+					{
+						switch (op) {
+						case '+':
+							return new L20n.Objects.PositiveExpression(expression);
+
+						case '-':
+							return new L20n.Objects.NegativeExpression(expression);
+
+						case '!':
+							return new L20n.Objects.NegateExpression(expression);
+							
+						default:
+							throw new ParseException(
+								String.Format("{0} is not a valid <unary> operation", op));
 						}
 					}
 				}

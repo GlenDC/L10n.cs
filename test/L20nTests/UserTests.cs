@@ -41,14 +41,9 @@ namespace L20nTests
 				() => database.Import("../../../resources/manifest-without-locales.json"));
 			Assert.Throws<ImportException>(
 				() => database.Import("../../../resources/manifest-without-resources.json"));
-
-			// if you have multiple manifest files (not recommended),
-			// the default_locale value becomes optional.
-			database.Import("../../../resources/manifest.json");
-			database.Import("../../../resources/manifest-without-default.json");
 		}
 
-		[Test()]
+		/*[Test()]
 		public void SimpleDatabase()
 		{
 			var pc = new PerformanceClock("SimpleDatabase");
@@ -63,11 +58,11 @@ namespace L20nTests
 			Assert.AreEqual(3, database.Locales.Count);
 			pc.Continue();
 
-			Assert.Throws<ImportException>(() => database.LoadLocale());
-			pc.Clock("default locale loaded");
+			//Assert.Throws<ImportException>(() => database.LoadLocale());
+			//pc.Clock("default locale loaded");
 			
 			pc.Stop();
-		}
+		}*/
 	}
 }
 

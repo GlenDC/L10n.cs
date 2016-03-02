@@ -29,7 +29,7 @@ namespace L20n
 			{
 				public class Call
 				{
-					public static Types.AST.Expression Parse(CharStream stream, Types.AST.Expression member)
+					public static L20n.Objects.L20nObject Parse(CharStream stream, L20n.Objects.L20nObject member)
 					{
 						var startingPos = stream.Position;
 						
@@ -38,7 +38,7 @@ namespace L20n
 							stream.SkipCharacter('(');
 
 							// we need at least one Parameter
-							var parameters = new List<Types.AST.Expression>();
+							var parameters = new List<L20n.Objects.L20nObject>();
 							parameters.Add(ParseExpression(stream));
 
 							// but we can also have more
@@ -49,7 +49,7 @@ namespace L20n
 							// skip closing tag
 							stream.SkipCharacter(')');
 
-							return new Types.AST.Expressions.Call(member, parameters);
+							return new L20n.Objects.CallExpression(member, parameters);
 						}
 						catch(Exception e) {
 							string msg = String.Format(
@@ -59,7 +59,7 @@ namespace L20n
 						}
 					}
 
-					private static Types.AST.Expression ParseExpression(CharStream stream)
+					private static L20n.Objects.L20nObject ParseExpression(CharStream stream)
 					{
 						WhiteSpace.Parse(stream, true);
 						var expression = Expression.Parse(stream);
@@ -68,8 +68,8 @@ namespace L20n
 					}
 
 					public static bool PeekAndParse(
-						CharStream stream, Types.AST.Expression member,
-						out Types.AST.Expression expression)
+						CharStream stream, L20n.Objects.L20nObject member,
+						out L20n.Objects.L20nObject expression)
 					{
 						if (stream.PeekNext () == '(') {
 							expression = Call.Parse(stream, member);

@@ -17,42 +17,31 @@
  */
 
 using System;
+using System.Collections.Generic;
+
+using L20n.Internal;
 
 namespace L20n
 {
-	namespace IO
+	namespace Objects
 	{
-		namespace Parsers
+		public sealed class CallExpression : L20nObject
 		{
-			namespace Expressions
+			private readonly L20nObject[] m_Variables;
+			private readonly L20nObject m_Expression;
+			
+			public CallExpression(L20nObject expression, List<L20nObject> variables)
 			{
-				public class Global
-				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
-					{
-						stream.SkipCharacter('@');
-						var identifier = RawIdentifier.Parse(stream);
-						return new L20n.Objects.Global(
-							identifier.As<L20n.Objects.Identifier>());
-					}
+				m_Expression = expression;
+				m_Variables = variables.ToArray();
+			}
+			
+			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			{
+				var identifier = m_Expression.Eval(ctx).As<Identifier>();
+				var macro = ctx.GetMacro(identifier.Value);
 
-					public static bool Peek(CharStream stream)
-					{
-						return stream.PeekNext() == '@';
-					}
-					
-					public static bool PeekAndParse(
-						CharStream stream, out L20n.Objects.L20nObject variable)
-					{
-						if (!Global.Peek(stream)) {
-							variable = null;
-							return false;
-						}
-						
-						variable = Global.Parse(stream);
-						return true;
-					}
-				}
+				return macro.Eval(ctx, m_Variables);
 			}
 		}
 	}

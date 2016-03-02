@@ -29,9 +29,7 @@ namespace L20n
 			// so there is no need to make 2 seperate parsers for it
 			public class Expression
 			{
-				// logical_expression WS? ( '?' WS? expression ':' WS? expression )? ;
-
-				public static Types.AST.Expression Parse(CharStream stream)
+				public static L20n.Objects.L20nObject Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
@@ -46,7 +44,8 @@ namespace L20n
 							stream.SkipCharacter (':');
 							WhiteSpace.Parse (stream, true);
 							var second = Expression.Parse (stream);
-							return new L20n.Types.AST.Expressions.IfElse (condition, first, second);
+							return new L20n.Objects.IfElseExpression(
+								condition, first, second);
 						} else { // it's simply a logical expression
 							return condition;
 						}

@@ -26,17 +26,18 @@ namespace L20n
 		{	
 			public class Value
 			{
-				public static L20n.Types.Internal.Expressions.Primary Parse(CharStream stream)
+				public static L20n.Objects.L20nObject Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
 					try {
-						L20n.Types.Internal.Expressions.Primary value;
-						if(Value.PeekAndParse(stream, out value)) {
-							return value;
+						L20n.Objects.L20nObject value;
+						if(!Value.PeekAndParse(stream, out value)) {
+							throw new L20n.Exceptions.ParseException(
+								"couldn't find valid <value> type");
 						}
 
-						throw new L20n.Exceptions.ParseException("couldn't find valid <value> type");
+						return value;
 					}
 					catch(Exception e) {
 						string msg = String.Format(
@@ -53,26 +54,14 @@ namespace L20n
 				}
 
 				public static bool PeekAndParse(
-					CharStream stream, out L20n.Types.Internal.Expressions.Primary value)
+					CharStream stream, out L20n.Objects.L20nObject value)
 				{
-					L20n.Types.AST.Value intermediateValue;
-					L20n.Types.Internal.Expressions.Value evaluatedValue;
-
-					if (StringValue.PeekAndParse (stream, out intermediateValue)) {
-						if(intermediateValue.Evaluate(out evaluatedValue)) {
-							value = evaluatedValue;
-							return true;
-						}
-					}
+					if (StringValue.PeekAndParse (stream, out value))
+						return true;
 					
-					if (HashValue.PeekAndParse (stream, out intermediateValue)) {
-						if(intermediateValue.Evaluate(out evaluatedValue)) {
-							value = evaluatedValue;
-							return true;
-						}
-					}
+					if (HashValue.PeekAndParse (stream, out value))
+						return true;
 
-					value = null;
 					return false;
 				}
 			}

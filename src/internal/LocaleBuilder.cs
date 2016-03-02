@@ -17,42 +17,39 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace L20n
 {
-	namespace IO
+	namespace Internal
 	{
-		namespace Parsers
+		public sealed class LocaleBuilder
 		{
-			namespace Expressions
-			{
-				public class Global
-				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
-					{
-						stream.SkipCharacter('@');
-						var identifier = RawIdentifier.Parse(stream);
-						return new L20n.Objects.Global(
-							identifier.As<L20n.Objects.Identifier>());
-					}
+			private ContextBuilder m_ContextBuilder;
 
-					public static bool Peek(CharStream stream)
-					{
-						return stream.PeekNext() == '@';
-					}
-					
-					public static bool PeekAndParse(
-						CharStream stream, out L20n.Objects.L20nObject variable)
-					{
-						if (!Global.Peek(stream)) {
-							variable = null;
-							return false;
-						}
-						
-						variable = Global.Parse(stream);
-						return true;
-					}
+			public LocaleBuilder()
+			{
+				m_ContextBuilder = new ContextBuilder();
+			}
+			
+			public void Import(String file_name)
+			{
+				try {
+					IO.LocalizbleObjectsList.Parse(file_name, m_ContextBuilder);
 				}
+				catch(Exception e) {
+					string msg = String.Format(
+						"something went wrong importing locale file: {0}",
+						file_name);
+					throw new L20n.Exceptions.ImportException(msg, e);
+				}
+			}
+			
+			public Locale BuildLocale(Dictionary<string, L20n.Objects.Global> globals)
+			{
+				var ctx = m_ContextBuilder.BuildContext(globals);
+				return new Locale(ctx);
 			}
 		}
 	}

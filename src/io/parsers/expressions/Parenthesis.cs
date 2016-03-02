@@ -28,7 +28,7 @@ namespace L20n
 			{
 				public class Parenthesis
 				{
-					public static Types.AST.Expression Parse(CharStream stream)
+					public static L20n.Objects.L20nObject Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
@@ -39,8 +39,7 @@ namespace L20n
 								return e;
 							}
 							else { // than we /should/ have a primary expressions
-								return new Types.AST.Expressions.Primary(
-									Primary.Parse(stream));
+								return Primary.Parse(stream);
 							}
 						}
 						catch(Exception e) {
@@ -51,7 +50,7 @@ namespace L20n
 						}
 					}
 
-					public static bool PeekAndParse(CharStream stream, out Types.AST.Expression expression)
+					public static bool PeekAndParse(CharStream stream, out L20n.Objects.L20nObject expression)
 					{
 						if (stream.PeekNext () == '(' || Primary.Peek(stream)) {
 							expression = Parenthesis.Parse(stream);

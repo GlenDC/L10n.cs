@@ -28,25 +28,31 @@ namespace L20n
 			{
 				public class Member
 				{
-					public static Types.AST.Expression Parse(CharStream stream)
+					public static L20n.Objects.L20nObject Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
 						try {
-							Types.AST.Expression expression;
+							L20n.Objects.L20nObject expression;
 
-							var member = Parenthesis.Parse(stream);
-
-							if(Call.PeekAndParse(stream, member, out expression))
+							// for now a property expression is always seperated by a dot (`.`)
+							// and has to have at least 1 property (e.g.: `x.y`),
+							// more than 1 is also acceptable (e.g.: `x.y.z`).
+							if(Property.PeekAndParse(stream, out expression)) {
 								return expression;
+							}
+							else {
+								var member = Parenthesis.Parse(stream);
+								
+								if(Call.PeekAndParse(stream, member, out expression))
+									return expression;
 
-							if(Property.PeekAndParse(stream, member, out expression))
-								return expression;
-
-							if(Attribute.PeekAndParse(stream, member, out expression))
-								return expression;
-
-							return member;
+								// Attributes have been removed from the L20n.cs
+								// spec as they don't seem to add any value
+								// over a regular HashValue
+								
+								return member;
+							}
 						}
 						catch(Exception e) {
 							string msg = String.Format(

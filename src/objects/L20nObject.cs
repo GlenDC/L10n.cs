@@ -17,42 +17,34 @@
  */
 
 using System;
+using L20n.Exceptions;
+
+using L20n.Internal;
 
 namespace L20n
 {
-	namespace IO
+	namespace Objects
 	{
-		namespace Parsers
+		public abstract class L20nObject
 		{
-			namespace Expressions
-			{
-				public class Global
-				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
-					{
-						stream.SkipCharacter('@');
-						var identifier = RawIdentifier.Parse(stream);
-						return new L20n.Objects.Global(
-							identifier.As<L20n.Objects.Identifier>());
-					}
+			public abstract L20nObject Eval(Context ctx, params L20nObject[] argv);
 
-					public static bool Peek(CharStream stream)
-					{
-						return stream.PeekNext() == '@';
-					}
-					
-					public static bool PeekAndParse(
-						CharStream stream, out L20n.Objects.L20nObject variable)
-					{
-						if (!Global.Peek(stream)) {
-							variable = null;
-							return false;
-						}
-						
-						variable = Global.Parse(stream);
-						return true;
-					}
+			public T As<T>() where T: L20nObject
+			{
+				try {
+					return (T)this;
 				}
+				catch(Exception e) {
+					var msg = String.Format(
+						"object could not be given as {0}", typeof(T));
+					throw new UnexpectedObjectException(msg, e);
+				}
+			}
+
+			public bool As<T>(out T obj) where T: L20nObject
+			{
+				obj = this as T;
+				return obj != null;
 			}
 		}
 	}

@@ -28,20 +28,19 @@ namespace L20n
 		{	
 			public class ImportStatement
 			{
-				public static Types.AST.Entry Parse(CharStream stream)
+				public static void Parse(CharStream stream, Internal.ContextBuilder builder)
 				{
 					var startingPos = stream.Position;
-					Types.AST.Expression expression;
 					
 					try {
 						stream.SkipString("import(");
 						WhiteSpace.Parse(stream, true);
-						expression = Expression.Parse(stream);
+						var path = StringValue.Parse(stream);
 						WhiteSpace.Parse(stream, true);
 						stream.SkipCharacter(')');
 
-						return new Types.AST.ImportStatement(
-							expression, Path.GetDirectoryName(stream.Path));
+						var file_name = path.As<L20n.Objects.StringValue>().Value;
+						LocalizbleObjectsList.Parse(file_name, builder);
 					}
 					catch(Exception e) {
 						string msg = String.Format(

@@ -18,41 +18,34 @@
 
 using System;
 
+using L20n.Internal;
+
 namespace L20n
 {
-	namespace IO
+	namespace Objects
 	{
-		namespace Parsers
-		{
-			namespace Expressions
+		public sealed class IfElseExpression : L20nObject
+		{	
+			private readonly L20nObject m_Condition;
+			private readonly L20nObject m_IfTrue;
+			private readonly L20nObject m_IfFalse;
+			
+			public IfElseExpression(
+				L20nObject condition,
+				L20nObject if_true, L20nObject if_false)
 			{
-				public class Global
-				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
-					{
-						stream.SkipCharacter('@');
-						var identifier = RawIdentifier.Parse(stream);
-						return new L20n.Objects.Global(
-							identifier.As<L20n.Objects.Identifier>());
-					}
-
-					public static bool Peek(CharStream stream)
-					{
-						return stream.PeekNext() == '@';
-					}
-					
-					public static bool PeekAndParse(
-						CharStream stream, out L20n.Objects.L20nObject variable)
-					{
-						if (!Global.Peek(stream)) {
-							variable = null;
-							return false;
-						}
-						
-						variable = Global.Parse(stream);
-						return true;
-					}
-				}
+				m_Condition = condition;
+				m_IfTrue = if_true;
+				m_IfFalse = if_false;
+			}
+			
+			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			{
+				var result = m_Condition.Eval(ctx).As<BooleanValue>();
+				if (result.Value)
+					return m_IfTrue.Eval(ctx);
+				else
+					return m_IfFalse.Eval(ctx);
 			}
 		}
 	}

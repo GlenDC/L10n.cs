@@ -27,13 +27,15 @@ namespace L20n
 		{
 			public class Entity
 			{
-				public static Types.AST.Entity Parse(CharStream stream, string identifier)
+				public static void Parse(
+					CharStream stream, string identifier,
+					L20n.Internal.ContextBuilder builder)
 				{
 					var startingPos = stream.Position;
 
 					try {
 						// an optional index is possible
-						Types.AST.Index index = null;
+						L20n.Objects.L20nObject index = null;
 						Index.PeekAndParse(stream, out index);
 
 						// White Space is required
@@ -42,17 +44,13 @@ namespace L20n
 						// Now we need the actual value
 						var value = Value.Parse(stream);
 
-						// Optionally we can also have attributes at the end
-						Types.AST.Attributes attributes = null;
-						Attributes.PeekAndParse(stream, out attributes);
-
 						// White Space is optional
 						WhiteSpace.Parse(stream, true);
 
 						stream.SkipCharacter('>');
 
-						return new Types.AST.Entity(
-							identifier, index, value, attributes);
+						builder.AddEntity(identifier,
+						    new L20n.Objects.Entity(index, value));
 					}
 					catch(Exception e) {
 						string msg = String.Format(

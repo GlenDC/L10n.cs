@@ -17,6 +17,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace L20n
 {
@@ -28,27 +29,21 @@ namespace L20n
 			{
 				public class Property
 				{
-					public static Types.AST.Expression Parse(
-						CharStream stream, Types.AST.Expression member)
+					public static L20n.Objects.L20nObject Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
 						try {
-							Types.AST.Expression expression;
-							
-							// could be a raw-identifier (2) OR any other expression (1)
-							if(stream.SkipIfPossible('[')) {
-								expression = Expression.Parse(stream);
-								stream.SkipCharacter(']');
-							}
-							else {
-								stream.SkipCharacter('.');
-								var id = RawIdentifier.Parse(stream);
-								var identifier = new Types.Internal.Expressions.Identifier(id);
-								expression = new Types.AST.Expressions.Primary(identifier);
+							var identifiers = new List<L20n.Objects.Identifier>();
+							var identifier = RawIdentifier.Parse(stream);
+							identifiers.Add(identifier.As<L20n.Objects.Identifier>());
+
+							while(stream.SkipIfPossible('.')) {
+								identifier = RawIdentifier.Parse(stream);
+								identifiers.Add(identifier.As<L20n.Objects.Identifier>());
 							}
 							
-							return new Types.AST.Expressions.Property(member, expression);
+							return new L20n.Objects.PropertyExpression(identifiers);
 						}
 						catch(Exception e) {
 							string msg = String.Format(
@@ -59,12 +54,10 @@ namespace L20n
 					}
 					
 					public static bool PeekAndParse(
-						CharStream stream, Types.AST.Expression member,
-						out Types.AST.Expression expression)
+						CharStream stream, out L20n.Objects.L20nObject expression)
 					{
-						var next = stream.PeekNext();
-						if (next == '[' || next == '.') {
-							expression = Property.Parse(stream, member);
+						if (stream.PeekReg(@"[_a-zA-Z]\w*\.")) {
+							expression = Property.Parse(stream);
 							return true;
 						}
 						

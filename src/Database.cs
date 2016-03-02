@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using L20n.Internal;
+
 using SimpleJSON;
 
 namespace L20n
@@ -31,28 +33,22 @@ namespace L20n
 			get { return m_Manifest.DefaultLocale; }
 		}
 
-		// TODO
-		// We probably always want the default locale in memory,
-		// as it should be used as a fall-back for
-		// missing locales in the target-language.
-
 		public List<string> Locales
 		{
 			get { return m_Manifest.Locales; }
 		}
-
-		public Locale CurrentLocale
-		{
-			get { return m_CurrentLocale; }
-		}
-
-		private Locale m_CurrentLocale;
+		
+		private Internal.Locale m_DefaultLocale;
+		private Internal.Locale m_CurrentLocale;
 		private Manifest m_Manifest;
+
+		private Dictionary<string, L20n.Objects.Global> m_Globals;
 
 		public Database()
 		{
 			m_CurrentLocale = null;
 			m_Manifest = new Manifest();
+			m_Globals = new Dictionary<string, L20n.Objects.Global>();
 		}
 
 		public void Import(string manifest_path)
@@ -94,29 +90,62 @@ namespace L20n
 				{
 					m_Manifest.AddResoure(resource.Value, manifest_path);
 				}
+
+				// lastly, already import the default, as we'll always need that one
+				ImportLocal(m_Manifest.DefaultLocale, out m_DefaultLocale);
 			}
 		}
 
-		public void LoadLocale(string id = null)
+		public void LoadLocale(string id)
 		{
-			if (id == null)
-			{
-				id = m_Manifest.DefaultLocale;
+			if (id == null) {
+				throw new L20n.Exceptions.ImportException(
+					"a locale id has to be given in order to load one");
 			}
 
-			// get resources
+			if (id == DefaultLocale)
+				m_CurrentLocale = null;
+			else
+				ImportLocal (id, out m_CurrentLocale);
+		}
+
+		public string Translate(string raw)
+		{
+			try {
+				var stream = new IO.CharStream(raw);
+				var expression = IO.Parsers.Expression.Parse(stream);
+
+				try {
+					var output = expression.Eval(m_CurrentLocale.Context);
+					return output.As<Objects.Primitive>().ToString(m_CurrentLocale.Context);
+				}
+				catch(Exception e) {
+					var output = expression.Eval(m_DefaultLocale.Context);
+					return output.As<Objects.Primitive>().ToString(m_DefaultLocale.Context);
+				}
+			}
+			catch(Exception e) {
+				// ignore exception for now
+				return raw;
+			}
+		}
+
+		private void ImportLocal(string id, out Locale locale)
+		{
 			var localeFiles = m_Manifest.GetLocaleFiles(id);
 			if (localeFiles.Count == 0)
 			{
 				string msg = string.Format("No resources were found for locale: {0}", id);
 				throw new L20n.Exceptions.ImportException(msg);
 			}
-
-			m_CurrentLocale = new Locale();
+			
+			var builder = new LocaleBuilder();
 			foreach(var name in localeFiles)
 			{
-				m_CurrentLocale.Import(name);
+				builder.Import(name);
 			}
+
+			locale = builder.BuildLocale(m_Globals);
 		}
 
 		private class Manifest

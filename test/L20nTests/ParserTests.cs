@@ -62,16 +62,15 @@ namespace L20nTests
 			Assert.Throws<ParseException> (
 				() => Comment.Parse(NC("Unfinished Comment */")));
 
-			L20n.Types.AST.Entry entry;
 			// PeekAndParse can be used to make sure that
 			// you only try to parse something that at least looks like a comment
-			Assert.IsTrue(Comment.PeekAndParse(NC("/* A Comment */"), out entry));
+			Assert.IsTrue(Comment.PeekAndParse(NC("/* A Comment */")));
 			// When the start doesn't look like a comment it will simply return false
-			Assert.IsFalse(Comment.PeekAndParse(NC("Hello"), out entry));
+			Assert.IsFalse(Comment.PeekAndParse(NC("Hello")));
 			// It will still throw an assert however,
 			// if the start looks like a comment, but it turned out to be a trap
 			Assert.Throws<ParseException> (
-				() => Comment.PeekAndParse(NC("/* What can go wrong"), out entry));
+				() => Comment.PeekAndParse(NC("/* What can go wrong")));
 
 			// passing in an EOF stream will give an <EOF> IOException
 			Assert.Throws<ParseException>(() => Comment.Parse(NC("")));
@@ -114,41 +113,51 @@ namespace L20nTests
 			Assert.Throws<ParseException>(() => Quote.Parse(NC("")));
 		}
 
+		private delegate string StringToString(string str);
+
 		[Test()]
 		public void RawIdentifierTests()
 		{
+			StringToString strToStr = (string str) =>
+				RawIdentifier.Parse(NC(str)).As<L20n.Objects.Identifier>().Value;
+
 			// an identifier is a string that only contains word-characters
-			Assert.AreEqual("aBcDeFgH", RawIdentifier.Parse(NC("aBcDeFgH")));
-			Assert.AreEqual("Hello_World", RawIdentifier.Parse(NC("Hello_World")));
+			Assert.AreEqual("aBcDeFgH", strToStr("aBcDeFgH"));
+			Assert.AreEqual("Hello_World", strToStr("Hello_World"));
 
 			// white-spaces are not included in that
-			Assert.AreEqual("Hello", RawIdentifier.Parse(NC("Hello World")));
+			Assert.AreEqual("Hello", strToStr("Hello"));
 			// neither or dashes
-			Assert.AreEqual("glen", RawIdentifier.Parse(NC("glen-dc")));
+			Assert.AreEqual("glen", strToStr("glen-dc"));
 			// starting with a non-word char will however make it fail
 			Assert.Throws<ParseException>(() => RawIdentifier.Parse(NC(" oh")));
 
 			// You can also Parse identifiers in a fail-safe way
-			string id;
+			L20n.Objects.L20nObject id;
 			Assert.IsTrue(RawIdentifier.PeekAndParse(NC("Ho_Ho_Ho"), out id));
-			Assert.AreEqual("Ho_Ho_Ho", id);
+			Assert.AreEqual("Ho_Ho_Ho", id.As<L20n.Objects.Identifier>().Value);
 			Assert.IsFalse(RawIdentifier.PeekAndParse(NC(" fails"), out id));
 
 			// passing in an EOF stream will give an <EOF> ParseException
 			Assert.Throws<ParseException>(() => RawIdentifier.Parse(NC("")));
 		}
-		
+
+		private delegate int StringToNumber(string s);
+
 		[Test()]
 		public void LiteralTests()
 		{
+			StringToNumber stringToNumber = (String str) =>
+				Literal.Parse (NC (str)).As<L20n.Objects.Literal> ().Value;
+
 			// any integer is a valid literal
-			Assert.AreEqual("-123", Literal.Parse(NC("-123")).ToString());
-			Assert.AreEqual("42", Literal.Parse(NC("+42")).ToString());
-			Assert.AreEqual("7", Literal.Parse(NC("7")).ToString());
+			Assert.AreEqual(-123, stringToNumber("-123"));
+			Assert.AreEqual(42, stringToNumber("+42"));
+			Assert.AreEqual(7, stringToNumber("7"));
 
 			// decimals will be ignored and make for
 			// an invalid buffer later on
-			Assert.AreEqual("5", Literal.Parse(NC("5.2")).ToString());
+			Assert.AreEqual(5, stringToNumber("5.2"));
 			Assert.Throws<ParseException>(() => Literal.Parse(NC(".2")));
 			
 			// passing in an EOF stream will give an <EOF> ParseException
@@ -158,22 +167,14 @@ namespace L20nTests
 		[Test()]
 		public void HashValueTests()
 		{
-			L20n.Types.Internal.Expressions.HashValue hashValue;
-
 			// hash tables can be pretty easy
-			hashValue = Primary.Parse(NC("{hello:'world'}"))
-				as L20n.Types.Internal.Expressions.HashValue;
-			Assert.AreEqual("world", hashValue.Get("hello").ToString ());
+			Primary.Parse (NC ("{hello:'world'}"));
 
 			// hash tables cannot be empty though
 			Assert.Throws<ParseException>(() => HashValue.Parse(NC("{}")));
 
 			// hash tables can also have a default
-			hashValue = Primary.Parse(NC("{*what:'ok', yes: 'no'}"))
-				as L20n.Types.Internal.Expressions.HashValue;
-			Assert.AreEqual("ok", hashValue.Get("what").ToString());
-			Assert.AreEqual("ok", hashValue.Get("something").ToString());
-			Assert.AreEqual("no", hashValue.Get("yes").ToString());
+			Primary.Parse (NC ("{*what:'ok', yes: 'no'}"));
 			
 			// hash tables cannot contain duplicate identifiers
 			Assert.Throws<ParseException>(() => Primary.Parse(NC("{a: 'a', a: 'b'}")));
@@ -181,22 +182,14 @@ namespace L20nTests
 			Assert.Throws<ParseException>(() => Primary.Parse(NC("{*a: 'a', *b: 'b'}")));
 			
 			// hash tables can also be nested
-			hashValue = Primary.Parse(NC (@"{
+			Primary.Parse(NC (@"{
 				short: {
 				  	*subjective: 'Loki',
 				    objective: 'Loki',
 				    possessive: 'Lokis',
 				},
 				long: 'Loki Mobile Client'
-			}")) as L20n.Types.Internal.Expressions.HashValue;
-
-			Assert.AreEqual("Loki Mobile Client", hashValue.Get("long").ToString());
-			var shortValue = hashValue.Get("short") as L20n.Types.Internal.Expressions.HashValue;
-			Assert.AreEqual("Lokis", shortValue.Get("possessive").ToString());
-			Assert.AreEqual("Loki", shortValue.Get("unknown").ToString());
-
-			// exception is thrown when no default is defined
-			Assert.Throws<ObjectNotFoundException> (() => hashValue.Get ("unknown"));
+			}"));
 			
 			// passing in an EOF stream will give an <EOF> ParseException
 			Assert.Throws<ParseException>(() => HashValue.Parse(NC("")));
@@ -206,14 +199,12 @@ namespace L20nTests
 		public void IdentifierExpressionTests()
 		{
 			// One identifier parser to rule them all (4)
-			TypeAssert<L20n.Types.Internal.Expressions.Identifier>(
+			TypeAssert<L20n.Objects.Identifier>(
 				Identifier.Parse(NC("identifier")));
-			TypeAssert<L20n.Types.Internal.Expressions.Variable>(
+			TypeAssert<L20n.Objects.Variable>(
 				Identifier.Parse(NC("$normal_variable")));
-			TypeAssert<L20n.Types.Internal.Expressions.Global>(
+			TypeAssert<L20n.Objects.Global>(
 				Identifier.Parse(NC("@global_variable")));
-			TypeAssert<L20n.Types.Internal.Expressions.This>(
-				Identifier.Parse(NC("~")));
 
 			// Anything that would fail the RawIdentifier tests
 			// would also fail this one, as it wraps around
@@ -232,33 +223,36 @@ namespace L20nTests
 			// One primary expression to rule them all
 
 			// literals
-			TypeAssert<L20n.Types.Internal.Expressions.Literal>(
+			TypeAssert<L20n.Objects.Literal>(
 				Primary.Parse(NC("-42")));
-			TypeAssert<L20n.Types.Internal.Expressions.Literal>(
+			TypeAssert<L20n.Objects.Literal>(
 				Primary.Parse(NC("+10")));
-			TypeAssert<L20n.Types.Internal.Expressions.Literal>(
+			TypeAssert<L20n.Objects.Literal>(
 				Primary.Parse(NC("123")));
 
 			// string values
-			TypeAssert<L20n.Types.Internal.Expressions.StringValue>(
+			TypeAssert<L20n.Objects.StringValue>(
 				Primary.Parse(NC("\"Hello Dude!\"")));
-			TypeAssert<L20n.Types.Internal.Expressions.StringValue>(
+			TypeAssert<L20n.Objects.StringValue>(
 				Primary.Parse(NC("'this works as well'")));
+			// TODO: FIX THIS CASE
+			/*TypeAssert<L20n.Objects.StringValue>(
+				Primary.Parse(NC("'Hello {{ $person.name }}'")));*/
 
 			// hash values
-			TypeAssert<L20n.Types.Internal.Expressions.HashValue>(
+			TypeAssert<L20n.Objects.HashValue>(
 				Primary.Parse(NC("{hello:'world'}")));
-			TypeAssert<L20n.Types.Internal.Expressions.HashValue>(
+			TypeAssert<L20n.Objects.HashValue>(
 				Primary.Parse(NC("{dev: 'go develop' , debug: 'go debug',}")));
-			TypeAssert<L20n.Types.Internal.Expressions.HashValue>(
+			TypeAssert<L20n.Objects.HashValue>(
 				Primary.Parse(NC("{one:{a:'a',b:'b'},two:'2', three:'3'}")));
 
 			// identifier expressions
-			TypeAssert<L20n.Types.Internal.Expressions.Variable>(
+			TypeAssert<L20n.Objects.Variable>(
 				Primary.Parse(NC("$ola")));
-			TypeAssert<L20n.Types.Internal.Expressions.Global>(
+			TypeAssert<L20n.Objects.Global>(
 				Primary.Parse(NC("@hello")));
-			TypeAssert<L20n.Types.Internal.Expressions.Identifier>(
+			TypeAssert<L20n.Objects.Identifier>(
 				Primary.Parse(NC("bom_dia")));
 
 			// all other type of input should fail
@@ -270,247 +264,157 @@ namespace L20nTests
 		}
 
 		[Test()]
-		public void KeyValuePairTests()
-		{
-			// key value pairs can be used with simple string values
-			var pair = KeyValuePair.Parse(NC("hello: 'world'"));
-			Assert.AreEqual("hello", pair.Identifier);
-			Assert.AreEqual("world", pair.Value.ToString());
-			Assert.IsNull(pair.Index);
-
-			// hash values can also be used as values
-			var person =
-				KeyValuePair.Parse(NC("person: {age: '23', name: 'glen', *dummy: 'nope'}")).Value
-					as L20n.Types.Internal.Expressions.HashValue;
-			Assert.AreEqual("glen", person.Get("name").ToString());
-			Assert.AreEqual("nope", person.Get("job").ToString());
-
-			// TODO: test with indexes
-			
-			// passing in an EOF stream will give an <EOF> ParseException
-			Assert.Throws<ParseException>(() => KeyValuePair.Parse(NC("")));
-		}
-		
-		[Test()]
-		public void AttributesTests()
-		{
-			// Attributes can be empty,
-			// so passing in an EOF stream is actually OK for once
-			Attributes.Parse(NC(""));
-			
-			// Make sure to always have whitespace as a prefix,
-			// else nothing will be parsed
-			Assert.IsEmpty(Attributes.Parse(NC("no : 'whitespace prefix'")).Values);
-
-			// In the end it should never be empty
-			// and so it should always be a list of KeyValuePair's
-			Assert.AreEqual(1, Attributes.Parse(NC(" hello: 'world'")).Values.Count);
-			// any keyValuePair in the Attribute List has to have whitespace in front
-			// of the identifier
-			var attributes = Attributes.Parse(NC(" hello: 'world' name: 'danny'"));
-			Assert.AreEqual(2, attributes.Values.Count);
-			Assert.AreEqual("danny", attributes.Values[1].Value.ToString());
-
-			// It can handle any KeyValuePair, also the ones containing a HashValue
-			Assert.AreEqual(2, Attributes.Parse(NC(@" hello: 'world'
-													  person: {age: '23', location: 'unknown'}")).Values.Count);
-		}
-
-		[Test()]
 		public void ExpressionParseTests()
 		{
 			// this is a simple test to see if we can actually parse all the different expressions
 			// this test does NOT guarantee that they also evaluate correctly
 
 			// Primary/Identifier Expressions
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.Variable>
 				("$id");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.Global>
 				("@id");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
-				("~");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.Identifier>
 				("whatever");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.Literal>
 				("42");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.StringValue>
 				("'Hello, World!'");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.HashValue>
 				("{age: '23', location: 'unknown'}");
 			
 			// Parenthesis Expressions
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.Literal>
 				("42");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.Identifier>
 				("whatever");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.Literal>
 				("(42)");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.Variable>
 				("((($OK)))");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Primary>
+			ExpressionParseTest<L20n.Objects.Literal>
 				("((((((((((((((5))))))))))))))");
 			
-			// Attribute Expressions
-			ExpressionParseTest<L20n.Types.AST.Expressions.Attribute>
-				("hello::_world");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Attribute>
-				("hello::[world]");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Attribute>
-				("(one::two)::three");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Attribute>
-				("one::[two::[world]]");
-			
 			// Property Expressions
-			ExpressionParseTest<L20n.Types.AST.Expressions.Property>
+			ExpressionParseTest<L20n.Objects.PropertyExpression>
 				("hello.world");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Property>
-				("hello[world]");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Property>
-				("(one.two).three");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Property>
-				("one[two[three]]");
+			ExpressionParseTest<L20n.Objects.PropertyExpression>
+				("one.two.three");
 			
 			// Call Expressions
-			ExpressionParseTest<L20n.Types.AST.Expressions.Call>
+			ExpressionParseTest<L20n.Objects.CallExpression>
 				("hello(world)");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Call>
+			ExpressionParseTest<L20n.Objects.CallExpression>
 				("hello(bonjour(oi(world)))");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Call>
+			ExpressionParseTest<L20n.Objects.CallExpression>
 				("greetings('hello', 'oi', 'bom dia', 'bonjour')");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Call>
+			ExpressionParseTest<L20n.Objects.CallExpression>
 				("echo('hello world', 5)");
 			
 			// Unary Expressions
-			ExpressionParseTest<L20n.Types.AST.Expressions.Unary>
+			ExpressionParseTest<L20n.Objects.NegativeExpression>
 				("-42");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Unary>
+			ExpressionParseTest<L20n.Objects.PositiveExpression>
 				("+42");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Unary>
+			ExpressionParseTest<L20n.Objects.NegateExpression>
 				("!true");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Unary>
+			ExpressionParseTest<L20n.Objects.NegateExpression>
 				("!(!(!(!(!$what))))");
 			
 			// Binary Expressions
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.SubstractExpression>
 				("-52-10");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.AddExpression>
 				("(32+10)");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.MultiplyExpression>
 				("(21*2)");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.ModuloExpression>
 				("102%60");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.ModuloExpression>
 				("102%(30*2)");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.AddExpression>
 				("1+2+3+4+5");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.GreaterThanExpression>
 				("10 > 2");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.GreaterThanOrEqualExpression>
 				("10 >= 2");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.LessThanExpression>
 				("10 < (5 * 100)");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.LessThanOrEqualExpression>
 				("10 <= (5 + (8 - 3))");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary> // parenthesis are overrated
-				("5 + 5 == 3 * 2 + 4");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Binary>
+			ExpressionParseTest<L20n.Objects.IsEqualExpression> // parenthesis are overrated
+				("(5 + 5) == 3 * 2 + 4");
+			ExpressionParseTest<L20n.Objects.IsNotEqualExpression>
 				("41 != answer");
 			
 			// Logical Expressions
-			ExpressionParseTest<L20n.Types.AST.Expressions.Logical>
+			ExpressionParseTest<L20n.Objects.AndExpression>
 				("0 && 1 && 2");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Logical>
+			ExpressionParseTest<L20n.Objects.OrExpression>
 				("false || true");
-			ExpressionParseTest<L20n.Types.AST.Expressions.Logical>
+			ExpressionParseTest<L20n.Objects.OrExpression>
 				("false || false || false || 42");
 			
 			// Logical Expressions
-			ExpressionParseTest<L20n.Types.AST.Expressions.IfElse>
+			ExpressionParseTest<L20n.Objects.IfElseExpression>
 				("true ? 42 : 41");
-			ExpressionParseTest<L20n.Types.AST.Expressions.IfElse>
+			ExpressionParseTest<L20n.Objects.IfElseExpression>
 				("true ? shit : 'I would rather want this'");
-			ExpressionParseTest<L20n.Types.AST.Expressions.IfElse>
+			ExpressionParseTest<L20n.Objects.IfElseExpression>
 				("true || false ? (ok) : 42");
-		}
-
-		[Test()]
-		public void EntryParseTests()
-		{
-			// an entry can be a comment (evaluated to a null-entry and thus ignored)
-			EntryParseTest<L20n.Types.AST.NullEntry>("/* A Comment */");
-
-			// it can be an entity (should be most of the times)
-			EntryParseTest<L20n.Types.AST.Entity>("<hello 'world'>");
-
-			// it can be an import statement, importing other L.O.L. files
-			EntryParseTest<L20n.Types.AST.ImportStatement>("import( 'file')");
-			EntryParseTest<L20n.Types.AST.ImportStatement>("import('file')");
-			EntryParseTest<L20n.Types.AST.ImportStatement>("import('file')");
-
-			// or it can be a macro
-			EntryParseTest<L20n.Types.AST.Macro>("<answer() {42}>");
-			EntryParseTest<L20n.Types.AST.Macro>("<sum($one, $two) { $one + $two }>");
 		}
 
 		[Test()]
 		public void InvalidEntryParseTests()
 		{
+			var builder = new L20n.Internal.ContextBuilder();
 			// invalid comment examples
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("/* non-closed comment")));
+				() => Entry.Parse(NC("/* non-closed comment"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("non-opened comment*/")));
+				() => Entry.Parse(NC("non-opened comment*/"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("/* almost a correct comment *")));
+				() => Entry.Parse(NC("/* almost a correct comment *"), builder));
 
 			// invalid import examples
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("import 'nope'")));
+				() => Entry.Parse(NC("import 'nope'"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("import ('nope')")));
+				() => Entry.Parse(NC("import ('nope')"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("import('nope'")));
+				() => Entry.Parse(NC("import('nope'"), builder));
 			
 			// invalid macro examples
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<foo () {'no space allowed before first parenthesis'}>")));
+				() => Entry.Parse(NC("<foo () {'no space allowed before first parenthesis'}>"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<foo() {'invalid expression}>")));
+				() => Entry.Parse(NC("<foo() {'invalid expression}>"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<foo(nope) {'non-variable as identifier'}>")));
+				() => Entry.Parse(NC("<foo(nope) {'non-variable as identifier'}>"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<foo($no_expression_defined) {}>")));
+				() => Entry.Parse(NC("<foo($no_expression_defined) {}>"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<foo() {'closing curly brace missing'>")));
+				() => Entry.Parse(NC("<foo() {'closing curly brace missing'>"), builder));
 
 			// invalid entity examples
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<'no identifier given'>")));
+				() => Entry.Parse(NC("<'no identifier given'>"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<onlyAnIdentifierGiven>")));
+				() => Entry.Parse(NC("<onlyAnIdentifierGiven>"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<no'space'>")));
+				() => Entry.Parse(NC("<no'space'>"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<attribute before:'the value itself' 'world'>")));
+				() => Entry.Parse(NC("<invalid('index') 'should be enclosed by [], not ()'>"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<invalid('index') 'should be enclosed by [], not ()'>")));
+				() => Entry.Parse(NC("<invalid ['index'] 'no space allowed before the first ['>"), builder));
 			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<invalid ['index'] 'no space allowed before the first ['>")));
-			Assert.Throws<ParseException>(
-				() => Entry.Parse(NC("<invalid['value'] 42>")));
+				() => Entry.Parse(NC("<invalid['value'] 42>"), builder));
 		}
 
 
 		private void ExpressionParseTest<T>(string input) {
 			var stream = new CharStream (input);
 			TypeAssert<T>(Expression.Parse(stream));
-			if (stream.InputLeft ())
-				throw new ParseException("stream is non-empty: " + stream.ReadUntilEnd());
-		}
-		
-		private void EntryParseTest<T>(string input) {
-			var stream = new CharStream (input);
-			TypeAssert<T>(Entry.Parse(stream));
 			if (stream.InputLeft ())
 				throw new ParseException("stream is non-empty: " + stream.ReadUntilEnd());
 		}

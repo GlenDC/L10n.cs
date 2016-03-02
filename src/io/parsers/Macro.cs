@@ -27,7 +27,9 @@ namespace L20n
 		{	
 			public class Macro
 			{
-				public static Types.AST.Entry Parse(CharStream stream, string identifier)
+				public static void Parse(
+					CharStream stream,
+					string identifier, L20n.Internal.ContextBuilder builder)
 				{
 					var startingPos = stream.Position;
 					
@@ -35,12 +37,12 @@ namespace L20n
 						stream.SkipCharacter('(');
 						WhiteSpace.Parse(stream, true);
 
-						List<Types.Internal.Expressions.Variable> variables = null;
+						List<string> variables = null;
 
 						// variables are optional,
 						// but we do have them, we need at least one (duh)
 						if (Expressions.Variable.Peek (stream)) {
-							variables = new List<Types.Internal.Expressions.Variable>();
+							variables = new List<string>();
 							variables.Add(Macro.ParseVariable(stream));
 
 							// more than 1 is possible as well
@@ -65,7 +67,8 @@ namespace L20n
 						stream.SkipCharacter('>');
 
 						// return the fully parsed macro
-						return new L20n.Types.AST.Macro(variables, expression);
+						builder.AddMacro(identifier,
+							new L20n.Objects.Macro(expression, variables));
 					}
 					catch(Exception e) {
 						string msg = String.Format(
@@ -75,23 +78,23 @@ namespace L20n
 					}
 				}
 
-				public static bool PeekAndParse(CharStream stream, string identifier, out Types.AST.Entry macro)
+				public static bool PeekAndParse(
+					CharStream stream,
+					string identifier, Internal.ContextBuilder builder)
 				{
 					if (stream.PeekNext () != '(') {
-						macro = null;
 						return false;
 					}
 
-					macro = Macro.Parse(stream, identifier);
+					Macro.Parse(stream, identifier, builder);
 					return true;
 				}
 				
-				private static Types.Internal.Expressions.Variable ParseVariable(CharStream stream)
+				private static string ParseVariable(CharStream stream)
 				{
-					var variable = Expressions.Variable.Parse (stream)
-						as Types.Internal.Expressions.Variable;
+					var variable = Expressions.Variable.Parse(stream);
 					WhiteSpace.Parse(stream, true);
-					return variable;
+					return variable.As<L20n.Objects.Variable>().Identifier;
 				}
 			}
 		}

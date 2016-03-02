@@ -28,12 +28,12 @@ namespace L20n
 			{
 				public class Primary
 				{
-					public static Types.Internal.Expressions.Primary Parse(CharStream stream)
+					public static L20n.Objects.L20nObject Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
 						try {
-							Types.Internal.Expressions.Primary primary;
+							L20n.Objects.L20nObject primary;
 
 							if (Literal.PeekAndParse(stream, out primary))
 								return primary;
