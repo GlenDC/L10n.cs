@@ -111,10 +111,17 @@ namespace L20n
 					return info;
 				}
 
-				public static bool Peek(CharStream stream)
+				public static bool Peek(CharStream stream, Quote.Info quote = null)
 				{
+					if (quote != null) {
+						var raw = quote.ToString();
+						var output = stream.PeekNextRange(raw.Length);
+
+						return raw == output;
+					}
+
 					char next = stream.PeekNext ();
-					return (next == '\'' || next == '"');
+					return next == '\'' || next == '"';
 				}
 			}
 		}

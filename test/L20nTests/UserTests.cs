@@ -43,26 +43,27 @@ namespace L20nTests
 				() => database.Import("../../../resources/manifest-without-resources.json"));
 		}
 
-		/*[Test()]
+		[Test()]
 		public void SimpleDatabase()
 		{
 			var pc = new PerformanceClock("SimpleDatabase");
 
 			Database database = new Database();
-			database.Import("../../../resources/manifest.json");
 
-			pc.Clock("database imported");
+			pc.Clock("start import database");
+			database.Import("../../../resources/manifest.json");
+			pc.Clock("database imported (incl. default)");
 
 			pc.Pause();
 			Assert.AreEqual("en-US", database.DefaultLocale);
 			Assert.AreEqual(3, database.Locales.Count);
 			pc.Continue();
 
-			//Assert.Throws<ImportException>(() => database.LoadLocale());
-			//pc.Clock("default locale loaded");
+			database.LoadLocale("fr");
+			pc.Clock("fr locale imported");
 			
 			pc.Stop();
-		}*/
+		}
 	}
 }
 

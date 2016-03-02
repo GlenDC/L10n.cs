@@ -13,7 +13,7 @@
 /* ------------------------------------------------------------------------- */
 
 <screenWidth """
-  The label of the button below changes depending on the 
+  The label of the button below changes depending on the
   available screen width (currently: {{ @screen.width.px }}px).
 """>
 
@@ -24,8 +24,7 @@
         $n.width.px < 1200 ? "desktop" :
           "large" }>
 
-<button ""
- value[formFactor(@screen)]: {
+<button[formFactor(@screen)] {
   *desktop: "Create & insert a <p> element that will be dynamically localized",
    landscapeTablet: "Create & insert a dynamically-localized <p>",
    landscapePhone: "Insert a dynamically-localized <p>",
@@ -47,7 +46,7 @@
     In order to test language negotiation, go to your
     browser's {{ _options }} and change the Accept-Language
     header.  Try setting French (fr) or Polish (pl) as your
-    first choice and observe the language fallback at work 
+    first choice and observe the language fallback at work
     in the web console.
   """,
   single: """

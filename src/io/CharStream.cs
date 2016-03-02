@@ -102,7 +102,7 @@ namespace L20n
 			public string PeekNextRange(int length, int offset = 0)
 			{
 				int pos = m_Position + offset;
-				if(EndOfStream() || (pos+length) > m_LastPosition)
+				if(EndOfStream() || (pos+length) > (m_LastPosition+1))
 					return null;
 
 				return m_Buffer.Substring (pos, length);

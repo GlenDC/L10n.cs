@@ -49,9 +49,10 @@ namespace L20n
 							// because of the fact that we started parsing '<' and an identifier.
 							Entity.Parse(stream, identifier, builder);
 						}
-
-						// it has to be an import statement at this point
-						ImportStatement.Parse(stream, builder);
+						else {
+							// it has to be an import statement at this point
+							ImportStatement.Parse(stream, builder);
+						}
 					}
 					catch(Exception e) {
 						string msg = String.Format(

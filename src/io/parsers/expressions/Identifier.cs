@@ -35,8 +35,10 @@ namespace L20n
 						try {
 							L20n.Objects.L20nObject expression;
 
-							if (RawIdentifier.PeekAndParse(stream, out expression))
-								return expression;
+							if (RawIdentifier.PeekAndParse(stream, out expression)) {
+								return new L20n.Objects.IdentifierExpression(
+									expression.As<L20n.Objects.Identifier>().Value);
+							}
 
 							if (Variable.PeekAndParse(stream, out expression))
 								return expression;

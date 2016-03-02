@@ -199,7 +199,7 @@ namespace L20nTests
 		public void IdentifierExpressionTests()
 		{
 			// One identifier parser to rule them all (4)
-			TypeAssert<L20n.Objects.Identifier>(
+			TypeAssert<L20n.Objects.IdentifierExpression>(
 				Identifier.Parse(NC("identifier")));
 			TypeAssert<L20n.Objects.Variable>(
 				Identifier.Parse(NC("$normal_variable")));
@@ -255,7 +255,7 @@ namespace L20nTests
 				Primary.Parse(NC("$ola")));
 			TypeAssert<L20n.Objects.Global>(
 				Primary.Parse(NC("@hello")));
-			TypeAssert<L20n.Objects.Identifier>(
+			TypeAssert<L20n.Objects.IdentifierExpression>(
 				Primary.Parse(NC("bom_dia")));
 
 			// all other type of input should fail
@@ -277,7 +277,7 @@ namespace L20nTests
 				("$id");
 			ExpressionParseTest<L20n.Objects.Global>
 				("@id");
-			ExpressionParseTest<L20n.Objects.Identifier>
+			ExpressionParseTest<L20n.Objects.IdentifierExpression>
 				("whatever");
 			ExpressionParseTest<L20n.Objects.Literal>
 				("42");
@@ -289,7 +289,7 @@ namespace L20nTests
 			// Parenthesis Expressions
 			ExpressionParseTest<L20n.Objects.Literal>
 				("42");
-			ExpressionParseTest<L20n.Objects.Identifier>
+			ExpressionParseTest<L20n.Objects.IdentifierExpression>
 				("whatever");
 			ExpressionParseTest<L20n.Objects.Literal>
 				("(42)");

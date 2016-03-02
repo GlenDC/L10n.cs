@@ -44,11 +44,11 @@ namespace L20n
 								builder.appendChar(stream.ForceReadNext());
 							}
 							else {
-								if(Expander.PeekAndParse(stream, out expression)) {
-									builder.appendExpression(expression);
-								}
-								else if(c == '\'' || c == '"') {
+								if(Quote.Peek(stream, quote)) {
 									break; // un-escaped quote means we're ending the string
+								}
+								else if(Expander.PeekAndParse(stream, out expression)) {
+									builder.appendExpression(expression);
 								}
 								else {
 									builder.appendChar(stream.ForceReadNext());
