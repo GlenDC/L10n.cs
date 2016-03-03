@@ -54,6 +54,9 @@ namespace L20n
 			
 			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
 			{
+				if (m_Expressions.Length == 0)
+					return new StringOutput (m_Value);
+
 				string[] expressions = new string[m_Expressions.Length];
 				for (int i = 0; i < expressions.Length; ++i)
 					expressions[i] = m_Expressions[i].Eval(ctx).As<Primitive>().ToString(ctx);

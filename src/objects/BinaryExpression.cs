@@ -43,10 +43,10 @@ namespace L20n
 
 				// need to be of the same type
 				var expectedType = first.GetType();
-				if (expectedType != m_Second.GetType()) {
+				if (expectedType != second.GetType()) {
 					throw new UnexpectedObjectException(
 						String.Format("BinaryExpression's 2nd argument is expected to be {0}, got {1}",
-					              expectedType, m_Second.GetType()));
+					              expectedType, second.GetType()));
 				}
 				
 				// for now we accept literals, booleans and literals
@@ -57,14 +57,16 @@ namespace L20n
 				
 				BooleanValue boolValue;
 				if (first.As(out boolValue))
-					return Operation(literal.Value, second.As<BooleanValue>().Value);
+					return Operation(boolValue.Value, second.As<BooleanValue>().Value);
 				
 				return Operation(
 					first.As<StringOutput>().Value,
 					second.As<StringOutput>().Value);
 			}
 			
-			protected abstract BooleanValue Operation(object a, object b);
+			protected abstract BooleanValue Operation(int a, int b);
+			protected abstract BooleanValue Operation(bool a, bool b);
+			protected abstract BooleanValue Operation(string a, string b);
 		}
 		
 		public sealed class IsEqualExpression : BinaryExpression
@@ -72,7 +74,17 @@ namespace L20n
 			public IsEqualExpression(L20nObject a, L20nObject b)
 			: base(a, b) {}
 			
-			protected override BooleanValue Operation(object a, object b)
+			protected override BooleanValue Operation(int a, int b)
+			{
+				return new BooleanValue(a == b);
+			}
+			
+			protected override BooleanValue Operation(bool a, bool b)
+			{
+				return new BooleanValue(a == b);
+			}
+			
+			protected override BooleanValue Operation(string a, string b)
 			{
 				return new BooleanValue(a == b);
 			}
@@ -83,7 +95,17 @@ namespace L20n
 			public IsNotEqualExpression(L20nObject a, L20nObject b)
 			: base(a, b) {}
 			
-			protected override BooleanValue Operation(object a, object b)
+			protected override BooleanValue Operation(int a, int b)
+			{
+				return new BooleanValue(a != b);
+			}
+			
+			protected override BooleanValue Operation(bool a, bool b)
+			{
+				return new BooleanValue(a != b);
+			}
+			
+			protected override BooleanValue Operation(string a, string b)
 			{
 				return new BooleanValue(a != b);
 			}

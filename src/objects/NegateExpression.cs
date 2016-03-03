@@ -36,7 +36,7 @@ namespace L20n
 			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
 			{
 				var expression = m_Expression.Eval(ctx);
-				var result = !(m_Expression.As<BooleanValue>().Value);
+				var result = !(expression.As<BooleanValue>().Value);
 				
 				return new BooleanValue(result);
 			}
