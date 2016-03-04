@@ -38,8 +38,7 @@ namespace L20n
 						// but in this case we have the same start for both a <macro> and an <entity>
 						// so we simply have to make an exception in this case for performance reasons
 						if (stream.SkipIfPossible('<')) {
-							string identifier = RawIdentifier.Parse(stream)
-								.As<L20n.Objects.Identifier>().Value;
+							var identifier = Identifier.Parse(stream);
 
 							if(Macro.PeekAndParse(stream, identifier, builder))
 							   return;

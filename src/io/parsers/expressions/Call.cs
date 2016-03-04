@@ -29,7 +29,7 @@ namespace L20n
 			{
 				public class Call
 				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream, L20n.Objects.L20nObject member)
+					public static AST.INode Parse(CharStream stream, AST.INode member)
 					{
 						var startingPos = stream.Position;
 						
@@ -37,19 +37,18 @@ namespace L20n
 							// skip opening tag
 							stream.SkipCharacter('(');
 
-							// we need at least one Parameter
-							var parameters = new List<L20n.Objects.L20nObject>();
-							parameters.Add(ParseExpression(stream));
+							var call = new AST.CallExpression(
+								member, ParseExpression(stream));
 
 							// but we can also have more
 							while(stream.SkipIfPossible(',')) {
-								parameters.Add(ParseExpression(stream));
+								call.AddParameter(ParseExpression(stream));
 							}
 
 							// skip closing tag
 							stream.SkipCharacter(')');
 
-							return new L20n.Objects.CallExpression(member, parameters);
+							return call;
 						}
 						catch(Exception e) {
 							string msg = String.Format(
@@ -59,7 +58,7 @@ namespace L20n
 						}
 					}
 
-					private static L20n.Objects.L20nObject ParseExpression(CharStream stream)
+					private static AST.INode ParseExpression(CharStream stream)
 					{
 						WhiteSpace.Parse(stream, true);
 						var expression = Expression.Parse(stream);
@@ -68,8 +67,8 @@ namespace L20n
 					}
 
 					public static bool PeekAndParse(
-						CharStream stream, L20n.Objects.L20nObject member,
-						out L20n.Objects.L20nObject expression)
+						CharStream stream, AST.INode member,
+						out AST.INode expression)
 					{
 						if (stream.PeekNext () == '(') {
 							expression = Call.Parse(stream, member);

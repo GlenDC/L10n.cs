@@ -27,7 +27,7 @@ namespace L20n
 		{
 			public class HashItem
 			{
-				public static HashItemValue Parse(CharStream stream)
+				public static AST.HashValue.Item Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
@@ -36,7 +36,7 @@ namespace L20n
 						bool isDefault = stream.SkipIfPossible('*');
 						
 						// parse the raw identifier (key)
-						var identifier = RawIdentifier.Parse(stream);
+						var identifier = Identifier.Parse(stream);
 						
 						// whitespace is optional
 						WhiteSpace.Parse(stream, true);
@@ -48,9 +48,7 @@ namespace L20n
 						// get the actual value, which is identified by the key
 						var value = Value.Parse(stream);
 						
-						return new HashItemValue(
-							identifier.As<L20n.Objects.Identifier>().Value,
-							value, isDefault);
+						return new AST.HashValue.Item(identifier, value, isDefault);
 					}
 					catch(Exception e) {
 						string msg = String.Format(
@@ -60,29 +58,15 @@ namespace L20n
 					}
 				}
 
-				public static bool PeekAndParse(CharStream stream, out HashItemValue item)
+				public static bool PeekAndParse(CharStream stream, out AST.HashValue.Item item)
 				{
-					if (stream.PeekNext () == '*' || RawIdentifier.Peek (stream)) {
+					if (stream.PeekNext () == '*' || Identifier.Peek (stream)) {
 						item = HashItem.Parse(stream);
 						return true;
 					}
 
 					item = null;
 					return false;
-				}
-
-				public class HashItemValue
-				{
-					public string Identifier { get; private set; }
-					public L20n.Objects.L20nObject Value { get; private set; }
-					public bool IsDefault { get; private set; }
-
-					public HashItemValue(string id, L20n.Objects.L20nObject val, bool is_def)
-					{
-						Identifier = id;
-						Value = val;
-						IsDefault = is_def;
-					}
 				}
 			}
 		}

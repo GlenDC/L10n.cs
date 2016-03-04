@@ -26,38 +26,28 @@ namespace L20n
 {
 	namespace Objects
 	{
-		public sealed class PropertyExpression : L20nObject
+		public sealed class Index : L20nObject
 		{
-			public L20nObject[] Identifiers
-			{
-				get { return m_Identifiers; }
-			}
-
-			private readonly L20nObject[] m_Identifiers;
+			private readonly L20nObject[] m_Indeces;
 			
-			public PropertyExpression(L20nObject[] identifiers)
+			public Index(L20nObject[] indeces)
 			{
-				m_Identifiers = identifiers;
+				m_Indeces = indeces;
 			}
 			
 			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
 			{
-				if (argv.Length == 1 && argv[0] != null) {
-					return argv[0].As<HashValue>().Eval(ctx, this);
+				if (m_Indeces.Length == 1) {
+					var index = m_Indeces[0].Eval(ctx).As<StringOutput>().Value;
+					var identifier = new L20n.Objects.IdentifierExpression(index);
+					return identifier.Eval(ctx);
 				}
-				
-				var entity = Identifiers[0].Eval(ctx);
-				return entity.Eval(ctx, new PropertyExpression(SliceIdentifiers(1)));
-			}
 
-			private L20nObject[] SliceIdentifiers(int start)
-			{	
-				// Return new array.
-				var res = new L20nObject[m_Identifiers.Length - start];
-				for (int i = start; i < m_Identifiers.Length; i++)
-					res[i] = m_Identifiers[i];
-
-				return res;
+				var indeces = new L20nObject[m_Indeces.Length];
+				for(int i = 0; i < indeces.Length; ++i)
+					indeces[i] = m_Indeces[i].Eval(ctx);
+				var propertyExpression = new L20n.Objects.PropertyExpression(indeces);
+				return propertyExpression.Eval(ctx);
 			}
 		}
 	}

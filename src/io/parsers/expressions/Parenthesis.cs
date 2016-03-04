@@ -28,7 +28,7 @@ namespace L20n
 			{
 				public class Parenthesis
 				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
+					public static AST.INode Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
@@ -50,7 +50,7 @@ namespace L20n
 						}
 					}
 
-					public static bool PeekAndParse(CharStream stream, out L20n.Objects.L20nObject expression)
+					public static bool PeekAndParse(CharStream stream, out AST.INode expression)
 					{
 						if (stream.PeekNext () == '(' || Primary.Peek(stream)) {
 							expression = Parenthesis.Parse(stream);

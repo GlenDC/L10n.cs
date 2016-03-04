@@ -29,23 +29,22 @@ namespace L20n
 			// so there is no need to make 2 seperate parsers for it
 			public class Expression
 			{
-				public static L20n.Objects.L20nObject Parse(CharStream stream)
+				public static AST.INode Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
 					try {
-						var condition = Expressions.Logical.Parse(stream);
+						var condition = Expressions.Logic.Parse(stream);
 
 						// check if we have an IfElse case or simply a logical expression
 						string s;
 						if (stream.ReadReg(@"\s*\?\s*", out s)) {
-							var first = Expression.Parse (stream);
-							WhiteSpace.Parse (stream, true);
-							stream.SkipCharacter (':');
-							WhiteSpace.Parse (stream, true);
-							var second = Expression.Parse (stream);
-							return new L20n.Objects.IfElseExpression(
-								condition, first, second);
+							var first = Expression.Parse(stream);
+							WhiteSpace.Parse(stream, true);
+							stream.SkipCharacter(':');
+							WhiteSpace.Parse(stream, true);
+							var second = Expression.Parse(stream);
+							return new AST.Conditional(condition, first, second);
 						} else { // it's simply a logical expression
 							return condition;
 						}

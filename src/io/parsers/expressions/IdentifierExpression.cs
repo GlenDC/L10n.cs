@@ -17,7 +17,6 @@
  */
 
 using System;
-using L20n.Exceptions;
 
 namespace L20n
 {
@@ -27,47 +26,40 @@ namespace L20n
 		{
 			namespace Expressions
 			{
-				public class Logical
+				public class IdentifierExpression
 				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
+					public static AST.INode Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 
 						try {
-							var first = Binary.Parse(stream);
-							string op;
-							if(stream.ReadReg(@"\s*(\|\||\&\&)", out op)) {
-								WhiteSpace.Parse(stream, true);
-								var second = Logical.Parse(stream);
-								return Logical.CreateLogicalExpression(first, second, op.Trim());
-							}
-							else {
-								return first;
-							}
+							AST.INode identifier;
+
+							if (Variable.PeekAndParse(stream, out identifier))
+								return identifier;
+							
+							if (Global.PeekAndParse(stream, out identifier))
+								return identifier;
+
+							return new AST.IdentifierExpression(
+								Identifier.Parse(stream));
 						}
 						catch(Exception e) {
 							string msg = String.Format(
-								"something went wrong parsing an <logical_expression> starting at {0}",
+								"something went wrong parsing an <identifier> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
 							throw new L20n.Exceptions.ParseException(msg, e);
 						}
+
+						throw stream.CreateException (
+							"no valid start for an <identnfier_expression> could be found");
 					}
-					
-					private static L20n.Objects.L20nObject CreateLogicalExpression(
-						L20n.Objects.L20nObject first, L20n.Objects.L20nObject second,
-						string op)
+
+					public static bool Peek(CharStream stream)
 					{
-						switch (op) {
-						case "&&":
-							return new L20n.Objects.AndExpression(first, second);
-							
-						case "||":
-							return new L20n.Objects.OrExpression(first, second);
-							
-						default:
-							throw new ParseException(
-								String.Format("{0} is not a valid <logical> operation", op));
-						}
+						return Identifier.Peek (stream)
+							|| Variable.Peek (stream)
+							|| Global.Peek (stream);
 					}
 				}
 			}

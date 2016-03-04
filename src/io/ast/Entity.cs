@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,40 +17,44 @@
  */
 
 using System;
+using System.Collections.Generic;
+
 using L20n.Exceptions;
 
 namespace L20n
 {
 	namespace IO
 	{
-		namespace Parsers
+		namespace AST
 		{
-			namespace Expressions
+			public sealed class Entity : INode
 			{
-				public class Unary
+				private readonly string m_Identifier;
+				private readonly INode m_Index;
+				private readonly INode m_Value;
+				
+				public Entity(string identifier, INode index, INode value)
 				{
-					public static AST.INode Parse(CharStream stream)
-					{
-						var startingPos = stream.Position;
-						
-						try {
-							char op;
-							if(stream.SkipAnyIfPossible(new char[3]{'+', '-', '!'}, out op)) {
-								WhiteSpace.Parse(stream, true);
-								var expression = Unary.Parse(stream);
-								return new AST.UnaryOperation(expression, op);
-							}
-							else {
-								return Member.Parse(stream);
-							}
-						}
-						catch(Exception e) {
-							string msg = String.Format(
-								"something went wrong parsing an <unary_expression> starting at {0}",
-								stream.ComputeDetailedPosition(startingPos));
-							throw new L20n.Exceptions.ParseException(msg, e);
-						}
-					}
+					m_Identifier = identifier;
+					m_Index = index;
+					m_Value = value;
+				}
+				
+				public L20n.Objects.L20nObject Eval()
+				{
+					L20n.Objects.L20nObject index =
+						m_Index == null ? null : m_Index.Eval();
+					var value = m_Value.Eval();
+
+					return new L20n.Objects.Entity(index, value);
+				}
+				
+				public string Display()
+				{
+					return String.Format("<{0}{1} {2}>",
+						m_Identifier,
+					    m_Index == null ? "" : m_Index.Display(),
+					    m_Value.Display());
 				}
 			}
 		}

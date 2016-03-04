@@ -28,14 +28,14 @@ namespace L20n
 			{
 				public class Member
 				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
+					public static AST.INode Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
 						try {
-							L20n.Objects.L20nObject expression;
+							AST.INode expression;
 
-							// for now a property expression is always seperated by a dot (`.`)
+							// "for now" a property expression is always seperated by a dot (`.`)
 							// and has to have at least 1 property (e.g.: `x.y`),
 							// more than 1 is also acceptable (e.g.: `x.y.z`).
 							if(Property.PeekAndParse(stream, out expression)) {

@@ -51,10 +51,8 @@
     <Compile Include="src\io\parsers\Literal.cs" />
     <Compile Include="src\io\parsers\expressions\Variable.cs" />
     <Compile Include="src\io\parsers\expressions\Global.cs" />
-    <Compile Include="src\io\parsers\expressions\Identifier.cs" />
     <Compile Include="src\io\parsers\expressions\Primary.cs" />
     <Compile Include="src\io\parsers\Expander.cs" />
-    <Compile Include="src\io\parsers\expressions\Logical.cs" />
     <Compile Include="src\io\parsers\expressions\Binary.cs" />
     <Compile Include="src\io\parsers\expressions\Unary.cs" />
     <Compile Include="src\io\parsers\expressions\Member.cs" />
@@ -62,7 +60,6 @@
     <Compile Include="src\io\parsers\expressions\Property.cs" />
     <Compile Include="src\io\parsers\expressions\Parenthesis.cs" />
     <Compile Include="src\io\parsers\HashItem.cs" />
-    <Compile Include="src\io\parsers\RawIdentifier.cs" />
     <Compile Include="src\io\parsers\ImportStatement.cs" />
     <Compile Include="src\io\LocalizbleObjectsList.cs" />
     <Compile Include="src\exceptions\ParseException.cs" />
@@ -95,6 +92,28 @@
     <Compile Include="src\objects\UnaryNumericExpression.cs" />
     <Compile Include="src\objects\LogicalExpression.cs" />
     <Compile Include="src\objects\IfElseExpression.cs" />
+    <Compile Include="src\io\ast\INode.cs" />
+    <Compile Include="src\io\ast\Literal.cs" />
+    <Compile Include="src\io\ast\StringValue.cs" />
+    <Compile Include="src\io\ast\HashValue.cs" />
+    <Compile Include="src\io\ast\Variable.cs" />
+    <Compile Include="src\io\ast\Global.cs" />
+    <Compile Include="src\io\ast\Property.cs" />
+    <Compile Include="src\io\ast\CallExpression.cs" />
+    <Compile Include="src\io\ast\Conditional.cs" />
+    <Compile Include="src\io\ast\UnaryOperation.cs" />
+    <Compile Include="src\io\ast\LogicExpression.cs" />
+    <Compile Include="src\io\ast\BinaryOperation.cs" />
+    <Compile Include="src\io\ast\Macro.cs" />
+    <Compile Include="src\io\ast\Entity.cs" />
+    <Compile Include="src\io\parsers\PureStringValue.cs" />
+    <Compile Include="src\io\ast\Index.cs" />
+    <Compile Include="src\objects\Index.cs" />
+    <Compile Include="src\objects\Optional.cs" />
+    <Compile Include="src\io\parsers\Identifier.cs" />
+    <Compile Include="src\io\parsers\expressions\IdentifierExpression.cs" />
+    <Compile Include="src\io\ast\IdentifierExpression.cs" />
+    <Compile Include="src\io\parsers\expressions\Logic.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -106,5 +125,6 @@
     <Folder Include="src\exceptions\" />
     <Folder Include="src\objects\" />
     <Folder Include="src\internal\" />
+    <Folder Include="src\io\ast\" />
   </ItemGroup>
 </Project>

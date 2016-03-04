@@ -27,14 +27,22 @@ namespace L20n
 	namespace Objects
 	{
 		public sealed class Macro : L20nObject
-		{
+		{	
+			public string Identifier
+			{
+				get { return m_Identifier; }
+			}
+
+			private readonly string m_Identifier;
 			private readonly string[] m_Parameters;
 			private readonly L20nObject m_Expression;
 
-			public Macro(L20nObject expression, List<string> parameters)
+			public Macro(
+				string identifier, L20nObject expression, string[] parameters)
 			{
-				m_Parameters = parameters.ToArray();
+				m_Parameters = parameters;
 				m_Expression = expression;
+				m_Identifier = identifier;
 			}
 
 			public override L20nObject Eval(Context ctx, params L20nObject[] argv)

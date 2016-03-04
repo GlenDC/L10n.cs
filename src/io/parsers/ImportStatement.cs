@@ -35,12 +35,11 @@ namespace L20n
 					try {
 						stream.SkipString("import(");
 						WhiteSpace.Parse(stream, true);
-						var path = StringValue.Parse(stream);
+						var path = PureStringValue.Parse(stream);
 						WhiteSpace.Parse(stream, true);
 						stream.SkipCharacter(')');
 
-						var file_name = path.As<L20n.Objects.StringValue>().Value;
-						LocalizbleObjectsList.Parse(file_name, builder);
+						LocalizbleObjectsList.Parse(path, builder);
 					}
 					catch(Exception e) {
 						string msg = String.Format(

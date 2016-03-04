@@ -27,21 +27,26 @@ namespace L20n
 	{
 		public sealed class Entity : L20nObject
 		{	
-			private readonly L20nObject m_Index;
+			private readonly Optional m_Index;
 			private readonly L20nObject m_Value;
 
 			public Entity(L20nObject index, L20nObject value)
 			{
-				m_Index = index;
+				m_Index = new Optional(index);
 				m_Value = value;
 			}
 			
 			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
 			{
-				var arguments = new List<L20nObject>(argv.Length + 1);
-				arguments.Add(m_Index.Eval(ctx));
-				arguments.AddRange(argv);
-				return m_Value.Eval(ctx, arguments.ToArray());
+				if (m_Index.IsSet) {
+					var arguments = new List<L20nObject> (argv.Length + 1);
+					var index = m_Index.Unwrap<Index>();
+					arguments.Add(index.Eval(ctx));
+					arguments.AddRange(argv);
+					return m_Value.Eval(ctx, arguments.ToArray());
+				}
+
+				return m_Value.Eval(ctx, argv);
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,36 +22,12 @@ namespace L20n
 {
 	namespace IO
 	{
-		namespace Parsers
+		namespace AST
 		{
-			namespace Expressions
+			public interface INode
 			{
-				public class Global
-				{
-					public static AST.INode Parse(CharStream stream)
-					{
-						stream.SkipCharacter('@');
-						var identifier = Identifier.Parse(stream);
-						return new AST.Global(identifier);
-					}
-
-					public static bool Peek(CharStream stream)
-					{
-						return stream.PeekNext() == '@';
-					}
-					
-					public static bool PeekAndParse(
-						CharStream stream, out AST.INode variable)
-					{
-						if (!Global.Peek(stream)) {
-							variable = null;
-							return false;
-						}
-						
-						variable = Global.Parse(stream);
-						return true;
-					}
-				}
+				L20n.Objects.L20nObject Eval();
+				string Display();
 			}
 		}
 	}

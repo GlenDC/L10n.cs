@@ -28,9 +28,9 @@ namespace L20n
 		{	
 			private readonly string m_Identifier;
 			
-			public Global(Identifier identifier)
+			public Global(string identifier)
 			{
-				m_Identifier = identifier.Value;
+				m_Identifier = identifier;
 			}
 
 			public override L20nObject Eval(Context ctx, params L20nObject[] argv)

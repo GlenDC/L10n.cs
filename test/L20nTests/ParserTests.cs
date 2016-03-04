@@ -119,7 +119,7 @@ namespace L20nTests
 		public void RawIdentifierTests()
 		{
 			StringToString strToStr = (string str) =>
-				RawIdentifier.Parse(NC(str)).As<L20n.Objects.Identifier>().Value;
+				Identifier.Parse(NC(str));
 
 			// an identifier is a string that only contains word-characters
 			Assert.AreEqual("aBcDeFgH", strToStr("aBcDeFgH"));
@@ -130,16 +130,16 @@ namespace L20nTests
 			// neither or dashes
 			Assert.AreEqual("glen", strToStr("glen-dc"));
 			// starting with a non-word char will however make it fail
-			Assert.Throws<ParseException>(() => RawIdentifier.Parse(NC(" oh")));
+			Assert.Throws<ParseException>(() => Identifier.Parse(NC(" oh")));
 
 			// You can also Parse identifiers in a fail-safe way
-			L20n.Objects.L20nObject id;
-			Assert.IsTrue(RawIdentifier.PeekAndParse(NC("Ho_Ho_Ho"), out id));
-			Assert.AreEqual("Ho_Ho_Ho", id.As<L20n.Objects.Identifier>().Value);
-			Assert.IsFalse(RawIdentifier.PeekAndParse(NC(" fails"), out id));
+			string id;
+			Assert.IsTrue(Identifier.PeekAndParse(NC("Ho_Ho_Ho"), out id));
+			Assert.AreEqual("Ho_Ho_Ho", id);
+			Assert.IsFalse(Identifier.PeekAndParse(NC(" fails"), out id));
 
 			// passing in an EOF stream will give an <EOF> ParseException
-			Assert.Throws<ParseException>(() => RawIdentifier.Parse(NC("")));
+			Assert.Throws<ParseException>(() => Identifier.Parse(NC("")));
 		}
 
 		private delegate int StringToNumber(string s);
@@ -148,7 +148,7 @@ namespace L20nTests
 		public void LiteralTests()
 		{
 			StringToNumber stringToNumber = (String str) =>
-				Literal.Parse (NC (str)).As<L20n.Objects.Literal> ().Value;
+				Literal.Parse(NC(str)).Eval().As<L20n.Objects.Literal>().Value;
 
 			// any integer is a valid literal
 			Assert.AreEqual(-123, stringToNumber("-123"));
@@ -199,22 +199,22 @@ namespace L20nTests
 		public void IdentifierExpressionTests()
 		{
 			// One identifier parser to rule them all (4)
-			TypeAssert<L20n.Objects.IdentifierExpression>(
-				Identifier.Parse(NC("identifier")));
-			TypeAssert<L20n.Objects.Variable>(
-				Identifier.Parse(NC("$normal_variable")));
-			TypeAssert<L20n.Objects.Global>(
-				Identifier.Parse(NC("@global_variable")));
+			TypeAssert<L20n.IO.AST.IdentifierExpression>(
+				IdentifierExpression.Parse(NC("identifier")));
+			TypeAssert<L20n.IO.AST.Variable>(
+				IdentifierExpression.Parse(NC("$normal_variable")));
+			TypeAssert<L20n.IO.AST.Global>(
+				IdentifierExpression.Parse(NC("@global_variable")));
 
 			// Anything that would fail the RawIdentifier tests
 			// would also fail this one, as it wraps around
 			Assert.Throws<ParseException>(
-				() => Identifier.Parse(NC(" no_prefix_space_allowed")));
+				() => IdentifierExpression.Parse(NC(" no_prefix_space_allowed")));
 			Assert.Throws<ParseException>(
-				() => Identifier.Parse(NC("-only_underscores_and_letters_are_allowed")));
+				() => IdentifierExpression.Parse(NC("-only_underscores_and_letters_are_allowed")));
 			
 			// passing in an EOF stream will give an <EOF> ParseException
-			Assert.Throws<ParseException>(() => Identifier.Parse(NC("")));
+			Assert.Throws<ParseException>(() => IdentifierExpression.Parse(NC("")));
 		}
 		
 		[Test()]
@@ -223,39 +223,39 @@ namespace L20nTests
 			// One primary expression to rule them all
 
 			// literals
-			TypeAssert<L20n.Objects.Literal>(
+			TypeAssert<L20n.IO.AST.Literal>(
 				Primary.Parse(NC("-42")));
-			TypeAssert<L20n.Objects.Literal>(
+			TypeAssert<L20n.IO.AST.Literal>(
 				Primary.Parse(NC("+10")));
-			TypeAssert<L20n.Objects.Literal>(
+			TypeAssert<L20n.IO.AST.Literal>(
 				Primary.Parse(NC("123")));
 
 			// string values
-			TypeAssert<L20n.Objects.StringValue>(
+			TypeAssert<L20n.IO.AST.StringValue>(
 				Primary.Parse(NC("\"Hello Dude!\"")));
-			TypeAssert<L20n.Objects.StringValue>(
+			TypeAssert<L20n.IO.AST.StringValue>(
 				Primary.Parse(NC("'this works as well'")));
-			TypeAssert<L20n.Objects.StringValue>(
+			TypeAssert<L20n.IO.AST.StringValue>(
 				Primary.Parse(NC("'Hello {{ foo.bar }}'")));
-			TypeAssert<L20n.Objects.StringValue>(
+			TypeAssert<L20n.IO.AST.StringValue>(
 				Primary.Parse(NC("'Hello {{ $person.name }}'")));
-			TypeAssert<L20n.Objects.StringValue>(
+			TypeAssert<L20n.IO.AST.StringValue>(
 				Primary.Parse(NC("'It is {{ @time.hour }} o\' clock.'")));
 
 			// hash values
-			TypeAssert<L20n.Objects.HashValue>(
+			TypeAssert<L20n.IO.AST.HashValue>(
 				Primary.Parse(NC("{hello:'world'}")));
-			TypeAssert<L20n.Objects.HashValue>(
+			TypeAssert<L20n.IO.AST.HashValue>(
 				Primary.Parse(NC("{dev: 'go develop' , debug: 'go debug',}")));
-			TypeAssert<L20n.Objects.HashValue>(
+			TypeAssert<L20n.IO.AST.HashValue>(
 				Primary.Parse(NC("{one:{a:'a',b:'b'},two:'2', three:'3'}")));
 
 			// identifier expressions
-			TypeAssert<L20n.Objects.Variable>(
+			TypeAssert<L20n.IO.AST.Variable>(
 				Primary.Parse(NC("$ola")));
-			TypeAssert<L20n.Objects.Global>(
+			TypeAssert<L20n.IO.AST.Global>(
 				Primary.Parse(NC("@hello")));
-			TypeAssert<L20n.Objects.IdentifierExpression>(
+			TypeAssert<L20n.IO.AST.IdentifierExpression>(
 				Primary.Parse(NC("bom_dia")));
 
 			// all other type of input should fail
@@ -417,7 +417,7 @@ namespace L20nTests
 
 		private void ExpressionParseTest<T>(string input) {
 			var stream = new CharStream (input);
-			TypeAssert<T>(Expression.Parse(stream));
+			TypeAssert<T>(Expression.Parse(stream).Eval());
 			if (stream.InputLeft ())
 				throw new ParseException("stream is non-empty: " + stream.ReadUntilEnd());
 		}

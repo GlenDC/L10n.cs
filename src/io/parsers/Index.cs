@@ -27,21 +27,21 @@ namespace L20n
 		{	
 			public class Index
 			{
-				public static L20n.Objects.L20nObject Parse(CharStream stream)
+				public static AST.INode Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
 					try {
-						
 						// skip open char
 						stream.SkipCharacter('[');
 
-						// optional white space
-						WhiteSpace.Parse(stream, true);
-						// first expression
-						var index = Expression.Parse(stream);
-						// optional white space
-						WhiteSpace.Parse(stream, true);
+						// we need at least one index
+						var index = new AST.Index(ParseExpression(stream));
+
+						// others are optional
+						while(stream.SkipIfPossible(',')) {
+							index.AddIndex(ParseExpression(stream));
+						}
 
 						// skip close char
 						stream.SkipCharacter(']');
@@ -55,8 +55,20 @@ namespace L20n
 						throw new L20n.Exceptions.ParseException(msg, e);
 					}
 				}
+
+				private static AST.INode ParseExpression(CharStream stream)
+				{
+					// optional white space
+					WhiteSpace.Parse(stream, true);
+					// first expression
+					var index = Expression.Parse(stream);
+					// optional white space
+					WhiteSpace.Parse(stream, true);
+
+					return index;
+				}
 				
-				public static bool PeekAndParse(CharStream stream, out L20n.Objects.L20nObject index)
+				public static bool PeekAndParse(CharStream stream, out AST.INode index)
 				{
 					if (stream.PeekNext() != '[') {
 						index = null;

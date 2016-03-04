@@ -17,6 +17,7 @@
  */
 
 using System;
+using L20n.Exceptions;
 
 namespace L20n
 {
@@ -26,42 +27,31 @@ namespace L20n
 		{
 			namespace Expressions
 			{
-				public class Identifier
+				public class Logic
 				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
+					public static AST.INode Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 
 						try {
-							L20n.Objects.L20nObject expression;
-
-							if (RawIdentifier.PeekAndParse(stream, out expression)) {
-								return new L20n.Objects.IdentifierExpression(
-									expression.As<L20n.Objects.Identifier>().Value);
+							var first = Binary.Parse(stream);
+							string op;
+							if(stream.ReadReg(@"\s*(\|\||\&\&)", out op)) {
+								WhiteSpace.Parse(stream, true);
+								var second = Logic.Parse(stream);
+								return new AST.LogicExpression(
+									first, second, op.Trim());
 							}
-
-							if (Variable.PeekAndParse(stream, out expression))
-								return expression;
-							
-							if (Global.PeekAndParse(stream, out expression))
-								return expression;
+							else {
+								return first;
+							}
 						}
 						catch(Exception e) {
 							string msg = String.Format(
-								"something went wrong parsing an <identifier> starting at {0}",
+								"something went wrong parsing an <logical_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
 							throw new L20n.Exceptions.ParseException(msg, e);
 						}
-
-						throw stream.CreateException (
-							"no valid start for an <identnfier_expression> could be found");
-					}
-
-					public static bool Peek(CharStream stream)
-					{
-						return RawIdentifier.Peek (stream)
-							|| Variable.Peek (stream)
-							|| Global.Peek (stream);
 					}
 				}
 			}

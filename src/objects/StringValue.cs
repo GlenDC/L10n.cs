@@ -46,10 +46,10 @@ namespace L20n
 			private readonly string m_Value;
 			private readonly L20nObject[] m_Expressions;
 			
-			public StringValue(string value, List<L20nObject> expressions)
+			public StringValue(string value, L20nObject[] expressions)
 			{
 				m_Value = value;
-				m_Expressions = expressions.ToArray();
+				m_Expressions = expressions;
 			}
 			
 			public override L20nObject Eval(Context ctx, params L20nObject[] argv)

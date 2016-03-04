@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- *
+ * 
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,48 +24,56 @@ namespace L20n
 	namespace IO
 	{
 		namespace Parsers
-		{
-			public class Entity
+		{	
+			public class PureStringValue
 			{
-				public static void Parse(
-					CharStream stream, string identifier,
-					L20n.Internal.ContextBuilder builder)
+				public static string Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
-
+					
 					try {
-						// an optional index is possible
-						AST.INode index = null;
-						Index.PeekAndParse(stream, out index);
+						var output = "";
+						var quote = Quote.Parse(stream);
 
-						// White Space is required
-						WhiteSpace.Parse(stream, false);
-
-						// Now we need the actual value
-						var value = Value.Parse(stream);
-
-						// White Space is optional
-						WhiteSpace.Parse(stream, true);
-
-						stream.SkipCharacter('>');
+						char c;
 						
-						var entityAST = new AST.Entity(identifier, index, value);
-						try {
-							var entity = entityAST.Eval().As<L20n.Objects.Entity>();
-							builder.AddEntity(identifier, entity);
+						while((c = stream.PeekNext()) != '\0') {
+							if(c == '\\') {
+								output += stream.ForceReadNext();
+							}
+							else if(Quote.Peek(stream, quote)) {
+								break; // un-escaped quote means we're ending the string
+							}
+
+							output += stream.ForceReadNext();
 						}
-						catch(Exception e) {
-							throw new L20n.Exceptions.EvaluateException(
-								String.Format("couldn't evaluate `{0}`", entityAST.Display()),
-								e);
-						}
+						
+						Quote.Parse(stream, quote);
+						
+						return output;
 					}
 					catch(Exception e) {
 						string msg = String.Format(
-							"something went wrong parsing an <entity> starting at {0}",
+							"something went wrong parsing an <string_value> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
 						throw new L20n.Exceptions.ParseException(msg, e);
 					}
+				}
+				
+				public static bool Peek(CharStream stream)
+				{
+					return Quote.Peek(stream);
+				}
+				
+				public static bool PeekAndParse(CharStream stream, out string value)
+				{
+					if(StringValue.Peek(stream)) {
+						value = PureStringValue.Parse(stream);
+						return true;
+					}
+					
+					value = null;
+					return false;
 				}
 			}
 		}

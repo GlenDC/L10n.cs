@@ -17,41 +17,30 @@
  */
 
 using System;
+using L20n.Exceptions;
+
+using L20n.Internal;
 
 namespace L20n
 {
-	namespace IO
+	namespace Objects
 	{
-		namespace Parsers
+		public sealed class Optional
 		{
-			namespace Expressions
+			public bool IsSet
 			{
-				public class Global
-				{
-					public static AST.INode Parse(CharStream stream)
-					{
-						stream.SkipCharacter('@');
-						var identifier = Identifier.Parse(stream);
-						return new AST.Global(identifier);
-					}
+				get { return m_Value != null; }
+			}
+			private readonly L20nObject m_Value;
 
-					public static bool Peek(CharStream stream)
-					{
-						return stream.PeekNext() == '@';
-					}
-					
-					public static bool PeekAndParse(
-						CharStream stream, out AST.INode variable)
-					{
-						if (!Global.Peek(stream)) {
-							variable = null;
-							return false;
-						}
-						
-						variable = Global.Parse(stream);
-						return true;
-					}
-				}
+			public Optional(L20nObject value = null)
+			{
+				m_Value = value;
+			}
+
+			public T Unwrap<T>() where T: L20nObject
+			{
+				return m_Value.As<T>();
 			}
 		}
 	}

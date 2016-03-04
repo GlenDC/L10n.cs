@@ -25,26 +25,26 @@ namespace L20n
 	{
 		namespace Parsers
 		{
-
 			public class HashValue
 			{
-				public static L20n.Objects.L20nObject Parse(CharStream stream)
+				public static AST.INode Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
 					try {
+
 						// skip opening tag
 						stream.SkipCharacter('{');
 
 						// at least 1 hashItem is required with optional whitespace surrounding it
-						var builder = new Builder();
+						var hashValue = new AST.HashValue();
 						WhiteSpace.Parse(stream, true);
-						builder.Add(HashItem.Parse(stream));
+						hashValue.AddItem(HashItem.Parse(stream));
 						WhiteSpace.Parse(stream, true);
 
 						// parse all other (optional) hashItems
 						while (stream.SkipIfPossible(',')) {
-							if(!HashValue.ParseHashItem(stream, builder)) {
+							if(!HashValue.ParseHashItem(stream, hashValue)) {
 								// if we have a  trailing comma, it will be break here
 								break;
 							}
@@ -53,7 +53,7 @@ namespace L20n
 						// skip closing tag
 						stream.SkipCharacter('}');
 
-						return builder.Build();
+						return hashValue;
 					}
 					catch(Exception e) {
 						string msg = String.Format(
@@ -69,7 +69,7 @@ namespace L20n
 				}
 
 				public static bool PeekAndParse(
-					CharStream stream, out L20n.Objects.L20nObject value)
+					CharStream stream, out AST.INode value)
 				{
 					if (HashValue.Peek(stream)) {
 						value = HashValue.Parse(stream);
@@ -80,64 +80,25 @@ namespace L20n
 					return false;
 				}
 				
-				private static bool ParseHashItem(CharStream stream, Builder builder)
+				private static bool ParseHashItem(CharStream stream, AST.HashValue hash_value)
 				{
 					// optional whitespace
-					WhiteSpace.Parse(stream, true);
+					WhiteSpace.Parse (stream, true);
 					// parse actual hashItem
-					HashItem.HashItemValue item;
+					AST.HashValue.Item item;
 
 					// we might be dealing with a trailing comma
-					if (!HashItem.PeekAndParse(stream, out item)) {
+					if (!HashItem.PeekAndParse (stream, out item)) {
 						return false;
 					}
 
 					// add acutal item
-					builder.Add(item);
+					hash_value.AddItem (item);
 
 					// optional whitespace
-					WhiteSpace.Parse(stream, true);
+					WhiteSpace.Parse (stream, true);
 
 					return true;
-				}
-
-				private class Builder
-				{
-					private Dictionary<string, L20n.Objects.L20nObject> m_Values;
-					private string m_Default;
-
-					public Builder()
-					{
-						m_Values = new Dictionary<string, L20n.Objects.L20nObject>();
-						m_Default = null;
-					}
-
-					public void Add(HashItem.HashItemValue value)
-					{
-						try {
-							m_Values.Add(value.Identifier, value.Value);
-						}
-						catch(ArgumentException) {
-							throw new L20n.Exceptions.ImportException(
-								String.Format(
-									"<hash_item> with identifier {0} can't be added, as identifier isn't unique",
-									value.Identifier));
-						}
-
-						if(value.IsDefault) {
-							if(m_Default != null) {
-								throw new L20n.Exceptions.ImportException(
-									String.Format("<hash_item> already has a default with key {0}", m_Default));
-							}
-
-							m_Default = value.Identifier;
-						}
-					}
-
-					public L20n.Objects.HashValue Build()
-					{
-						return new L20n.Objects.HashValue(m_Values, m_Default);
-					}
 				}
 			}
 		}

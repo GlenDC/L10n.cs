@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,29 +19,40 @@
 using System;
 using System.Collections.Generic;
 
-using L20n.Internal;
-
 namespace L20n
 {
-	namespace Objects
+	namespace IO
 	{
-		public sealed class CallExpression : L20nObject
+		namespace AST
 		{
-			private readonly L20nObject[] m_Variables;
-			private readonly L20nObject m_Expression;
-			
-			public CallExpression(L20nObject expression, L20nObject[] variables)
+			public sealed class Conditional : INode
 			{
-				m_Expression = expression;
-				m_Variables = variables;
-			}
-			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
-			{
-				var identifier = m_Expression.Eval(ctx).As<Identifier>();
-				var macro = ctx.GetMacro(identifier.Value);
+				private readonly INode m_Condition;
+				private readonly INode m_IfTrue;
+				private readonly INode m_IfFalse;
+				
+				public Conditional(INode condition, INode if_true, INode if_false)
+				{
+					m_Condition = condition;
+					m_IfTrue = if_true;
+					m_IfFalse = if_false;
+				}
+				
+				public L20n.Objects.L20nObject Eval()
+				{
+					var condition = m_Condition.Eval();
+					var if_true = m_IfTrue.Eval();
+					var if_false = m_IfFalse.Eval();
 
-				return macro.Eval(ctx, m_Variables);
+					return new L20n.Objects.IfElseExpression(
+						condition, if_true, if_false);
+				}
+				
+				public string Display()
+				{
+					return String.Format("{0} ? {1} : {2}",
+						m_Condition.Display(), m_IfTrue.Display(), m_IfFalse.Display());
+				}
 			}
 		}
 	}

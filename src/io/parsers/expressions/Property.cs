@@ -29,19 +29,19 @@ namespace L20n
 			{
 				public class Property
 				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
+					public static AST.INode Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
 						try {
-							var identifiers = new List<L20n.Objects.L20nObject>();
-							identifiers.Add(Identifier.Parse(stream));
+							var property = new AST.PropertyExpression(
+								IdentifierExpression.Parse(stream));
 
 							while(stream.SkipIfPossible('.')) {
-								identifiers.Add(RawIdentifier.Parse(stream));
+								property.Add(Identifier.Parse(stream));
 							}
 							
-							return new L20n.Objects.PropertyExpression(identifiers);
+							return property;
 						}
 						catch(Exception e) {
 							string msg = String.Format(
@@ -52,7 +52,7 @@ namespace L20n
 					}
 					
 					public static bool PeekAndParse(
-						CharStream stream, out L20n.Objects.L20nObject expression)
+						CharStream stream, out AST.INode expression)
 					{
 						if (stream.PeekReg(@"[$@_a-zA-Z]\w*\.")) {
 							expression = Property.Parse(stream);

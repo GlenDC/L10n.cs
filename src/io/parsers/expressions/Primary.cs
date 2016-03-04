@@ -28,12 +28,12 @@ namespace L20n
 			{
 				public class Primary
 				{
-					public static L20n.Objects.L20nObject Parse(CharStream stream)
+					public static AST.INode Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
 						try {
-							L20n.Objects.L20nObject primary;
+							AST.INode primary;
 
 							if (Literal.PeekAndParse(stream, out primary))
 								return primary;
@@ -41,7 +41,7 @@ namespace L20n
 							if (Value.PeekAndParse(stream, out primary))
 								return primary;
 							
-							return Identifier.Parse(stream);
+							return IdentifierExpression.Parse(stream);
 						}
 						catch(Exception e) {
 							string msg = String.Format(

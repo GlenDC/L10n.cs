@@ -27,12 +27,12 @@ namespace L20n
 		{	
 			public class Expander
 			{
-				public static L20n.Objects.L20nObject Parse(CharStream stream)
+				public static AST.INode Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
 					try {
-						L20n.Objects.L20nObject expression;
+						AST.INode expression;
 
 						// skip opening tags
 						stream.SkipString("{{");
@@ -56,7 +56,7 @@ namespace L20n
 				}
 				
 				public static bool PeekAndParse(
-					CharStream stream, out L20n.Objects.L20nObject expression)
+					CharStream stream, out AST.INode expression)
 				{
 					if(stream.PeekNextRange(2) == "{{") {
 						expression = Expander.Parse(stream);

@@ -26,14 +26,14 @@ namespace L20n
 		{	
 			public class Literal
 			{
-				public static L20n.Objects.L20nObject Parse(CharStream stream)
+				public static AST.INode Parse(CharStream stream)
 				{
 					string raw;
 					if (!stream.ReadReg (@"[\-\+]?[0-9]+", out raw)) {
 						throw stream.CreateException("a number literal whas expected");
 					}
 
-					return new L20n.Objects.Literal(int.Parse(raw));
+					return new AST.Literal(raw);
 				}
 
 				public static bool Peek(CharStream stream)
@@ -42,7 +42,7 @@ namespace L20n
 				}
 
 				public static bool PeekAndParse(
-					CharStream stream, out L20n.Objects.L20nObject literal)
+					CharStream stream, out AST.INode literal)
 				{
 					if (!Literal.Peek(stream)) {
 						literal = null;

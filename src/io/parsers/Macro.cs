@@ -34,21 +34,20 @@ namespace L20n
 					var startingPos = stream.Position;
 					
 					try {
+						var macroAST = new AST.Macro(identifier);
+						
 						stream.SkipCharacter('(');
 						WhiteSpace.Parse(stream, true);
 
-						List<string> variables = null;
-
 						// variables are optional,
 						// but we do have them, we need at least one (duh)
-						if (Expressions.Variable.Peek (stream)) {
-							variables = new List<string>();
-							variables.Add(Macro.ParseVariable(stream));
+						if (Expressions.Variable.Peek(stream)) {
+							macroAST.AddParameter(Macro.ParseVariable(stream));
 
 							// more than 1 is possible as well
 							while(stream.SkipIfPossible(',')) {
 								WhiteSpace.Parse(stream, true);
-								variables.Add(Macro.ParseVariable(stream));
+								macroAST.AddParameter(Macro.ParseVariable(stream));
 							}
 						}
 
@@ -59,7 +58,7 @@ namespace L20n
 						WhiteSpace.Parse(stream, true);
 
 						// Parse the Actual Macro Expression
-						var expression = Expression.Parse(stream);
+						macroAST.SetExpression(Expression.Parse(stream));
 
 						WhiteSpace.Parse(stream, true);
 						stream.SkipCharacter('}');
@@ -67,8 +66,15 @@ namespace L20n
 						stream.SkipCharacter('>');
 
 						// return the fully parsed macro
-						builder.AddMacro(identifier,
-							new L20n.Objects.Macro(expression, variables));
+						try {
+							var macro = macroAST.Eval().As<L20n.Objects.Macro>();
+							builder.AddMacro(identifier, macro);
+						}
+						catch(Exception e) {
+							throw new L20n.Exceptions.EvaluateException(
+								String.Format("couldn't evaluate `{0}`", macroAST.Display()),
+								e);
+						}
 					}
 					catch(Exception e) {
 						string msg = String.Format(
@@ -90,11 +96,11 @@ namespace L20n
 					return true;
 				}
 				
-				private static string ParseVariable(CharStream stream)
+				private static AST.INode ParseVariable(CharStream stream)
 				{
 					var variable = Expressions.Variable.Parse(stream);
 					WhiteSpace.Parse(stream, true);
-					return variable.As<L20n.Objects.Variable>().Identifier;
+					return variable;
 				}
 			}
 		}

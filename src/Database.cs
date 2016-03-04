@@ -113,7 +113,7 @@ namespace L20n
 		{
 			try {
 				var stream = new IO.CharStream(raw);
-				var expression = IO.Parsers.Expression.Parse(stream);
+				var expression = IO.Parsers.Expression.Parse(stream).Eval();
 
 				try {
 					var output = expression.Eval(m_CurrentLocale.Context);

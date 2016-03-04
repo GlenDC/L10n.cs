@@ -27,38 +27,38 @@ namespace L20n
 		{	
 			public class StringValue
 			{
-				public static L20n.Objects.L20nObject Parse(CharStream stream)
+				public static AST.INode Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
 					try {
 						var quote = Quote.Parse(stream);
-						var builder = new Builder();
+						var value = new AST.StringValue(quote);
 
-						L20n.Objects.L20nObject expression;
+						AST.INode expression;
 						char c;
 			
 						while((c = stream.PeekNext()) != '\0') {
 							if(c == '\\') {
-								builder.appendChar(stream.ForceReadNext());
-								builder.appendChar(stream.ForceReadNext());
+								value.appendChar(stream.ForceReadNext());
+								value.appendChar(stream.ForceReadNext());
 							}
 							else {
 								if(Quote.Peek(stream, quote)) {
 									break; // un-escaped quote means we're ending the string
 								}
 								else if(Expander.PeekAndParse(stream, out expression)) {
-									builder.appendExpression(expression);
+									value.appendExpression(expression);
 								}
 								else {
-									builder.appendChar(stream.ForceReadNext());
+									value.appendChar(stream.ForceReadNext());
 								}
 							}
 						}
 
 						Quote.Parse(stream, quote);
 						
-						return builder.Build();
+						return value;
 					}
 					catch(Exception e) {
 						string msg = String.Format(
@@ -73,7 +73,7 @@ namespace L20n
 					return Quote.Peek(stream);
 				}
 				
-				public static bool PeekAndParse(CharStream stream, out L20n.Objects.L20nObject value)
+				public static bool PeekAndParse(CharStream stream, out AST.INode value)
 				{
 					if(StringValue.Peek(stream)) {
 						value = StringValue.Parse(stream);
@@ -82,39 +82,6 @@ namespace L20n
 
 					value = null;
 					return false;
-				}
-
-				private class Builder
-				{
-					private string m_Value;
-					private	List<L20n.Objects.L20nObject> m_Expressions;
-					
-					public Builder()
-					{
-						m_Value = "";
-						m_Expressions = new List<L20n.Objects.L20nObject>();
-					}
-					
-					public void appendChar(char c)
-					{
-						m_Value += c;
-					}
-					
-					public void appendString(string s)
-					{
-						m_Value += s;
-					}
-					
-					public void appendExpression(L20n.Objects.L20nObject e)
-					{
-						appendString(String.Format ("{{0}}", m_Expressions.Count));
-						m_Expressions.Add(e);
-					}
-					
-					public L20n.Objects.StringValue Build()
-					{
-						return new L20n.Objects.StringValue(m_Value, m_Expressions);
-					}
 				}
 			}
 		}

@@ -26,12 +26,12 @@ namespace L20n
 		{	
 			public class Value
 			{
-				public static L20n.Objects.L20nObject Parse(CharStream stream)
+				public static AST.INode Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
 					
 					try {
-						L20n.Objects.L20nObject value;
+						AST.INode value;
 						if(!Value.PeekAndParse(stream, out value)) {
 							throw new L20n.Exceptions.ParseException(
 								"couldn't find valid <value> type");
@@ -54,7 +54,7 @@ namespace L20n
 				}
 
 				public static bool PeekAndParse(
-					CharStream stream, out L20n.Objects.L20nObject value)
+					CharStream stream, out AST.INode value)
 				{
 					if (StringValue.PeekAndParse (stream, out value))
 						return true;
