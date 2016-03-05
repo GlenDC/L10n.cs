@@ -23,24 +23,31 @@ using L20n.Internal;
 
 namespace L20n
 {
-	namespace Objects
+	namespace Utils
 	{
-		public sealed class Optional
+		public sealed class Optional<T> where T: class
 		{
 			public bool IsSet
 			{
 				get { return m_Value != null; }
 			}
-			private readonly L20nObject m_Value;
+			private readonly T m_Value;
 
-			public Optional(L20nObject value = null)
+			public Optional(T value = null)
 			{
 				m_Value = value;
 			}
 
-			public T Unwrap<T>() where T: L20nObject
+			public V Unwrap<V>() where V : T
 			{
-				return m_Value.As<T>();
+				try {
+					return (V)m_Value;
+				}
+				catch(Exception e) {
+					var msg = String.Format(
+						"object could not be given as {0}", typeof(V));
+					throw new UnexpectedObjectException(msg, e);
+				}
 			}
 		}
 	}

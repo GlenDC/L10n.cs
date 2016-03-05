@@ -109,11 +109,11 @@
     <Compile Include="src\io\parsers\PureStringValue.cs" />
     <Compile Include="src\io\ast\Index.cs" />
     <Compile Include="src\objects\Index.cs" />
-    <Compile Include="src\objects\Optional.cs" />
     <Compile Include="src\io\parsers\Identifier.cs" />
     <Compile Include="src\io\parsers\expressions\IdentifierExpression.cs" />
     <Compile Include="src\io\ast\IdentifierExpression.cs" />
     <Compile Include="src\io\parsers\expressions\Logic.cs" />
+    <Compile Include="src\utils\Optional.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -126,5 +126,6 @@
     <Folder Include="src\objects\" />
     <Folder Include="src\internal\" />
     <Folder Include="src\io\ast\" />
+    <Folder Include="src\utils\" />
   </ItemGroup>
 </Project>

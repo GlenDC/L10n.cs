@@ -30,20 +30,24 @@ namespace L20n
 			public sealed class Entity : INode
 			{
 				private readonly string m_Identifier;
-				private readonly INode m_Index;
+				private readonly Utils.Optional<INode> m_Index;
 				private readonly INode m_Value;
 				
 				public Entity(string identifier, INode index, INode value)
 				{
 					m_Identifier = identifier;
-					m_Index = index;
+					m_Index = new Utils.Optional<INode>(index);
 					m_Value = value;
 				}
 				
 				public L20n.Objects.L20nObject Eval()
 				{
-					L20n.Objects.L20nObject index =
-						m_Index == null ? null : m_Index.Eval();
+					Utils.Optional<L20n.Objects.L20nObject> index;
+					if (m_Index.IsSet)
+						index = new Utils.Optional<L20n.Objects.L20nObject>(
+							m_Index.Unwrap<INode>().Eval());
+					else
+						index = new Utils.Optional<L20n.Objects.L20nObject>();
 					var value = m_Value.Eval();
 
 					return new L20n.Objects.Entity(index, value);
@@ -53,7 +57,7 @@ namespace L20n
 				{
 					return String.Format("<{0}{1} {2}>",
 						m_Identifier,
-					    m_Index == null ? "" : m_Index.Display(),
+					    m_Index.IsSet ? m_Index.Unwrap<Index>().Display() : "",
 					    m_Value.Display());
 				}
 			}

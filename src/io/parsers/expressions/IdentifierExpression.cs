@@ -50,9 +50,6 @@ namespace L20n
 								stream.ComputeDetailedPosition(startingPos));
 							throw new L20n.Exceptions.ParseException(msg, e);
 						}
-
-						throw stream.CreateException (
-							"no valid start for an <identnfier_expression> could be found");
 					}
 
 					public static bool Peek(CharStream stream)

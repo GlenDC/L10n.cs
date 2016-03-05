@@ -44,7 +44,6 @@ namespace L20n
 
 				public static bool PeekAndParse(CharStream stream, out string identifier)
 				{
-					string id;
 					if (!stream.EndOfStream() && stream.ReadReg(@"[_a-zA-Z]\w*", out identifier)) {
 						return true;
 					}

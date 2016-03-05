@@ -27,12 +27,12 @@ namespace L20n
 	{
 		public sealed class Entity : L20nObject
 		{	
-			private readonly Optional m_Index;
+			private readonly Utils.Optional<L20nObject> m_Index;
 			private readonly L20nObject m_Value;
 
-			public Entity(L20nObject index, L20nObject value)
+			public Entity(Utils.Optional<L20nObject> index, L20nObject value)
 			{
-				m_Index = new Optional(index);
+				m_Index = index;
 				m_Value = value;
 			}
 			
