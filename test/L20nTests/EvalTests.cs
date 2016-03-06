@@ -60,8 +60,8 @@ namespace L20nTests
 				ParseAndEvalAs<L20n.Objects.Literal>("+(+(-(-(+3))))").Value);
 
 			// Binary Number Math Expressions
-			Assert.AreEqual(5,
-				ParseAndEvalAs<L20n.Objects.Literal>("2 + 3").Value);
+			Assert.AreEqual(-2,
+				ParseAndEvalAs<L20n.Objects.Literal>("2 + 3 * 10 / 3 % 2 * 2 + 1 - 5").Value);
 			Assert.AreEqual(-10,
 				ParseAndEvalAs<L20n.Objects.Literal>("(-3 - 2) + -5").Value);
 			Assert.AreEqual(-15,
@@ -94,9 +94,8 @@ namespace L20nTests
 				ParseAndEvalAs<L20n.Objects.BooleanValue>("(!(3 > 2)) == (3 < 1)").Value);
 			Assert.AreEqual(true,
 				ParseAndEvalAs<L20n.Objects.BooleanValue>("'hello' == 'hello'").Value);
-			// TODO -> Resolve when we have a proper AST
-			/*Assert.AreEqual(true,
-				ParseAndEvalAs<L20n.Objects.BooleanValue>("(1 + 2) == (4 - 3 + 1 + 1)").Value);*/
+			Assert.AreEqual(true,
+				ParseAndEvalAs<L20n.Objects.BooleanValue>("1 + 2 == 4 - 3 + 1 + 1").Value);
 			Assert.AreEqual(true,
 				ParseAndEvalAs<L20n.Objects.BooleanValue>("5 != 16").Value);
 

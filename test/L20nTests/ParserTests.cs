@@ -342,11 +342,11 @@ namespace L20nTests
 			ExpressionParseTest<L20n.Objects.GreaterThanOrEqualExpression>
 				("10 >= 2");
 			ExpressionParseTest<L20n.Objects.LessThanExpression>
-				("10 < (5 * 100)");
+				("10 < 5 * 100");
 			ExpressionParseTest<L20n.Objects.LessThanOrEqualExpression>
-				("10 <= (5 + (8 - 3))");
+				("10 <= 5 + 8 - 3");
 			ExpressionParseTest<L20n.Objects.IsEqualExpression> // parenthesis are overrated
-				("(5 + 5) == 3 * 2 + 4");
+				("5 + 5 == 3 * 2 + 4");
 			ExpressionParseTest<L20n.Objects.IsNotEqualExpression>
 				("41 != answer");
 			

@@ -27,64 +27,15 @@ namespace L20n
 		{
 			public sealed class BinaryOperation : INode
 			{
-				INode m_First;
-				INode m_Second;
-				Operation m_Operation;
+				readonly Operation m_Operation;
+				readonly INode m_First;
+				readonly INode m_Second;
 				
-				public BinaryOperation(INode first, INode second, string op)
+				public BinaryOperation(INode first, INode second, Operation op)
 				{
 					m_First = first;
 					m_Second = second;
-					
-					switch (op) {
-					case "<":
-						m_Operation = Operation.LessThan;
-						break;
-						
-					case ">":
-						m_Operation = Operation.GreaterThan;
-						break;
-						
-					case "<=":
-						m_Operation = Operation.LessThanOrEqual;
-						break;
-						
-					case ">=":
-						m_Operation = Operation.GreaterThanOrEqual;
-						break;
-						
-					case "+":
-						m_Operation = Operation.Add;
-						break;
-						
-					case "-":
-						m_Operation = Operation.Subtract;
-						break;
-						
-					case "*":
-						m_Operation = Operation.Multiply;
-						break;
-						
-					case "/":
-						m_Operation = Operation.Divide;
-						break;
-						
-					case "%":
-						m_Operation = Operation.Modulo;
-						break;
-						
-					case "==":
-						m_Operation = Operation.IsEqual;
-						break;
-						
-					case "!=":
-						m_Operation = Operation.IsNotEqual;
-						break;
-						
-					default:
-						throw new ParseException(
-							String.Format("{0} is not a valid <binary> operation", op));
-					}
+					m_Operation = op;
 				}
 				
 				public L20n.Objects.L20nObject Eval()
@@ -148,23 +99,23 @@ namespace L20n
 					case Operation.IsNotEqual: op = "!="; break;
 					}
 
-					return string.Format("{0}{1}{2}",
+					return string.Format("({0}{1}{2})",
 						m_First.Display(), op, m_Second.Display());
 				}
 				
-				enum Operation
+				public enum Operation
 				{
-					LessThan,				// <
-					GreaterThan,			// >
-					LessThanOrEqual,		// <=
-					GreaterThanOrEqual,		// >=
-					Add,					// +
-					Subtract,				// -
-					Multiply,				// *
-					Divide,					// /
-					Modulo,					// %
-					IsEqual,				// ==
-					IsNotEqual,				// !=
+					IsEqual = 0,				// ==
+					IsNotEqual = 1,				// !=
+					LessThan = 2,				// <
+					GreaterThan = 3,			// >
+					LessThanOrEqual = 4,		// <=
+					GreaterThanOrEqual = 5,		// >=
+					Multiply = 6,				// *
+					Divide = 7,					// /
+					Modulo = 8,					// %
+					Add = 9,					// +
+					Subtract = 10,				// -
 				}
 			}
 		}
