@@ -58,7 +58,7 @@ namespace L20n
 				}
 			}
 
-			public Context BuildContext(Dictionary<string, Global> globals)
+			public Context BuildContext(Dictionary<string, GlobalValue> globals)
 			{
 				return new Context(globals, m_Macros, m_Entities);
 			}

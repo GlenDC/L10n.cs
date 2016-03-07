@@ -1,0 +1,3 @@
+<hello "Hello, World!">
+<time "{{ @hour }}:{{ @minute }}:{{ @second }}">
+<date "{{ @day }}/{{ @month }}/{{ @year }}">

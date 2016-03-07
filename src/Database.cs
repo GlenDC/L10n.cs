@@ -42,13 +42,25 @@ namespace L20n
 		private Internal.Locale m_CurrentLocale;
 		private Manifest m_Manifest;
 
-		private Dictionary<string, L20n.Objects.Global> m_Globals;
+		private Dictionary<string, L20n.Objects.GlobalValue> m_Globals;
 
 		public Database()
 		{
 			m_CurrentLocale = null;
 			m_Manifest = new Manifest();
-			m_Globals = new Dictionary<string, L20n.Objects.Global>();
+			m_Globals = new Dictionary<string, L20n.Objects.GlobalValue>();
+
+			AddSystemGlobals();
+		}
+
+		public void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)
+		{
+			AddGlobalValue(id, new L20n.Objects.GlobalLiteral(callback));
+		}
+		
+		public void AddGlobal(string id, L20n.Objects.GlobalString.Delegate callback)
+		{
+			AddGlobalValue(id, new L20n.Objects.GlobalString(callback));
 		}
 
 		public void Import(string manifest_path)
@@ -109,25 +121,27 @@ namespace L20n
 				ImportLocal (id, out m_CurrentLocale);
 		}
 
-		public string Translate(string raw)
+		public string Translate(string id)
 		{
-			try {
-				var stream = new IO.CharStream(raw);
-				var expression = IO.Parsers.Expression.Parse(stream).Eval();
+			var output = m_DefaultLocale.Context.GetEntity(id).Eval(m_DefaultLocale.Context);
+			return output.As<L20n.Objects.StringOutput>().Value;
 
+			/*try {
 				try {
-					var output = expression.Eval(m_CurrentLocale.Context);
-					return output.As<Objects.Primitive>().ToString(m_CurrentLocale.Context);
+					var output = m_CurrentLocale.Context.GetEntity(id).Eval(m_CurrentLocale.Context);
+					return output.As<L20n.Objects.StringOutput>().Value;
 				}
 				catch(Exception e) {
-					var output = expression.Eval(m_DefaultLocale.Context);
-					return output.As<Objects.Primitive>().ToString(m_DefaultLocale.Context);
+					Console.WriteLine(e);
+					var output = m_DefaultLocale.Context.GetEntity(id).Eval(m_CurrentLocale.Context);
+					return output.As<L20n.Objects.StringOutput>().Value;
 				}
 			}
 			catch(Exception e) {
+				Console.WriteLine(e);
 				// ignore exception for now
-				return raw;
-			}
+				return id;
+			}*/
 		}
 
 		private void ImportLocal(string id, out Locale locale)
@@ -146,6 +160,30 @@ namespace L20n
 			}
 
 			locale = builder.BuildLocale(m_Globals);
+		}
+		
+		private void AddGlobalValue(string id, L20n.Objects.GlobalValue value)
+		{
+			try {
+				m_Globals.Add(id, value);
+			}
+			catch(ArgumentException) {
+				throw new L20n.Exceptions.ImportException(
+					String.Format("global value with id {0} can't be added, as id isn't unique", id));
+			}
+		}
+
+		private void AddSystemGlobals()
+		{
+			// time related
+			AddGlobal("hour", () => System.DateTime.Now.Hour);
+			AddGlobal("minute", () => System.DateTime.Now.Minute);
+			AddGlobal("second", () => System.DateTime.Now.Second);
+
+			// date related
+			AddGlobal("year", () => System.DateTime.Today.Year);
+			AddGlobal("month", () => System.DateTime.Today.Month);
+			AddGlobal("day", () => System.DateTime.Today.Day);
 		}
 
 		private class Manifest

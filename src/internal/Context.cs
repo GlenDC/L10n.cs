@@ -27,12 +27,12 @@ namespace L20n
 	{
 		public sealed class Context
 		{
-			private readonly Dictionary<string, Global> m_Globals;
+			private readonly Dictionary<string, GlobalValue> m_Globals;
 			private readonly Dictionary<string, Macro> m_Macros;
 			private readonly Dictionary<string, Entity> m_Entities;
 
 			public Context(
-				Dictionary<string, Global> globals,
+				Dictionary<string, GlobalValue> globals,
 				Dictionary<string, Macro> macros,
 				Dictionary<string, Entity> entities)
 			{
@@ -41,7 +41,7 @@ namespace L20n
 				m_Entities = entities;
 			}
 
-			public Global GetGlobal(string key)
+			public GlobalValue GetGlobal(string key)
 			{
 				try {
 					return m_Globals[key];

@@ -35,7 +35,7 @@ namespace L20n
 
 			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
 			{
-				return ctx.GetGlobal(m_Identifier);
+				return ctx.GetGlobal(m_Identifier).Eval(ctx);
 			}
 		}
 	}

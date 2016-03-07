@@ -46,7 +46,7 @@ namespace L20n
 				}
 			}
 			
-			public Locale BuildLocale(Dictionary<string, L20n.Objects.Global> globals)
+			public Locale BuildLocale(Dictionary<string, L20n.Objects.GlobalValue> globals)
 			{
 				var ctx = m_ContextBuilder.BuildContext(globals);
 				return new Locale(ctx);

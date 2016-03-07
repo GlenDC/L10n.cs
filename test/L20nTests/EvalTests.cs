@@ -37,10 +37,8 @@ namespace L20nTests
 		{
 			m_DummyContext =
 				(new L20n.Internal.ContextBuilder ())
-					.BuildContext (new Dictionary<string, L20n.Objects.Global> ());
+					.BuildContext (new Dictionary<string, L20n.Objects.GlobalValue> ());
 		}
-
-
 
 		[Test()]
 		public void NonContextExpressionTests()

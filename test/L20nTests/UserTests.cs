@@ -42,6 +42,27 @@ namespace L20nTests
 			Assert.Throws<ImportException>(
 				() => database.Import("../../../resources/manifest-without-resources.json"));
 		}
+		
+		[Test()]
+		public void IdentifierEvalTests()
+		{
+			Database database = new Database ();
+			database.Import("../../../resources/eval/identifiers/manifest.json");
+
+			Assert.AreEqual("Hello, World!", database.Translate("hello"));
+
+			var time = String.Format("{0}:{1}:{2}",
+				System.DateTime.Now.Hour,
+			    System.DateTime.Now.Minute,
+			    System.DateTime.Now.Second);
+			Assert.AreEqual(time, database.Translate("time"));
+			
+			var date = String.Format("{0}/{1}/{2}",
+			                         System.DateTime.Now.Day,
+			                         System.DateTime.Now.Month,
+			                         System.DateTime.Now.Year);
+			Assert.AreEqual(date, database.Translate("date"));
+		}
 
 		[Test()]
 		public void SimpleDatabase()

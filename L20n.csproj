@@ -114,6 +114,7 @@
     <Compile Include="src\io\ast\IdentifierExpression.cs" />
     <Compile Include="src\io\parsers\expressions\Logic.cs" />
     <Compile Include="src\utils\Optional.cs" />
+    <Compile Include="src\objects\GlobalValue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

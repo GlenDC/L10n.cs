@@ -27,35 +27,34 @@ namespace L20n
 		{
 			public sealed class StringValue : INode
 			{
-
 				private readonly Parsers.Quote.Info m_Quote;
 
 				private string m_Value;
 				private List<INode> m_Expressions;
-				
+
 				public StringValue(Parsers.Quote.Info quote)
 				{
 					m_Quote = quote;
 					m_Value = "";
 					m_Expressions = new List<INode>();
 				}
-				
+
 				public void appendChar(char c)
 				{
 					m_Value += c;
 				}
-				
+
 				public void appendString(string s)
 				{
 					m_Value += s;
 				}
-				
+
 				public void appendExpression(INode expression)
 				{
-					appendString(String.Format ("{{0}}", m_Expressions.Count));
+					appendString("{" + m_Expressions.Count + "}");
 					m_Expressions.Add(expression);
 				}
-				
+
 				public L20n.Objects.L20nObject Eval()
 				{
 					var expressions = new L20n.Objects.L20nObject[m_Expressions.Count];
@@ -63,7 +62,7 @@ namespace L20n
 						expressions[i] = m_Expressions[i].Eval();
 					return new L20n.Objects.StringValue(m_Value, expressions);
 				}
-				
+
 				public string Display()
 				{
 					var expressions = new string[m_Expressions.Count];

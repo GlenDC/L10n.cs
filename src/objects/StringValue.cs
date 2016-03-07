@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ namespace L20n
 	namespace Objects
 	{
 		public sealed class StringValue : Primitive
-		{	
+		{
 			public string Value
 			{
 				get
@@ -45,13 +45,13 @@ namespace L20n
 
 			private readonly string m_Value;
 			private readonly L20nObject[] m_Expressions;
-			
+
 			public StringValue(string value, L20nObject[] expressions)
 			{
 				m_Value = value;
 				m_Expressions = expressions;
 			}
-			
+
 			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
 			{
 				if (m_Expressions.Length == 0)
@@ -63,7 +63,7 @@ namespace L20n
 				var output = String.Format(m_Value, expressions);
 				return new StringOutput(output);
 			}
-			
+
 			public override string ToString(Context ctx, params L20nObject[] argv)
 			{
 				return Eval(ctx).As<Primitive>().ToString(ctx, argv);
