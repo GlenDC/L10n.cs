@@ -25,6 +25,13 @@ namespace L20n
 {
 	namespace Utils
 	{
+		/// <summary>
+		/// A class that allows you to wrap another nullable object.
+		/// This class should be used to prevent the use of null within the
+		/// rest of the code base.
+		/// 
+		/// It is heavily inspired on many older (functional) languages out there.
+		/// </summary>
 		public sealed class Optional<T> where T: class
 		{
 			public bool IsSet
@@ -37,17 +44,35 @@ namespace L20n
 			{
 				m_Value = value;
 			}
+			
+			public T Expect(string msg = null)
+			{
+				if (!IsSet)
+					throw new UnexpectedObjectException(
+						msg != null ? msg : "cannot return an optional value when it's not set");
+				
+				return m_Value;
+			}
 
-			public V Unwrap<V>() where V : T
+			public V ExpectAs<V>(string msg = null) where V : T
 			{
 				try {
-					return (V)m_Value;
+					return (V)Expect(msg);
 				}
 				catch(Exception e) {
-					var msg = String.Format(
-						"object could not be given as {0}", typeof(V));
+					if(msg == null)
+						msg = String.Format("object could not be given as {0}", typeof(V));
+
 					throw new UnexpectedObjectException(msg, e);
 				}
+			}
+
+			public T ExpectOr(T def)
+			{
+				if (!IsSet)
+					return def;
+
+				return m_Value;
 			}
 		}
 	}

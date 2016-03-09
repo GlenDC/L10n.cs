@@ -40,7 +40,7 @@ namespace L20n
 			{
 				if (m_Index.IsSet) {
 					var arguments = new List<L20nObject> (argv.Length + 1);
-					var index = m_Index.Unwrap<Index>();
+					var index = m_Index.ExpectAs<Index>();
 					arguments.Add(index.Eval(ctx));
 					arguments.AddRange(argv);
 					return m_Value.Eval(ctx, arguments.ToArray());

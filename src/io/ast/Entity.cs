@@ -45,7 +45,7 @@ namespace L20n
 					Utils.Optional<L20n.Objects.L20nObject> index;
 					if (m_Index.IsSet)
 						index = new Utils.Optional<L20n.Objects.L20nObject>(
-							m_Index.Unwrap<INode>().Eval());
+							m_Index.Expect().Eval());
 					else
 						index = new Utils.Optional<L20n.Objects.L20nObject>();
 					var value = m_Value.Eval();
@@ -57,7 +57,7 @@ namespace L20n
 				{
 					return String.Format("<{0}{1} {2}>",
 						m_Identifier,
-					    m_Index.IsSet ? m_Index.Unwrap<Index>().Display() : "",
+					    m_Index.IsSet ? m_Index.ExpectAs<Index>().Display() : "",
 					    m_Value.Display());
 				}
 			}

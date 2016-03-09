@@ -104,8 +104,8 @@ namespace L20n
 							// it means that we have to check if it has
 							// presedence over the current pair
 							if (second.Op.IsSet) {
-								var firstOp = first.Op.Unwrap<Operation>();
-								var secondOp = second.Op.Unwrap<Operation>();
+								var firstOp = first.Op.ExpectAs<Operation>();
+								var secondOp = second.Op.ExpectAs<Operation>();
 
 								// in this case the next operator has presedence
 								// over the current one, which means we have to evaluate that one first
@@ -127,7 +127,7 @@ namespace L20n
 							// evaluate as we reached the end.
 							return new AST.BinaryOperation (
 								previous, second.Value,
-								first.Op.Unwrap<Operation>().Value);
+								first.Op.ExpectAs<Operation>().Value);
 						}
 
 						///<summary>
