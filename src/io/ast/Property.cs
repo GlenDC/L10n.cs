@@ -40,12 +40,12 @@ namespace L20n
 					m_Identifiers.Add(new AST.IdentifierExpression(id));
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
-					var identifiers = new L20n.Objects.L20nObject[m_Identifiers.Count];
+					var identifiers = new Objects.L20nObject[m_Identifiers.Count];
 					for (int i = 0; i < identifiers.Length; ++i)
 						identifiers[i] = m_Identifiers[i].Eval();
-					return new L20n.Objects.PropertyExpression(identifiers);
+					return new Objects.PropertyExpression(identifiers);
 				}
 				
 				public string Display()

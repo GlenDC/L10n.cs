@@ -44,7 +44,7 @@ namespace L20n
 				m_Callback = callback;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var output = m_Callback();
 				return new StringOutput(output);
@@ -65,7 +65,7 @@ namespace L20n
 				m_Callback = callback;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var output = m_Callback();
 				return new Literal(output);

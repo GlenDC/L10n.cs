@@ -53,19 +53,19 @@ namespace L20n
 					}
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
 					var expression = m_Expression.Eval();
 
 					switch (m_Operation) {
 					case Operation.Positive:
-						return new L20n.Objects.PositiveExpression(expression);
+						return new Objects.PositiveExpression(expression);
 						
 					case Operation.Negative:
-						return new L20n.Objects.NegativeExpression(expression);
+						return new Objects.NegativeExpression(expression);
 						
 					case Operation.Negate:
-						return new L20n.Objects.NegateExpression(expression);
+						return new Objects.NegateExpression(expression);
 					}
 
 					throw new EvaluateException(

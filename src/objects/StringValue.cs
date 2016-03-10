@@ -52,7 +52,7 @@ namespace L20n
 				m_Expressions = expressions;
 			}
 
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Expressions.Length == 0)
 					return new StringOutput (m_Value);
@@ -64,7 +64,7 @@ namespace L20n
 				return new StringOutput(output);
 			}
 
-			public override string ToString(Context ctx, params L20nObject[] argv)
+			public override string ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return Eval(ctx).As<Primitive>().ToString(ctx, argv);
 			}

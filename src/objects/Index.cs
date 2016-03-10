@@ -35,18 +35,18 @@ namespace L20n
 				m_Indeces = indeces;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Indeces.Length == 1) {
 					var index = m_Indeces[0].Eval(ctx).As<StringOutput>().Value;
-					var identifier = new L20n.Objects.IdentifierExpression(index);
+					var identifier = new Objects.IdentifierExpression(index);
 					return identifier.Eval(ctx);
 				}
 
 				var indeces = new L20nObject[m_Indeces.Length];
 				for(int i = 0; i < indeces.Length; ++i)
 					indeces[i] = m_Indeces[i].Eval(ctx);
-				var propertyExpression = new L20n.Objects.PropertyExpression(indeces);
+				var propertyExpression = new Objects.PropertyExpression(indeces);
 				return propertyExpression.Eval(ctx);
 			}
 		}

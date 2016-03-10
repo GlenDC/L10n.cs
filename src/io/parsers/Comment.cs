@@ -18,6 +18,8 @@
 
 using System;
 
+using L20n.Exceptions;
+
 namespace L20n
 {
 	namespace IO
@@ -41,7 +43,7 @@ namespace L20n
 						content += c;
 					}
 
-					throw new L20n.Exceptions.ParseException(
+					throw new ParseException(
 						"a comment entry was opened, but not closed",
 						stream.CreateEOFException());
 				}

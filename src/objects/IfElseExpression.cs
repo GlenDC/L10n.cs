@@ -39,7 +39,7 @@ namespace L20n
 				m_IfFalse = if_false;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var result = m_Condition.Eval(ctx).As<BooleanValue>();
 				if (result.Value)

@@ -52,7 +52,7 @@ namespace L20n
 						string msg = String.Format(
 							"something went wrong parsing an <index> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
-						throw new L20n.Exceptions.ParseException(msg, e);
+						throw new Exceptions.ParseException(msg, e);
 					}
 				}
 

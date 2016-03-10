@@ -26,7 +26,7 @@ namespace L20n
 	{
 		public abstract class Primitive : L20nObject
 		{
-			public abstract string ToString(Context ctx, params L20nObject[] argv);
+			public abstract string ToString(LocaleContext ctx, params L20nObject[] argv);
 		}
 	}
 }

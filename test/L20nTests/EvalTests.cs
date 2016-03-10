@@ -31,13 +31,13 @@ namespace L20nTests
 	[TestFixture()]
 	public class EvalTests
 	{
-		private L20n.Internal.Context m_DummyContext;
+		private L20n.Internal.LocaleContext m_DummyContext;
 
 		public EvalTests()
 		{
 			m_DummyContext =
-				(new L20n.Internal.ContextBuilder ())
-					.BuildContext (new Dictionary<string, L20n.Objects.GlobalValue> ());
+				(new L20n.Internal.LocaleContext.Builder())
+					.Build(new Dictionary<string, L20n.Objects.GlobalValue>());
 		}
 
 		[Test()]

@@ -53,14 +53,14 @@ namespace L20n
 					m_Parameters.Add((Variable)variable);
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
 					var parameters = new string[m_Parameters.Count];
 					for (int i = 0; i < parameters.Length; ++i)
 						parameters[i] = m_Parameters[i].Value;
 					var expression = m_Expression.Eval();
 
-					return new L20n.Objects.Macro(
+					return new Objects.Macro(
 						m_Identifier, expression, parameters);
 				}
 				

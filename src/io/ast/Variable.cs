@@ -38,9 +38,9 @@ namespace L20n
 					m_Value = value;
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
-					return new L20n.Objects.Variable(m_Value);
+					return new Objects.Variable(m_Value);
 				}
 				
 				public string Display()

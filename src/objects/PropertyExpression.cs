@@ -40,7 +40,7 @@ namespace L20n
 				m_Identifiers = identifiers;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (argv.Length == 1 && argv[0] != null) {
 					return argv[0].As<HashValue>().Eval(ctx, this);

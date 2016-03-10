@@ -33,9 +33,9 @@ namespace L20n
 					m_Value = int.Parse(raw);
 				}
 
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
-					return new L20n.Objects.Literal(m_Value);
+					return new Objects.Literal(m_Value);
 				}
 
 				public string Display()

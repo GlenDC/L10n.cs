@@ -370,7 +370,7 @@ namespace L20nTests
 		[Test()]
 		public void InvalidEntryParseTests()
 		{
-			var builder = new L20n.Internal.ContextBuilder();
+			var builder = new L20n.Internal.LocaleContext.Builder();
 			// invalid comment examples
 			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("/* non-closed comment"), builder));

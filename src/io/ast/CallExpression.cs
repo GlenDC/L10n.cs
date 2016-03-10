@@ -42,13 +42,13 @@ namespace L20n
 					m_Parameters.Add(parameter);
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
 					var name = m_Name.Eval();
-					var parameters = new L20n.Objects.L20nObject[m_Parameters.Count];
+					var parameters = new Objects.L20nObject[m_Parameters.Count];
 					for (int i = 0; i < parameters.Length; ++i)
 						parameters [i] = m_Parameters [i].Eval ();
-					return new L20n.Objects.CallExpression (name, parameters);
+					return new Objects.CallExpression (name, parameters);
 				}
 				
 				public string Display()

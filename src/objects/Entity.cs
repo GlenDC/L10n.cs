@@ -36,7 +36,7 @@ namespace L20n
 				m_Value = value;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Index.IsSet) {
 					var arguments = new List<L20nObject> (argv.Length + 1);

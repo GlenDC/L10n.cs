@@ -51,17 +51,17 @@ namespace L20n
 					}
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
 					var first = m_First.Eval();
 					var second = m_Second.Eval();
 					
 					switch (m_Operation) {
 					case Operation.And:
-						return new L20n.Objects.AndExpression(first, second);
+						return new Objects.AndExpression(first, second);
 						
 					case Operation.Or:
-						return new L20n.Objects.OrExpression(first, second);
+						return new Objects.OrExpression(first, second);
 					}
 					
 					throw new EvaluateException(

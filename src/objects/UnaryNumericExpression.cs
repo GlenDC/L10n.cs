@@ -33,7 +33,7 @@ namespace L20n
 				m_Expression = expression;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var literal = m_Expression.Eval(ctx).As<Literal>();
 				

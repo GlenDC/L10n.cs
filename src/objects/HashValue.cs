@@ -37,7 +37,7 @@ namespace L20n
 				m_Default = def;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (argv.Length != 1) {
 					if (m_Default == null) {
@@ -69,7 +69,7 @@ namespace L20n
 				return obj.As<Primitive>();
 			}
 			
-			public override string ToString(Context ctx, params L20nObject[] argv)
+			public override string ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return Eval(ctx, argv).As<Primitive>().ToString(ctx, argv);
 			}

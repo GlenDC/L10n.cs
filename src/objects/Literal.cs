@@ -38,12 +38,12 @@ namespace L20n
 				m_Value = value;
 			}
 
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return this;
 			}
 
-			public override string ToString(Context ctx, params L20nObject[] argv)
+			public override string ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return m_Value.ToString();
 			}

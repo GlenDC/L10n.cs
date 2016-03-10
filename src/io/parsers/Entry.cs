@@ -18,6 +18,8 @@
 
 using System;
 
+using L20n.Exceptions;
+
 namespace L20n
 {
 	namespace IO
@@ -26,7 +28,7 @@ namespace L20n
 		{
 			public class Entry
 			{
-				public static void Parse(CharStream stream, Internal.ContextBuilder builder)
+				public static void Parse(CharStream stream, Internal.LocaleContext.Builder builder)
 				{
 					var startingPos = stream.Position;
 					
@@ -57,7 +59,7 @@ namespace L20n
 						string msg = String.Format(
 							"something went wrong parsing an <entry> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
-						throw new L20n.Exceptions.ParseException(msg, e);
+						throw new ParseException(msg, e);
 					}
 				}
 			}

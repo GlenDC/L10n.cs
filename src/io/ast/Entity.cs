@@ -40,17 +40,17 @@ namespace L20n
 					m_Value = value;
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
-					Utils.Optional<L20n.Objects.L20nObject> index;
+					Utils.Optional<Objects.L20nObject> index;
 					if (m_Index.IsSet)
-						index = new Utils.Optional<L20n.Objects.L20nObject>(
+						index = new Utils.Optional<Objects.L20nObject>(
 							m_Index.Expect().Eval());
 					else
-						index = new Utils.Optional<L20n.Objects.L20nObject>();
+						index = new Utils.Optional<Objects.L20nObject>();
 					var value = m_Value.Eval();
 
-					return new L20n.Objects.Entity(index, value);
+					return new Objects.Entity(index, value);
 				}
 				
 				public string Display()

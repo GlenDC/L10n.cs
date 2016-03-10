@@ -38,13 +38,13 @@ namespace L20n
 					m_IfFalse = if_false;
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
 					var condition = m_Condition.Eval();
 					var if_true = m_IfTrue.Eval();
 					var if_false = m_IfFalse.Eval();
 
-					return new L20n.Objects.IfElseExpression(
+					return new Objects.IfElseExpression(
 						condition, if_true, if_false);
 				}
 				

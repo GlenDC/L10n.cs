@@ -42,9 +42,9 @@ namespace L20n
 					m_Indeces.Add(index);
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
-					var indeces = new L20n.Objects.L20nObject[m_Indeces.Count];
+					var indeces = new Objects.L20nObject[m_Indeces.Count];
 					for (int i = 0; i < indeces.Length; ++i)
 						indeces[i] = m_Indeces[i].Eval();
 
@@ -52,7 +52,7 @@ namespace L20n
 						// create identifier if only one
 						// ... create property if more
 					
-					return new L20n.Objects.Index(indeces);
+					return new Objects.Index(indeces);
 				}
 				
 				public string Display()

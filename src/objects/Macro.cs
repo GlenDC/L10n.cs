@@ -45,7 +45,7 @@ namespace L20n
 				m_Identifier = identifier;
 			}
 
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Parameters.Length != argv.Length) {
 					var msg = String.Format(

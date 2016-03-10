@@ -42,7 +42,7 @@ namespace L20n
 						m_Items.Add(item.Identifier, item.Value);
 					}
 					catch(ArgumentException) {
-						throw new L20n.Exceptions.ImportException(
+						throw new Exceptions.ImportException(
 							String.Format(
 							"<hash_item> with identifier {0} can't be added, as <identifier> isn't unique",
 							item.Identifier));
@@ -50,7 +50,7 @@ namespace L20n
 					
 					if(item.IsDefault) {
 						if(m_Default != null) {
-							throw new L20n.Exceptions.ImportException(
+							throw new Exceptions.ImportException(
 								String.Format("<hash_item> already has a default with key {0}", m_Default));
 						}
 						
@@ -58,14 +58,14 @@ namespace L20n
 					}
 				}
 				
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
-					var items = new Dictionary<string, L20n.Objects.L20nObject> (m_Items.Count);
+					var items = new Dictionary<string, Objects.L20nObject>(m_Items.Count);
 					foreach (KeyValuePair<string, INode> entry in m_Items) {
 						items.Add(entry.Key, entry.Value.Eval());
 					}
 
-					return new L20n.Objects.HashValue(items, m_Default);
+					return new Objects.HashValue(items, m_Default);
 				}
 				
 				public string Display()

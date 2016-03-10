@@ -36,7 +36,7 @@ namespace L20n
 				m_Second = second;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var first = m_First.Eval(ctx);
 				var second = m_Second.Eval(ctx);

@@ -31,37 +31,34 @@ namespace L20nTests
 		[Test()]
 		public void BadManifests()
 		{
-			Database database = new Database();
-			
 			Assert.Throws<ImportException>(
-				() => database.Import("../../../resources/manifest-without-default.json"));
+				() => Translator.ImportManifest("../../../resources/manifest-without-default.json"));
 			Assert.Throws<ImportException>(
-				() => database.Import("../../../resources/manifest-with-invalid-default.json"));
+				() => Translator.ImportManifest("../../../resources/manifest-with-invalid-default.json"));
 			Assert.Throws<ImportException>(
-				() => database.Import("../../../resources/manifest-without-locales.json"));
+				() => Translator.ImportManifest("../../../resources/manifest-without-locales.json"));
 			Assert.Throws<ImportException>(
-				() => database.Import("../../../resources/manifest-without-resources.json"));
+				() => Translator.ImportManifest("../../../resources/manifest-without-resources.json"));
 		}
 		
 		[Test()]
 		public void IdentifierEvalTests()
 		{
-			Database database = new Database ();
-			database.Import("../../../resources/eval/identifiers/manifest.json");
+			Translator.ImportManifest("../../../resources/eval/identifiers/manifest.json");
 
-			Assert.AreEqual("Hello, World!", database.Translate("hello"));
+			Assert.AreEqual("Hello, World!", Translator.Translate("hello"));
 
 			var time = String.Format("{0}:{1}:{2}",
 				System.DateTime.Now.Hour,
 			    System.DateTime.Now.Minute,
 			    System.DateTime.Now.Second);
-			Assert.AreEqual(time, database.Translate("time"));
+			Assert.AreEqual(time, Translator.Translate("time"));
 			
 			var date = String.Format("{0}/{1}/{2}",
 			                         System.DateTime.Now.Day,
 			                         System.DateTime.Now.Month,
 			                         System.DateTime.Now.Year);
-			Assert.AreEqual(date, database.Translate("date"));
+			Assert.AreEqual(date, Translator.Translate("date"));
 		}
 
 		[Test()]
@@ -69,18 +66,16 @@ namespace L20nTests
 		{
 			var pc = new PerformanceClock("SimpleDatabase");
 
-			Database database = new Database();
-
 			pc.Clock("start import database");
-			database.Import("../../../resources/manifest.json");
+			Translator.ImportManifest("../../../resources/manifest.json");
 			pc.Clock("database imported (incl. default)");
 
 			pc.Pause();
-			Assert.AreEqual("en-US", database.DefaultLocale);
-			Assert.AreEqual(3, database.Locales.Count);
+			Assert.AreEqual("en-US", Translator.DefaultLocale);
+			Assert.AreEqual(3, Translator.Locales.Count);
 			pc.Continue();
 
-			database.LoadLocale("fr");
+			Translator.SetLocale("fr");
 			pc.Clock("fr locale imported");
 			
 			pc.Stop();

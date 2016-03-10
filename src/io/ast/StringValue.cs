@@ -55,12 +55,12 @@ namespace L20n
 					m_Expressions.Add(expression);
 				}
 
-				public L20n.Objects.L20nObject Eval()
+				public Objects.L20nObject Eval()
 				{
-					var expressions = new L20n.Objects.L20nObject[m_Expressions.Count];
+					var expressions = new Objects.L20nObject[m_Expressions.Count];
 					for (int i = 0; i < expressions.Length; ++i)
 						expressions[i] = m_Expressions[i].Eval();
-					return new L20n.Objects.StringValue(m_Value, expressions);
+					return new Objects.StringValue(m_Value, expressions);
 				}
 
 				public string Display()

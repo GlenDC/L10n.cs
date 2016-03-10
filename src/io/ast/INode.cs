@@ -26,7 +26,7 @@ namespace L20n
 		{
 			public interface INode
 			{
-				L20n.Objects.L20nObject Eval();
+				Objects.L20nObject Eval();
 				string Display();
 			}
 		}

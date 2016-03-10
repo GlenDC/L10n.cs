@@ -38,9 +38,14 @@ namespace L20n
 			{
 				get { return m_Value != null; }
 			}
-			private readonly T m_Value;
+			private T m_Value;
 
 			public Optional(T value = null)
+			{
+				Set(value);
+			}
+
+			public void Set(T value)
 			{
 				m_Value = value;
 			}

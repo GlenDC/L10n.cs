@@ -66,7 +66,7 @@ namespace L20n
 								return (this.Type == Type.Single ? -1 : 1);
 							}
 						} else {
-							throw new L20n.Exceptions.UnexpectedObjectException(
+							throw new Exceptions.UnexpectedObjectException(
 								"Object is not a Quote.Info");
 						}
 					}
@@ -84,7 +84,7 @@ namespace L20n
 					int pos = stream.Position;
 
 					if (!stream.ReadReg("(\"\"\"|\'\'\'|\'|\")", out output)) {
-						throw new L20n.Exceptions.ParseException(
+						throw new Exceptions.ParseException(
 							String.Format(
 							"expected to read a <quote> (starting at {0}), but found invalid characters",
 							stream.ComputeDetailedPosition(pos)));
@@ -100,7 +100,7 @@ namespace L20n
 					}
 
 					if (expected != null && expected.CompareTo(info) != 0) {
-						throw new L20n.Exceptions.ParseException(
+						throw new Exceptions.ParseException(
 							String.Format(
 							"expected to read {0} (starting at {1}), but found {2}",
 							expected.ToString(),

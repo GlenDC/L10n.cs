@@ -20,6 +20,8 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
+using L20n.Exceptions;
+
 namespace L20n
 {
 	namespace IO
@@ -246,22 +248,22 @@ namespace L20n
 				return String.Format("L{0}:{1}", lineNumber, linePosition);
 			}
 
-			public L20n.Exceptions.ParseException CreateException(string msg, int offset = 0)
+			public ParseException CreateException(string msg, int offset = 0)
 			{
 				int pos = m_Position + offset;
 				if (pos >= m_LastPosition) {
-					return new L20n.Exceptions.ParseException(
+					return new ParseException(
 						String.Format("parsing error: {0}", msg));
 				}
 
-				return new L20n.Exceptions.ParseException(
+				return new ParseException(
 					String.Format("'{0}' at {1} is unexpected: {2}",
 				              m_Buffer[pos], ComputeDetailedPosition(pos), msg));
 			}
 
-			public L20n.Exceptions.ParseException CreateEOFException()
+			public ParseException CreateEOFException()
 			{
-				return new L20n.Exceptions.ParseException(
+				return new ParseException(
 					"end of stream was reached while more input was expected");
 			}
 

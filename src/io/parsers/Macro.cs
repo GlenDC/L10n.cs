@@ -29,7 +29,7 @@ namespace L20n
 			{
 				public static void Parse(
 					CharStream stream,
-					string identifier, L20n.Internal.ContextBuilder builder)
+					string identifier, Internal.LocaleContext.Builder builder)
 				{
 					var startingPos = stream.Position;
 					
@@ -67,11 +67,11 @@ namespace L20n
 
 						// return the fully parsed macro
 						try {
-							var macro = macroAST.Eval().As<L20n.Objects.Macro>();
+							var macro = macroAST.Eval().As<Objects.Macro>();
 							builder.AddMacro(identifier, macro);
 						}
 						catch(Exception e) {
-							throw new L20n.Exceptions.EvaluateException(
+							throw new Exceptions.EvaluateException(
 								String.Format("couldn't evaluate `{0}`", macroAST.Display()),
 								e);
 						}
@@ -80,13 +80,13 @@ namespace L20n
 						string msg = String.Format(
 							"something went wrong parsing a <macro> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
-						throw new L20n.Exceptions.ParseException(msg, e);
+						throw new Exceptions.ParseException(msg, e);
 					}
 				}
 
 				public static bool PeekAndParse(
 					CharStream stream,
-					string identifier, Internal.ContextBuilder builder)
+					string identifier, Internal.LocaleContext.Builder builder)
 				{
 					if (stream.PeekNext () != '(') {
 						return false;

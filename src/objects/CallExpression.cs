@@ -36,7 +36,7 @@ namespace L20n
 				m_Variables = variables;
 			}
 			
-			public override L20nObject Eval(Context ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var identifier = m_Expression.Eval(ctx).As<Identifier>();
 				var macro = ctx.GetMacro(identifier.Value);

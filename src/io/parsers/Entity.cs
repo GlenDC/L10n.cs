@@ -29,7 +29,7 @@ namespace L20n
 			{
 				public static void Parse(
 					CharStream stream, string identifier,
-					L20n.Internal.ContextBuilder builder)
+					Internal.LocaleContext.Builder builder)
 				{
 					var startingPos = stream.Position;
 
@@ -51,11 +51,11 @@ namespace L20n
 						
 						var entityAST = new AST.Entity(identifier, index, value);
 						try {
-							var entity = entityAST.Eval().As<L20n.Objects.Entity>();
+							var entity = entityAST.Eval().As<Objects.Entity>();
 							builder.AddEntity(identifier, entity);
 						}
 						catch(Exception e) {
-							throw new L20n.Exceptions.EvaluateException(
+							throw new Exceptions.EvaluateException(
 								String.Format("couldn't evaluate `{0}`", entityAST.Display()),
 								e);
 						}
@@ -64,7 +64,7 @@ namespace L20n
 						string msg = String.Format(
 							"something went wrong parsing an <entity> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
-						throw new L20n.Exceptions.ParseException(msg, e);
+						throw new Exceptions.ParseException(msg, e);
 					}
 				}
 			}

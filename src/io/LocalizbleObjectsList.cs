@@ -24,7 +24,7 @@ namespace L20n
 	{
 		public class LocalizbleObjectsList
 		{
-			public static void Parse(string path, Internal.ContextBuilder builder)
+			public static void Parse(string path, Internal.LocaleContext.Builder builder)
 			{
 				try {
 					using(CharStream stream = CharStream.CreateFromFile(path)) {
@@ -38,7 +38,7 @@ namespace L20n
 					}
 				}
 				catch(Exception exception) {
-					throw new L20n.Exceptions.ParseException(
+					throw new Exceptions.ParseException(
 						String.Format("couldn't parse <localizble_objects_list> from file: {0}", path),
 						exception);
 				}

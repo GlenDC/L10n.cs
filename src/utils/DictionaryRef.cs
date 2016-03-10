@@ -17,18 +17,33 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace L20n
 {
-	namespace Internal
+	namespace Utils
 	{
-		public sealed class Locale
+		public sealed class DictionaryRef<K, V>
 		{
-			public Context Context { get; private set; }
+			private readonly Dictionary<K, V> m_Dictionary;
 
-			public Locale(Context ctx)
+			public DictionaryRef(Dictionary<K, V> dictionary)
 			{
-				Context = ctx;
+				m_Dictionary = dictionary;
+			}
+			
+			public V Get(K key)
+			{
+				return m_Dictionary[key];
+			}
+			
+			public V Get(K key, V def)
+			{
+				V value;
+				if (!m_Dictionary.TryGetValue(key, out value))
+					value = def;
+
+				return value;
 			}
 		}
 	}

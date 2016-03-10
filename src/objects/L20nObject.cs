@@ -27,7 +27,7 @@ namespace L20n
 	{
 		public abstract class L20nObject
 		{
-			public abstract L20nObject Eval(Context ctx, params L20nObject[] argv);
+			public abstract L20nObject Eval(LocaleContext ctx, params L20nObject[] argv);
 
 			public T As<T>() where T: L20nObject
 			{

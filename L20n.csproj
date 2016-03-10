@@ -34,7 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="src\Database.cs" />
     <Compile Include="thirdparty\SimpleJson.cs" />
     <Compile Include="src\io\CharStream.cs" />
     <Compile Include="src\io\parsers\Entry.cs" />
@@ -67,19 +66,15 @@
     <Compile Include="src\exceptions\UnexpectedObjectException.cs" />
     <Compile Include="src\exceptions\ImportException.cs" />
     <Compile Include="src\exceptions\ObjectNotFoundException.cs" />
-    <Compile Include="src\internal\Locale.cs" />
     <Compile Include="src\objects\Macro.cs" />
     <Compile Include="src\objects\CallExpression.cs" />
-    <Compile Include="src\internal\Context.cs" />
     <Compile Include="src\objects\Identifier.cs" />
     <Compile Include="src\objects\Literal.cs" />
     <Compile Include="src\objects\Global.cs" />
     <Compile Include="src\objects\Variable.cs" />
     <Compile Include="src\objects\IdentifierExpression.cs" />
-    <Compile Include="src\internal\ContextBuilder.cs" />
     <Compile Include="src\objects\L20nObject.cs" />
     <Compile Include="src\objects\Entity.cs" />
-    <Compile Include="src\internal\LocaleBuilder.cs" />
     <Compile Include="src\objects\StringValue.cs" />
     <Compile Include="src\objects\StringOutput.cs" />
     <Compile Include="src\objects\HashValue.cs" />
@@ -115,6 +110,11 @@
     <Compile Include="src\io\parsers\expressions\Logic.cs" />
     <Compile Include="src\utils\Optional.cs" />
     <Compile Include="src\objects\GlobalValue.cs" />
+    <Compile Include="src\internal\Manifest.cs" />
+    <Compile Include="src\internal\Database.cs" />
+    <Compile Include="src\internal\LocaleContext.cs" />
+    <Compile Include="src\utils\DictionaryRef.cs" />
+    <Compile Include="src\Translator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
