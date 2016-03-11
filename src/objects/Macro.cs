@@ -54,13 +54,24 @@ namespace L20n
 					throw new EvaluateException(msg);
 				}
 
-				// TODO bind variables to identifiers -> TO CTX
+				// Push variables on 'stack'
+				for (int i = 0; i < m_Parameters.Length; ++i) {
+					ctx.PushVariable(m_Parameters[i], argv[i]);
+				}
 
-				var obj = m_Expression.Eval(ctx);
+				L20nObject output = null;
 
-				// unbind the variables
+				try {
+					output = m_Expression.Eval(ctx);
+				}
+				finally {
+					// Remove them from the 'stack'
+					for (int i = 0; i < m_Parameters.Length; ++i) {
+						ctx.DropVariable (m_Parameters [i]);
+					}
+				}
 
-				return obj;
+				return output;
 			}
 		}
 	}

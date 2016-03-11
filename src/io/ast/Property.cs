@@ -37,7 +37,7 @@ namespace L20n
 
 				public void Add(string id)
 				{
-					m_Identifiers.Add(new AST.IdentifierExpression(id));
+					m_Identifiers.Add(new AST.Identifier(id));
 				}
 				
 				public Objects.L20nObject Eval()
@@ -52,7 +52,7 @@ namespace L20n
 				{
 					var identifiers = new string[m_Identifiers.Count];
 					for (int i = 0; i < identifiers.Length; ++i)
-						identifiers [i] = m_Identifiers [i].Display ();
+						identifiers [i] = m_Identifiers [i].Display();
 					return String.Join (".", identifiers);
 				}
 			}

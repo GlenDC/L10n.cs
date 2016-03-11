@@ -96,11 +96,11 @@ namespace L20n
 					return true;
 				}
 				
-				private static AST.INode ParseVariable(CharStream stream)
+				private static string ParseVariable(CharStream stream)
 				{
-					var variable = Expressions.Variable.Parse(stream);
+					var variable = Expressions.Variable.Parse(stream) as AST.Variable;
 					WhiteSpace.Parse(stream, true);
-					return variable;
+					return variable.Value;
 				}
 			}
 		}

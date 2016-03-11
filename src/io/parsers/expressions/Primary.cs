@@ -55,7 +55,7 @@ namespace L20n
 					{
 						return Literal.Peek(stream)
 							|| Value.Peek(stream)
-							|| Identifier.Peek(stream);
+							|| IdentifierExpression.Peek(stream);
 					}
 				}
 			}

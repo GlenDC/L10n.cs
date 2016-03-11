@@ -44,11 +44,11 @@ namespace L20n
 				
 				public Objects.L20nObject Eval()
 				{
-					var name = m_Name.Eval();
+					var name = m_Name.Eval().As<Objects.Identifier>().Value;
 					var parameters = new Objects.L20nObject[m_Parameters.Count];
 					for (int i = 0; i < parameters.Length; ++i)
 						parameters [i] = m_Parameters [i].Eval ();
-					return new Objects.CallExpression (name, parameters);
+					return new Objects.CallExpression(name, parameters);
 				}
 				
 				public string Display()

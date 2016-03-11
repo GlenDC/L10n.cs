@@ -58,8 +58,17 @@ namespace L20n
 					return new StringOutput (m_Value);
 
 				string[] expressions = new string[m_Expressions.Length];
-				for (int i = 0; i < expressions.Length; ++i)
-					expressions[i] = m_Expressions[i].Eval(ctx).As<Primitive>().ToString(ctx);
+				for (int i = 0; i < expressions.Length; ++i) {
+					var e = m_Expressions[i].Eval(ctx);
+
+					Identifier identifier;
+					while(e.As<Identifier>(out identifier)) {
+						e = ctx.GetEntity(identifier.Value).Eval(ctx);
+					}
+
+					expressions[i] = e.As<Primitive>().ToString(ctx);
+				}
+
 				var output = String.Format(m_Value, expressions);
 				return new StringOutput(output);
 			}

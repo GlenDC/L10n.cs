@@ -38,14 +38,12 @@ namespace L20n
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Indeces.Length == 1) {
-					var index = m_Indeces[0].Eval(ctx).As<StringOutput>().Value;
-					var identifier = new Objects.IdentifierExpression(index);
-					return identifier.Eval(ctx);
+					return m_Indeces[0].Eval(ctx).As<Identifier>();
 				}
 
 				var indeces = new L20nObject[m_Indeces.Length];
-				for(int i = 0; i < indeces.Length; ++i)
-					indeces[i] = m_Indeces[i].Eval(ctx);
+				for (int i = 0; i < indeces.Length; ++i)
+					indeces [i] = m_Indeces [i].Eval (ctx).As<Identifier>();
 				var propertyExpression = new Objects.PropertyExpression(indeces);
 				return propertyExpression.Eval(ctx);
 			}

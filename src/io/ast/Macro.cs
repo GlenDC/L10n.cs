@@ -30,13 +30,13 @@ namespace L20n
 			public sealed class Macro : INode
 			{
 				private readonly string m_Identifier;
-				private List<Variable> m_Parameters;
+				private List<string> m_Parameters;
 				private INode m_Expression;
 				
 				public Macro(string identifier)
 				{
 					m_Identifier = identifier;
-					m_Parameters = new List<Variable>();
+					m_Parameters = new List<string>();
 					m_Expression = null;
 				}
 
@@ -48,30 +48,24 @@ namespace L20n
 					m_Expression = expression;
 				}
 
-				public void AddParameter(INode variable)
+				public void AddParameter(string variable)
 				{
-					m_Parameters.Add((Variable)variable);
+					m_Parameters.Add(variable);
 				}
 				
 				public Objects.L20nObject Eval()
 				{
-					var parameters = new string[m_Parameters.Count];
-					for (int i = 0; i < parameters.Length; ++i)
-						parameters[i] = m_Parameters[i].Value;
 					var expression = m_Expression.Eval();
 
 					return new Objects.Macro(
-						m_Identifier, expression, parameters);
+						m_Identifier, expression, m_Parameters.ToArray());
 				}
 				
 				public string Display()
-				{
-					var parameters = new string[m_Parameters.Count];
-					for (int i = 0; i < parameters.Length; ++i)
-						parameters[i] = m_Parameters[i].Display();
+				{;
 					return String.Format("{0}({1}){{2}}",
 						m_Identifier,
-					    String.Join(",", parameters),
+					    String.Join(",", m_Parameters),
 					    m_Expression.Display());
 				}
 			}

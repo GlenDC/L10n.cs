@@ -52,6 +52,9 @@ namespace L20nTests
 			stack.Push("apples", 1);
 			stack.Push("bananas", 2);
 			stack.Push("apples", 5);
+			
+			Assert.AreEqual(5, stack.Peek("apples"));
+			Assert.AreEqual(2, stack.Peek("bananas"));
 
 			Assert.AreEqual(5, stack.Pop("apples"));
 			Assert.AreEqual(2, stack.Pop("bananas"));

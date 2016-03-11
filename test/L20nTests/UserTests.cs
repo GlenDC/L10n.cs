@@ -59,6 +59,13 @@ namespace L20nTests
 			                         System.DateTime.Now.Month,
 			                         System.DateTime.Now.Year);
 			Assert.AreEqual(date, Translator.Translate("date"));
+
+			string greeting = System.DateTime.Now.Hour < 12 ? "Good morning"
+				: (System.DateTime.Now.Hour < 18 ? "Good Afternoon" : "Good Evening");
+			
+			Assert.AreEqual(greeting, Translator.Translate("greeting"));
+
+			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
 		}
 
 		[Test()]

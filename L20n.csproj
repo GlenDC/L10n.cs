@@ -72,7 +72,6 @@
     <Compile Include="src\objects\Literal.cs" />
     <Compile Include="src\objects\Global.cs" />
     <Compile Include="src\objects\Variable.cs" />
-    <Compile Include="src\objects\IdentifierExpression.cs" />
     <Compile Include="src\objects\L20nObject.cs" />
     <Compile Include="src\objects\Entity.cs" />
     <Compile Include="src\objects\StringValue.cs" />
@@ -106,7 +105,6 @@
     <Compile Include="src\objects\Index.cs" />
     <Compile Include="src\io\parsers\Identifier.cs" />
     <Compile Include="src\io\parsers\expressions\IdentifierExpression.cs" />
-    <Compile Include="src\io\ast\IdentifierExpression.cs" />
     <Compile Include="src\io\parsers\expressions\Logic.cs" />
     <Compile Include="src\utils\Optional.cs" />
     <Compile Include="src\objects\GlobalValue.cs" />
@@ -116,6 +114,7 @@
     <Compile Include="src\utils\DictionaryRef.cs" />
     <Compile Include="src\Translator.cs" />
     <Compile Include="src\utils\ShadowStack.cs" />
+    <Compile Include="src\io\ast\Identifier.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

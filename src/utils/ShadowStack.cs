@@ -40,6 +40,12 @@ namespace L20n
 				var stack = CreateOrGetStack(key);
 				stack.Push(value);
 			}
+			
+			public T Peek(string key)
+			{
+				var stack = CreateOrGetStack(key);
+				return stack.Peek();
+			}
 
 			public T Pop(string key)
 			{

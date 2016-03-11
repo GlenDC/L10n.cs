@@ -28,19 +28,17 @@ namespace L20n
 		public sealed class CallExpression : L20nObject
 		{
 			private readonly L20nObject[] m_Variables;
-			private readonly L20nObject m_Expression;
+			private readonly string m_Identifier;
 			
-			public CallExpression(L20nObject expression, L20nObject[] variables)
+			public CallExpression(string identifier, L20nObject[] variables)
 			{
-				m_Expression = expression;
+				m_Identifier = identifier;
 				m_Variables = variables;
 			}
 			
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var identifier = m_Expression.Eval(ctx).As<Identifier>();
-				var macro = ctx.GetMacro(identifier.Value);
-
+				var macro = ctx.GetMacro(m_Identifier);
 				return macro.Eval(ctx, m_Variables);
 			}
 		}

@@ -41,7 +41,7 @@ namespace L20n
 							if (Global.PeekAndParse(stream, out identifier))
 								return identifier;
 
-							return new AST.IdentifierExpression(
+							return new AST.Identifier(
 								Identifier.Parse(stream));
 						}
 						catch(Exception e) {

@@ -40,9 +40,7 @@ namespace L20n
 			
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				// TODO
-				return null;
-				//return ctx.GetVariable(m_Identifier);
+				return ctx.GetVariable (m_Identifier).Eval (ctx);
 			}
 		}
 	}

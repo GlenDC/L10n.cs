@@ -19,6 +19,7 @@
 using System;
 
 using L20n.Internal;
+using L20n.Exceptions;
 
 namespace L20n
 {

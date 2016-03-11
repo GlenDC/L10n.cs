@@ -46,7 +46,8 @@ namespace L20n
 					return argv[0].As<HashValue>().Eval(ctx, this);
 				}
 				
-				var entity = Identifiers[0].Eval(ctx);
+				var identifier = Identifiers[0].Eval(ctx).As<Identifier>().Value;
+				var entity = ctx.GetEntity(identifier);
 				return entity.Eval(ctx, new PropertyExpression(SliceIdentifiers(1)));
 			}
 

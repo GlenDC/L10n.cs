@@ -24,18 +24,18 @@ namespace L20n
 	{
 		namespace AST
 		{
-			public sealed class IdentifierExpression : INode
+			public sealed class Identifier : INode
 			{
 				private readonly string m_Value;
 				
-				public IdentifierExpression(string value)
+				public Identifier(string value)
 				{
 					m_Value = value;
 				}
 				
 				public Objects.L20nObject Eval()
 				{
-					return new Objects.IdentifierExpression(m_Value);
+					return new Objects.Identifier(m_Value);
 				}
 				
 				public string Display()

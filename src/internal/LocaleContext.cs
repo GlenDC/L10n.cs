@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 
+using L20n.Utils;
 using L20n.Objects;
 using L20n.Exceptions;
 
@@ -31,6 +32,7 @@ namespace L20n
 			private readonly Utils.DictionaryRef<string, GlobalValue> m_Globals;
 			private readonly Dictionary<string, Macro> m_Macros;
 			private readonly Dictionary<string, Entity> m_Entities;
+			private readonly ShadowStack<L20nObject> m_Variables;
 
 			public LocaleContext(
 				Utils.DictionaryRef<string, GlobalValue> globals,
@@ -40,6 +42,7 @@ namespace L20n
 				m_Globals = globals;
 				m_Macros = macros;
 				m_Entities = entities;
+				m_Variables = new ShadowStack<L20nObject>();
 			}
 			
 			public GlobalValue GetGlobal(string key)
@@ -83,10 +86,19 @@ namespace L20n
 				return m_Entities.TryGetValue(key, out entity);
 			}
 			
-			public Variable GetVariable(string key)
+			public void PushVariable(string key, L20nObject value)
 			{
-				throw new Exceptions.ObjectNotFoundException(
-					String.Format("getting variables is not supported yet", key));
+				m_Variables.Push(key, value);
+			}
+			
+			public void DropVariable(string key)
+			{
+				m_Variables.Pop(key);
+			}
+			
+			public L20nObject GetVariable(string key)
+			{
+				return m_Variables.Peek(key);
 			}
 
 			public class Builder

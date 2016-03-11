@@ -1,3 +1,16 @@
 <hello "Hello, World!">
 <time "{{ @hour }}:{{ @minute }}:{{ @second }}">
 <date "{{ @day }}/{{ @month }}/{{ @year }}">
+
+<get_greeting($time) {
+    $time < 12 ? morning :
+        $time < 18 ? afternoon : evening
+}>
+
+<greeting[get_greeting(@hour)] {
+    morning: "Good Morning",
+    afternoon: "Good Afternoon",
+    evening: "Good Evening",
+}>
+
+<timeDateGreeting "{{ greeting }}, it's {{ time }} on {{ date }}.">
