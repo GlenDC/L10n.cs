@@ -115,6 +115,7 @@
     <Compile Include="src\internal\LocaleContext.cs" />
     <Compile Include="src\utils\DictionaryRef.cs" />
     <Compile Include="src\Translator.cs" />
+    <Compile Include="src\utils\ShadowStack.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

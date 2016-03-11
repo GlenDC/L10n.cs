@@ -41,5 +41,31 @@ namespace L20nTests
 			Assert.AreEqual("Hello, World!", b.Expect());
 			Assert.AreEqual("Hello, World!", b.ExpectOr("Goodbye!"));
 		}
+
+		[Test()]
+		public void ShadowStackTests()
+		{
+			var stack = new ShadowStack<int>();
+			
+			Assert.Throws<InvalidOperationException>(() => stack.Pop("oops"));
+
+			stack.Push("apples", 1);
+			stack.Push("bananas", 2);
+			stack.Push("apples", 5);
+
+			Assert.AreEqual(5, stack.Pop("apples"));
+			Assert.AreEqual(2, stack.Pop("bananas"));
+			
+			stack.Push("bananas", 8);
+			stack.Push("oranges", 99);
+			stack.Push("apples", 34);
+			
+			Assert.AreEqual(8, stack.Pop("bananas"));
+			Assert.AreEqual(34, stack.Pop("apples"));
+			Assert.AreEqual(1, stack.Pop("apples"));
+			Assert.AreEqual(99, stack.Pop("oranges"));
+
+			Assert.Throws<InvalidOperationException>(() => stack.Pop ("apples"));
+		}
 	}
 }
