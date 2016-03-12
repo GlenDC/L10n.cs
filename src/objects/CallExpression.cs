@@ -38,7 +38,9 @@ namespace L20n
 			
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var macro = ctx.GetMacro(m_Identifier);
+				var macro = ctx.GetMacro(m_Identifier)
+							.Expect("calling an unknown macro");
+
 				return macro.Eval(ctx, m_Variables);
 			}
 		}

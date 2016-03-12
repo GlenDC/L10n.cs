@@ -34,61 +34,62 @@ namespace L20n
 			private readonly Dictionary<string, Entity> m_Entities;
 			private readonly ShadowStack<L20nObject> m_Variables;
 
+			private readonly Option<LocaleContext> m_Parent;
+
 			public LocaleContext(
 				Utils.DictionaryRef<string, GlobalValue> globals,
 				Dictionary<string, Macro> macros,
-				Dictionary<string, Entity> entities)
+				Dictionary<string, Entity> entities,
+				LocaleContext parent)
 			{
 				m_Globals = globals;
 				m_Macros = macros;
 				m_Entities = entities;
 				m_Variables = new ShadowStack<L20nObject>();
+				m_Parent = new Option<LocaleContext>(parent);
 			}
 			
-			public GlobalValue GetGlobal(string key)
+			public Option<GlobalValue> GetGlobal(string key)
 			{
-				try {
-					return m_Globals.Get(key);
-				}
-				catch(KeyNotFoundException exception) {
-					throw new Exceptions.ObjectNotFoundException(
-						String.Format("global `{0}` doesn't exist", key),
-						exception);
-				}
+				return GetGlobalPrivate(key).OrElse(() =>
+					m_Parent.Map((ctx) => ctx.GetGlobalPrivate(key)));
 			}
 			
-			public Macro GetMacro(string key)
+			public Option<Macro> GetMacro(string key)
 			{
-				try {
-					return m_Macros[key];
-				}
-				catch(KeyNotFoundException exception) {
-					throw new Exceptions.ObjectNotFoundException(
-						String.Format("macro `{0}` doesn't exist", key),
-						exception);
-				}
+				return GetMacroPrivate(key).OrElse(() =>
+					m_Parent.Map((ctx) => ctx.GetMacroPrivate(key)));
 			}
 			
-			public Entity GetEntity(string key)
+			public Option<Entity> GetEntity(string key)
 			{
-				try {
-					return m_Entities[key];
-				}
-				catch(KeyNotFoundException exception) {
-					throw new Exceptions.ObjectNotFoundException(
-						String.Format("entity `{0}` doesn't exist", key),
-						exception);
-				}
+				return GetEntityPrivate(key).OrElse(() =>
+				    m_Parent.Map((ctx) => ctx.GetEntityPrivate(key)));
 			}
 			
-			public Option<Entity> GetEntitySafe(string key)
+			private Option<GlobalValue> GetGlobalPrivate(string key)
+			{
+				var global = m_Globals.Get(key, null);
+				return new Option<GlobalValue>(global);
+			}
+			
+			private Option<Macro> GetMacroPrivate(string key)
+			{
+				Macro macro;
+				if (m_Macros.TryGetValue(key, out macro)) {
+					return new Option<Macro>(macro);
+				}
+				
+				return new Option<Macro>();
+			}
+			
+			private Option<Entity> GetEntityPrivate(string key)
 			{
 				Entity entity;
-
-				if (m_Entities.TryGetValue (key, out entity)) {
+				if (m_Entities.TryGetValue(key, out entity)) {
 					return new Option<Entity>(entity);
 				}
-
+				
 				return new Option<Entity>();
 			}
 			
@@ -155,10 +156,10 @@ namespace L20n
 					}
 				}
 				
-				public LocaleContext Build(Dictionary<string, GlobalValue> globals)
+				public LocaleContext Build(Dictionary<string, GlobalValue> globals, LocaleContext parent)
 				{
 					var globalsRef = new Utils.DictionaryRef<string, GlobalValue>(globals);
-					return new LocaleContext(globalsRef, m_Macros, m_Entities);
+					return new LocaleContext(globalsRef, m_Macros, m_Entities, parent);
 				}
 			}
 		}

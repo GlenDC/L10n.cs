@@ -47,7 +47,8 @@ namespace L20n
 				}
 				
 				var identifier = Identifiers[0].Eval(ctx).As<Identifier>().Value;
-				var entity = ctx.GetEntity(identifier);
+				var entity = ctx.GetEntity(identifier)
+							 .Expect("entity could not be found");
 				return entity.Eval(ctx, new PropertyExpression(SliceIdentifiers(1)));
 			}
 

@@ -1,6 +1,7 @@
 {
   "locales": [
     "en-US",
+    "pt-BR",
   ],
   "default_locale": "en-US",
   "resources": [

@@ -67,6 +67,19 @@ namespace L20nTests
 			Assert.AreEqual("unknown", Translator.Translate("unknown"));
 
 			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
+
+			// Switching to portuguese
+
+			Translator.SetLocale("pt-BR");
+			
+			Assert.AreEqual("Olá, Mundo!", Translator.Translate("hello"));
+			
+			greeting = System.DateTime.Now.Hour < 12 ? "Bom dia"
+				: (System.DateTime.Now.Hour < 18 ? "Boa tarde" : "Boa noite");
+			
+			Assert.AreEqual(greeting, Translator.Translate("greeting"));
+			
+			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
 		}
 
 		[Test()]

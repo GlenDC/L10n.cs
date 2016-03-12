@@ -1,0 +1,7 @@
+<hello "Olá, Mundo!">
+
+<greeting[get_greeting(@hour)] {
+    morning: "Bom dia",
+    afternoon: "Boa tarde",
+    evening: "Boa noite",
+}>

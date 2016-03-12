@@ -63,7 +63,10 @@ namespace L20n
 
 					Identifier identifier;
 					while(e.As<Identifier>(out identifier)) {
-						e = ctx.GetEntity(identifier.Value).Eval(ctx);
+						var entity = ctx.GetEntity(identifier.Value)
+									 .Expect("entity could not be found");
+
+						e = entity.Eval(ctx);
 					}
 
 					expressions[i] = e.As<Primitive>().ToString(ctx);

@@ -50,7 +50,7 @@ namespace L20n
 			public void Import(string manifest_path)
 			{
 				Manifest.Import(manifest_path);
-				ImportLocal(Manifest.DefaultLocale, m_DefaultContext);
+				ImportLocal(Manifest.DefaultLocale, m_DefaultContext, null);
 			}
 
 			public void LoadLocale(string id)
@@ -61,29 +61,22 @@ namespace L20n
 				}
 				
 				if (id == Manifest.DefaultLocale)
-					m_CurrentContext = null;
+					m_CurrentContext.Unset();
 				else
-					ImportLocal(id, m_CurrentContext);
+					ImportLocal(id, m_CurrentContext, m_DefaultContext.Unwrap());
 			}
 			
 			public string Translate(string id)
 			{
-				var result = new Option<string>();
-
-				return
-					m_CurrentContext.Map((ctx) => ctx.GetEntitySafe(id))
-						.Map((entity) => {
-							var output = entity.Eval(m_CurrentContext.Unwrap());
-							result.Set(output.As<Objects.StringOutput>().Value);
-							return result;
-						}).OrElse(() => {
-							return m_DefaultContext.Map((ctx) => ctx.GetEntitySafe(id))
-								.Map((entity) => {
-									var output = entity.Eval(m_DefaultContext.Unwrap());
-									result.Set(output.As<Objects.StringOutput>().Value);
-									return result;
-								});
-						}).UnwrapOr(id);
+				var context = m_CurrentContext.Or(m_DefaultContext);
+				return context
+						.Map((ctx) => ctx.GetEntity(id))
+						.MapOr(id, (entity) => {
+							return context.MapOr(id, (ctx) => {
+								var output = entity.Eval(ctx);
+								return output.As<Objects.StringOutput>().Value;
+							});
+						});
 			}
 			
 			public void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)
@@ -96,7 +89,7 @@ namespace L20n
 				AddGlobalValue(id, new L20n.Objects.GlobalString(callback));
 			}
 			
-			private void ImportLocal(string id, Option<LocaleContext> context)
+			private void ImportLocal(string id, Option<LocaleContext> context, LocaleContext parent)
 			{
 				var localeFiles = Manifest.GetLocaleFiles(id);
 				if (localeFiles.Count == 0)
@@ -111,7 +104,7 @@ namespace L20n
 					builder.Import(localeFiles[i]);
 				}
 				
-				context.Set(builder.Build(m_Globals));
+				context.Set(builder.Build(m_Globals, parent));
 			}
 			
 			private void AddGlobalValue(string id, L20n.Objects.GlobalValue value)

@@ -35,7 +35,10 @@ namespace L20n
 
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return ctx.GetGlobal(m_Identifier).Eval(ctx);
+				var global = ctx.GetGlobal(m_Identifier)
+							 .Expect("global value could not be found");
+
+				return global.Eval(ctx);
 			}
 		}
 	}

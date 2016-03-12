@@ -37,7 +37,7 @@ namespace L20nTests
 		{
 			m_DummyContext =
 				(new L20n.Internal.LocaleContext.Builder())
-					.Build(new Dictionary<string, L20n.Objects.GlobalValue>());
+					.Build(new Dictionary<string, L20n.Objects.GlobalValue>(), null);
 		}
 
 		[Test()]
