@@ -27,10 +27,10 @@ namespace L20n
 	{
 		public sealed class Entity : L20nObject
 		{	
-			private readonly Utils.Optional<L20nObject> m_Index;
+			private readonly Utils.Option<L20nObject> m_Index;
 			private readonly L20nObject m_Value;
 
-			public Entity(Utils.Optional<L20nObject> index, L20nObject value)
+			public Entity(Utils.Option<L20nObject> index, L20nObject value)
 			{
 				m_Index = index;
 				m_Value = value;
@@ -39,9 +39,9 @@ namespace L20n
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Index.IsSet) {
-					var arguments = new List<L20nObject> (argv.Length + 1);
-					var index = m_Index.ExpectAs<Index> ();
-					arguments.Add (index.Eval (ctx));
+					var arguments = new List<L20nObject>(argv.Length + 1);
+					var index = m_Index.UnwrapAs<Index>();
+					arguments.Add (index.Eval(ctx));
 					arguments.AddRange (argv);
 					return m_Value.Eval (ctx, arguments.ToArray ());
 				}

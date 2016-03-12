@@ -31,8 +31,8 @@ namespace L20n
 			public Manifest Manifest { get; private set; }
 			public string CurrentLocale { get; private set; }
 			
-			private Optional<LocaleContext> m_DefaultContext;
-			private Optional<LocaleContext> m_CurrentContext;
+			private Option<LocaleContext> m_DefaultContext;
+			private Option<LocaleContext> m_CurrentContext;
 			
 			private readonly Dictionary<string, Objects.GlobalValue> m_Globals;
 
@@ -41,8 +41,8 @@ namespace L20n
 				Manifest = new Manifest();
 				m_Globals = new Dictionary<string, Objects.GlobalValue>();
 
-				m_DefaultContext = new Optional<LocaleContext>();
-				m_CurrentContext = new Optional<LocaleContext>();
+				m_DefaultContext = new Option<LocaleContext>();
+				m_CurrentContext = new Option<LocaleContext>();
 
 				AddSystemGlobals();
 			}
@@ -68,24 +68,22 @@ namespace L20n
 			
 			public string Translate(string id)
 			{
-				Objects.Entity entity;
-				LocaleContext ctx;
+				var result = new Option<string>();
 
-				if (m_CurrentContext.IsSet) {
-					ctx = m_CurrentContext.Expect();
-					if(ctx.GetEntity(id, out entity)) {
-						var output = entity.Eval(ctx);
-						return output.As<Objects.StringOutput>().Value;
-					}
-				}
-
-				ctx = m_DefaultContext.Expect();
-				if(ctx.GetEntity(id, out entity)) {
-					var output = entity.Eval(ctx);
-					return output.As<Objects.StringOutput>().Value;
-				}
-
-				return id;
+				return
+					m_CurrentContext.Map((ctx) => ctx.GetEntitySafe(id))
+						.Map((entity) => {
+							var output = entity.Eval(m_CurrentContext.Unwrap());
+							result.Set(output.As<Objects.StringOutput>().Value);
+							return result;
+						}).OrElse(() => {
+							return m_DefaultContext.Map((ctx) => ctx.GetEntitySafe(id))
+								.Map((entity) => {
+									var output = entity.Eval(m_DefaultContext.Unwrap());
+									result.Set(output.As<Objects.StringOutput>().Value);
+									return result;
+								});
+						}).UnwrapOr(id);
 			}
 			
 			public void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)
@@ -98,7 +96,7 @@ namespace L20n
 				AddGlobalValue(id, new L20n.Objects.GlobalString(callback));
 			}
 			
-			private void ImportLocal(string id, Optional<LocaleContext> context)
+			private void ImportLocal(string id, Option<LocaleContext> context)
 			{
 				var localeFiles = Manifest.GetLocaleFiles(id);
 				if (localeFiles.Count == 0)
@@ -113,7 +111,7 @@ namespace L20n
 					builder.Import(localeFiles[i]);
 				}
 				
-				context.Set(builder.Build (m_Globals));
+				context.Set(builder.Build(m_Globals));
 			}
 			
 			private void AddGlobalValue(string id, L20n.Objects.GlobalValue value)

@@ -106,7 +106,6 @@
     <Compile Include="src\io\parsers\Identifier.cs" />
     <Compile Include="src\io\parsers\expressions\IdentifierExpression.cs" />
     <Compile Include="src\io\parsers\expressions\Logic.cs" />
-    <Compile Include="src\utils\Optional.cs" />
     <Compile Include="src\objects\GlobalValue.cs" />
     <Compile Include="src\internal\Manifest.cs" />
     <Compile Include="src\internal\Database.cs" />
@@ -115,6 +114,7 @@
     <Compile Include="src\Translator.cs" />
     <Compile Include="src\utils\ShadowStack.cs" />
     <Compile Include="src\io\ast\Identifier.cs" />
+    <Compile Include="src\utils\Option.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -31,15 +31,34 @@ namespace L20nTests
 		[Test()]
 		public void OptionalTests()
 		{
-			var a = new Optional<string>(null);
+			var a = new Option<string>();
 			Assert.IsFalse(a.IsSet);
-			Assert.Throws<UnexpectedObjectException>(() => a.Expect());
-			Assert.AreEqual("Oi", a.ExpectOr ("Oi"));
+			Assert.Throws<UnexpectedObjectException>(() => a.Unwrap());
+			Assert.AreEqual("Oi", a.UnwrapOr("Oi"));
 
-			var b = new Optional<string>("Hello, World!");
+			var b = new Option<string>("Hello, World!");
 			Assert.IsTrue(b.IsSet);
-			Assert.AreEqual("Hello, World!", b.Expect());
-			Assert.AreEqual("Hello, World!", b.ExpectOr("Goodbye!"));
+			Assert.AreEqual("Hello, World!", b.Unwrap());
+			Assert.AreEqual("Hello, World!", b.UnwrapOr("Goodbye!"));
+
+			var c = new Option<int>(5);
+			Assert.AreEqual(42, c.Map((x) => new Option<int>(37 + x)).Unwrap());
+			
+			var d = new Option<int>();
+			Assert.IsFalse (d.Map((x) => new Option<int>(x)).IsSet);
+			Assert.AreEqual(42, d.MapOr(42, (x) => x));
+			Assert.AreEqual(42, d.MapOrElse((x) => x, () => c.MapOr(0, (x) => 37 + x)));
+
+			Assert.IsFalse(a.And(b).IsSet);
+			Assert.IsTrue(b.And(c).IsSet);
+			Assert.AreEqual(5, b.And(c).Unwrap());
+			
+			Assert.IsTrue(a.Or(b).IsSet);
+			Assert.AreEqual(b.Or(a), a.Or(b));
+			Assert.AreEqual(5, d.Or(c).Unwrap());
+			
+			Assert.AreEqual(5, c.OrElse(() => new Option<int>(42)).Unwrap());
+			Assert.AreEqual(42, d.OrElse(() => new Option<int>(42)).Unwrap());
 		}
 
 		[Test()]

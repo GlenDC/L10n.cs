@@ -81,9 +81,15 @@ namespace L20n
 				}
 			}
 			
-			public bool GetEntity(string key, out Entity entity)
+			public Option<Entity> GetEntitySafe(string key)
 			{
-				return m_Entities.TryGetValue(key, out entity);
+				Entity entity;
+
+				if (m_Entities.TryGetValue (key, out entity)) {
+					return new Option<Entity>(entity);
+				}
+
+				return new Option<Entity>();
 			}
 			
 			public void PushVariable(string key, L20nObject value)

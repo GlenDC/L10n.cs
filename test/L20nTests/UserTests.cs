@@ -64,6 +64,7 @@ namespace L20nTests
 				: (System.DateTime.Now.Hour < 18 ? "Good Afternoon" : "Good Evening");
 			
 			Assert.AreEqual(greeting, Translator.Translate("greeting"));
+			Assert.AreEqual("unknown", Translator.Translate("unknown"));
 
 			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
 		}
