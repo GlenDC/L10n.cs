@@ -19,6 +19,7 @@
 using System;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -26,8 +27,8 @@ namespace L20n
 	{
 		public abstract class LogicalExpression : L20nObject
 		{	
-			private readonly L20nObject m_First;
-			private readonly L20nObject m_Second;
+			protected readonly L20nObject m_First;
+			protected readonly L20nObject m_Second;
 			
 			public LogicalExpression(L20nObject first, L20nObject second)
 			{
@@ -35,15 +36,12 @@ namespace L20n
 				m_Second = second;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
-			{
-				var first = m_First.Eval(ctx).As<BooleanValue>();
-				var second = m_Second.Eval(ctx).As<BooleanValue>();
-				
-				return Operation(first.Value, second.Value);
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			{	
+				return Operation(ctx);
 			}
 			
-			protected abstract BooleanValue Operation(bool a, bool b);
+			protected abstract Option<L20nObject> Operation(LocaleContext ctx);
 		}
 		
 		public sealed class AndExpression : LogicalExpression
@@ -51,9 +49,19 @@ namespace L20n
 			public AndExpression(L20nObject a, L20nObject b)
 			: base(a, b) {}
 			
-			protected override BooleanValue Operation(bool a, bool b)
+			protected override Option<L20nObject> Operation(LocaleContext ctx)
 			{
-				return new BooleanValue(a && b);
+				return m_First.Eval(ctx)
+					.Map<L20nObject>((opA) => {
+						var a = opA.As<BooleanValue>().Value;
+						if(!a)
+							return new Option<L20nObject>(opA);
+						
+						return m_Second.Eval(ctx)
+							.Map((opB) => {
+								return new Option<L20nObject>(opB);
+							});
+					});
 			}
 		}
 		
@@ -62,9 +70,19 @@ namespace L20n
 			public OrExpression(L20nObject a, L20nObject b)
 			: base(a, b) {}
 			
-			protected override BooleanValue Operation(bool a, bool b)
+			protected override Option<L20nObject> Operation(LocaleContext ctx)
 			{
-				return new BooleanValue(a || b);
+				return m_First.Eval(ctx)
+					.Map<L20nObject>((opA) => {
+						var a = opA.As<BooleanValue>().Value;
+						if(a)
+							return new Option<L20nObject>(opA);
+
+						return m_Second.Eval(ctx)
+							.Map((opB) => {
+								return new Option<L20nObject>(opB);
+							});
+					});
 			}
 		}
 	}

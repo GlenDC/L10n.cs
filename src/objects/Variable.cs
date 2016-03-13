@@ -19,6 +19,7 @@
 using System;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -38,9 +39,11 @@ namespace L20n
 				m_Identifier = identifier;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return ctx.GetVariable (m_Identifier).Eval (ctx);
+				return ctx.GetVariable(m_Identifier)
+					.MapOrWarning((variable) => variable.Eval(ctx),
+					              "couldn't find variable with key {0}", m_Identifier);
 			}
 		}
 	}

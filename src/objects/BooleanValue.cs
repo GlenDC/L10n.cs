@@ -18,6 +18,7 @@
 
 using System;
 
+using L20n.Utils;
 using L20n.Internal;
 using L20n.Exceptions;
 
@@ -33,15 +34,17 @@ namespace L20n
 			}
 			
 			private readonly bool m_Value;
+			private readonly Option<L20nObject> m_StaticOption;
 			
 			public BooleanValue(bool value)
 			{
 				m_Value = value;
+				m_StaticOption = new Option<L20nObject>(this);
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return this;
+				return m_StaticOption;
 			}
 		}
 	}

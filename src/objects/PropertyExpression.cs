@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 
+using L20n.Utils;
 using L20n.Internal;
 using L20n.Exceptions;
 
@@ -48,21 +49,25 @@ namespace L20n
 				}
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (argv.Length == 1 && argv[0] != null) {
 					return argv[0].As<HashValue>().Eval(ctx, this);
 				}
 				
-				var identifier = Identifiers[0].Eval(ctx).As<Identifier>().Value;
-				L20nObject obj = ctx.GetEntity(identifier)
-							 .Expect("entity could not be found");
+				return Identifiers[0].Eval(ctx).Map((_identifier) => {
+					var identifier = _identifier.As<Identifier>().Value;
+					return ctx.GetEntity(identifier).Map((entity) => {
+						var obj = new Option<L20nObject>(entity);
 
-				for(int i = 1; i < m_Identifiers.Length; ++i) {
-					obj = obj.Eval(ctx, m_Identifiers[i]);
-				}
+						for(int i = 1; i < m_Identifiers.Length; ++i) {
+							obj = obj.Map((unwrapped) =>
+							              unwrapped.Eval(ctx, m_Identifiers[i]));
+						}
 
-				return obj.Eval(ctx);
+						return obj.Map((unwrapped) => unwrapped.Eval(ctx));
+					});
+				});
 			}
 		}
 	}

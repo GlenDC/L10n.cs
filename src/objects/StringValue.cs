@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 
+using L20n.Utils;
 using L20n.Internal;
 using L20n.Exceptions;
 
@@ -28,7 +29,7 @@ namespace L20n
 	{
 		public sealed class StringValue : Primitive
 		{
-			public string Value
+			/*public string Value
 			{
 				get
 				{
@@ -41,7 +42,7 @@ namespace L20n
 
 					return m_Value;
 				}
-			}
+			}*/
 
 			private readonly string m_Value;
 			private readonly L20nObject[] m_Expressions;
@@ -52,33 +53,46 @@ namespace L20n
 				m_Expressions = expressions;
 			}
 
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Expressions.Length == 0)
-					return new StringOutput (m_Value);
+					return new Option<L20nObject>(new StringOutput(m_Value));
 
 				string[] expressions = new string[m_Expressions.Length];
 				for (int i = 0; i < expressions.Length; ++i) {
 					var e = m_Expressions[i].Eval(ctx);
 
-					Identifier identifier;
-					while(e.As<Identifier>(out identifier)) {
-						var entity = ctx.GetEntity(identifier.Value)
-									 .Expect("entity could not be found");
-
-						e = entity.Eval(ctx);
+					if(!e.IsSet) {
+						return e;
 					}
 
-					expressions[i] = e.As<Primitive>().ToString(ctx);
+					Identifier identifier;
+					while(e.Unwrap().As<Identifier>(out identifier)) {
+						e = ctx.GetEntity(identifier.Value)
+							.Map((entity) => entity.Eval(ctx));
+						
+						if(!e.IsSet) {
+							return e;
+						}
+					}
+
+					var stringOutput = e.Unwrap().As<Primitive>().ToString(ctx);
+					if(!stringOutput.IsSet) {
+						return L20nObject.None;
+					}
+
+					expressions[i] = stringOutput.Unwrap();
 				}
 
 				var output = String.Format(m_Value, expressions);
-				return new StringOutput(output);
+				return new Option<L20nObject>(new StringOutput(output));
 			}
 
-			public override string ToString(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<string> ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return Eval(ctx).As<Primitive>().ToString(ctx, argv);
+				return Eval(ctx)
+					.Map((primitive) =>
+					     primitive.As<Primitive>().ToString(ctx));
 			}
 		}
 	}

@@ -18,6 +18,7 @@
 
 using System;
 
+using L20n.Utils;
 using L20n.Internal;
 using L20n.Exceptions;
 
@@ -36,32 +37,39 @@ namespace L20n
 				m_Second = second;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var first = m_First.Eval(ctx);
-				var second = m_Second.Eval(ctx);
+				return Option<L20nObject>.Map<L20nObject>((parameters) => {
+					var first = parameters[0];
+					var second = parameters[1];
 
-				// need to be of the same type
-				var expectedType = first.GetType();
-				if (expectedType != second.GetType()) {
-					throw new UnexpectedObjectException(
-						String.Format("BinaryExpression's 2nd argument is expected to be {0}, got {1}",
-					              expectedType, second.GetType()));
-				}
-				
-				// for now we accept literals, booleans and literals
-
-				Literal literal;
-				if (first.As(out literal))
-					return Operation(literal.Value, second.As<Literal>().Value);
-				
-				BooleanValue boolValue;
-				if (first.As(out boolValue))
-					return Operation(boolValue.Value, second.As<BooleanValue>().Value);
-				
-				return Operation(
-					first.As<StringOutput>().Value,
-					second.As<StringOutput>().Value);
+					// need to be of the same type
+					var expectedType = first.GetType();
+					if (expectedType != second.GetType()) {
+						Logger.WarningFormat(
+							"BinaryExpression's 2nd argument is expected to be {0}, got {1}",
+						    expectedType, second.GetType());
+						return L20nObject.None;
+					}
+					
+					// for now we accept literals, booleans and literals
+					
+					Literal literal;
+					if (first.As(out literal)) {
+						var result = Operation(literal.Value, second.As<Literal>().Value);
+						return new Option<L20nObject>(result);
+					}
+					
+					BooleanValue boolValue;
+					if (first.As(out boolValue)) {
+						var result = Operation(boolValue.Value, second.As<BooleanValue>().Value);
+						return new Option<L20nObject>(result);
+					}
+					
+					return new Option<L20nObject>(Operation(
+						first.As<StringOutput>().Value,
+						second.As<StringOutput>().Value));
+				}, m_First.Eval(ctx), m_Second.Eval(ctx));
 			}
 			
 			protected abstract BooleanValue Operation(int a, int b);

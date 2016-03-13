@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 
+using L20n.Utils;
 using L20n.Internal;
 using L20n.Exceptions;
 
@@ -45,30 +46,25 @@ namespace L20n
 				m_Identifier = identifier;
 			}
 
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				if (m_Parameters.Length != argv.Length) {
-					var msg = String.Format(
+				if(m_Parameters.Length != argv.Length) {
+					Logger.WarningFormat(
 						"<macro> expects {0} parameters, received {1}",
 						m_Parameters.Length, argv.Length);
-					throw new EvaluateException(msg);
+					return L20nObject.None;
 				}
 
 				// Push variables on 'stack'
-				for (int i = 0; i < m_Parameters.Length; ++i) {
+				for(int i = 0; i < m_Parameters.Length; ++i) {
 					ctx.PushVariable(m_Parameters[i], argv[i]);
 				}
 
-				L20nObject output = null;
+				var output = m_Expression.Eval(ctx);
 
-				try {
-					output = m_Expression.Eval(ctx);
-				}
-				finally {
-					// Remove them from the 'stack'
-					for (int i = 0; i < m_Parameters.Length; ++i) {
-						ctx.DropVariable (m_Parameters [i]);
-					}
+				// Remove them from the 'stack'
+				for(int i = 0; i < m_Parameters.Length; ++i) {
+					ctx.DropVariable(m_Parameters[i]);
 				}
 
 				return output;

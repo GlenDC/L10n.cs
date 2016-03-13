@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,28 +17,36 @@
  */
 
 using System;
-
-using L20n.Internal;
-using L20n.Utils;
+using System.ComponentModel;
 
 namespace L20n
 {
-	namespace Objects
+	namespace Internal
 	{
-		public sealed class IdentifierExpression : L20nObject
-		{	
-			private readonly string m_Identifier;
-			
-			public IdentifierExpression(string identifier)
+		public static class Logger
+		{
+			public delegate void LogDelegate(string msg);
+
+			private static LogDelegate s_CustomWarning = null;
+
+			public static void SetWarningCallback(LogDelegate cb)
 			{
-				m_Identifier = identifier;
+				s_CustomWarning = cb;
 			}
-			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+
+			public static void Warning(string message)
 			{
-				return ctx.GetEntity(m_Identifier)
-					.MapOrWarning ((entity) => entity.Eval (ctx),
-					              "couldn't find an entity with key {0}", m_Identifier);
+				if (s_CustomWarning != null) {
+					s_CustomWarning (message);
+				} else {
+					throw new WarningException(message);
+				}
+			}
+
+			public static void WarningFormat(string format, params object[] argv)
+			{
+				var message = String.Format(format, argv);
+				Warning(message);
 			}
 		}
 	}

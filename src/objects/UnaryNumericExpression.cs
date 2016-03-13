@@ -19,6 +19,7 @@
 using System;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -33,11 +34,14 @@ namespace L20n
 				m_Expression = expression;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var literal = m_Expression.Eval(ctx).As<Literal>();
-				
-				return Operation(literal.Value);
+				return m_Expression.Eval(ctx)
+					.MapOrWarning((literal) => {
+						var value = literal.As<Literal>().Value;
+						var result = Operation(value);
+						return new Option<L20nObject>(result);
+					}, "couldn't operate on non-valid literal evaluation");
 			}
 			
 			protected abstract Literal Operation(int a);

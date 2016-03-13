@@ -77,7 +77,8 @@ namespace L20n
 
 				var context = m_CurrentContext.Or(m_DefaultContext);
 				return context.MapOr(id, (ctx) =>
-					identifier.Eval(ctx).As<Objects.StringOutput>().Value);
+					identifier.Eval(ctx).MapOr(id,
+				    	(output) => output.As<Objects.StringOutput>().Value));
 			}
 			
 			public void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)

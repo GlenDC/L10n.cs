@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -36,7 +37,7 @@ namespace L20n
 				m_Value = value;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Index.IsSet && argv.Length == 0) {
 					return m_Value.Eval(ctx, m_Index.UnwrapAs<Index>());

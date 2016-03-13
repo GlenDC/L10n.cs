@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 
+using L20n.Utils;
 using L20n.Internal;
 using L20n.Exceptions;
 
@@ -35,15 +36,27 @@ namespace L20n
 				m_Indeces = indeces;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Indeces.Length == 1) {
-					return m_Indeces[0].Eval(ctx).As<Identifier>();
+					return m_Indeces[0].Eval(ctx)
+						.MapOrWarning((index) => new Option<L20nObject>(index.As<Identifier>()),
+						              "something went wrong while evaluating the only index");
 				}
 
 				var indeces = new L20nObject[m_Indeces.Length];
-				for (int i = 0; i < indeces.Length; ++i)
-					indeces [i] = m_Indeces [i].Eval (ctx).As<Identifier>();
+				for (int i = 0; i < indeces.Length; ++i) {
+					var index = m_Indeces[i].Eval(ctx);
+					if(index.IsSet) {
+						indeces[i] = index.Unwrap().As<Identifier>();
+					}
+					else {
+						Internal.Logger.WarningFormat(
+							"something went wrong while evaluating index #{0}", i);
+						return L20nObject.None;
+					}
+				}
+
 				var propertyExpression = new Objects.PropertyExpression(indeces);
 				return propertyExpression.Eval(ctx);
 			}

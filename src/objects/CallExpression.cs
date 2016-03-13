@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -36,12 +37,12 @@ namespace L20n
 				m_Variables = variables;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var macro = ctx.GetMacro(m_Identifier)
-							.Expect("calling an unknown macro");
-
-				return macro.Eval(ctx, m_Variables);
+				return ctx.GetMacro(m_Identifier)
+					.MapOrWarning(
+						(macro) => macro.Eval(ctx, m_Variables),
+						"couldn't find macro with name {0}", m_Identifier);
 			}
 		}
 	}

@@ -19,6 +19,7 @@
 using System;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -39,13 +40,15 @@ namespace L20n
 				m_IfFalse = if_false;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var result = m_Condition.Eval(ctx).As<BooleanValue>();
-				if (result.Value)
-					return m_IfTrue.Eval(ctx);
-				else
-					return m_IfFalse.Eval(ctx);
+				return m_Condition.Eval(ctx)
+					.Map((condition) => {
+						if(condition.As<BooleanValue>().Value)
+							return m_IfTrue.Eval(ctx);
+						else
+							return m_IfFalse.Eval(ctx);
+					});
 			}
 		}
 	}

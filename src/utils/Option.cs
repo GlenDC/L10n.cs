@@ -96,8 +96,23 @@ namespace L20n
 
 			public delegate U MapDelegate<U>(T value);
 			public delegate Option<U> MapOptionDelegate<U>(T value);
+			public delegate Option<U> StaticMapOptionDelegate<U>(params T[] value);
 			public delegate U MapDefaultDelegate<U>();
 			public delegate Option<U> MapDefaultOptionDelegate<U>();
+
+			public static Option<U> Map<U>(StaticMapOptionDelegate<U> map, params Option<T>[] options)
+			{
+				var argv = new T[options.Length];
+				for(int i = 0; i < argv.Length; ++i) {
+					if(!options[i].IsSet) {
+						return new Option<U>();
+					}
+
+					argv[i] = options[i].Unwrap();
+				}
+
+				return map(argv);
+			}
 
 			public Option<U> Map<U>(MapOptionDelegate<U> map)
 			{
@@ -105,6 +120,16 @@ namespace L20n
 					return map(m_Value);
 				}
 
+				return new Option<U>();
+			}
+
+			public Option<U> MapOrWarning<U>(MapOptionDelegate<U> map, string msg, params object[] argv)
+			{
+				if (IsSet) {
+					return map(m_Value);
+				}
+
+				Internal.Logger.WarningFormat(msg, argv);
 				return new Option<U>();
 			}
 			

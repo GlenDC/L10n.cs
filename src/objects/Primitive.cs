@@ -19,6 +19,7 @@
 using System;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -26,7 +27,7 @@ namespace L20n
 	{
 		public abstract class Primitive : L20nObject
 		{
-			public abstract string ToString(LocaleContext ctx, params L20nObject[] argv);
+			public abstract Option<string> ToString(LocaleContext ctx, params L20nObject[] argv);
 		}
 	}
 }

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 
+using L20n.Utils;
 using L20n.Internal;
 using L20n.Exceptions;
 
@@ -37,35 +38,42 @@ namespace L20n
 				m_Default = def;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (argv.Length != 1) {
 					if (m_Default == null) {
-						throw new EvaluateException(
+						Logger.Warning(
 							"no <identifier> was given and <hash_value> has no default specified");
+						return L20nObject.None;
 					}
 
 					return m_Items[m_Default].Eval(ctx);
 				}
 				
-				var id = argv[0].Eval(ctx).As<Identifier>();
+				return argv[0].Eval(ctx).Map((_id) => {
+					var id = _id.As<Identifier>();
 
-				L20nObject obj;
-				if(!m_Items.TryGetValue(id.Value, out obj)) {
-					if(m_Default == null) {
-						throw new EvaluateException(
-							"no defined <identifier> was given and <hash_value> has no default specified");
+					L20nObject obj;
+					if(!m_Items.TryGetValue(id.Value, out obj)) {
+						if(m_Default == null) {
+							Logger.Warning(
+								"no defined <identifier> was given and <hash_value> has no default specified");
+							return L20nObject.None;
+						}
+
+						obj = m_Items[m_Default];
 					}
 
-					obj = m_Items[m_Default];
-				}
-
-				return obj.Eval(ctx).As<Primitive>();
+					return obj.Eval(ctx);
+				});
 			}
 			
-			public override string ToString(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<string> ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return Eval(ctx, argv).As<Primitive>().ToString(ctx, argv);
+				return Eval(ctx, argv)
+					.Map((primitive) => {
+						return primitive.As<Primitive>().ToString(ctx);
+					});
 			}
 		}
 	}

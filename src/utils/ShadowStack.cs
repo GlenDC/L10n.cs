@@ -47,10 +47,26 @@ namespace L20n
 				return stack.Peek();
 			}
 
+			public Option<T> PeekSafe(string key)
+			{
+				var stack = CreateOrGetStack(key);
+				if(stack.Count == 0)
+					return new Option<T>();
+				return new Option<T>(stack.Peek ());
+			}
+
 			public T Pop(string key)
 			{
 				var stack = CreateOrGetStack(key);
 				return stack.Pop();
+			}
+			
+			public Option<T> PopSafe(string key)
+			{
+				var stack = CreateOrGetStack(key);
+				if(stack.Count > 0)
+					return new Option<T>(stack.Pop());
+				return new Option<T>();
 			}
 			
 			private Stack<T> CreateOrGetStack(string key)

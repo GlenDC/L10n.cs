@@ -19,6 +19,7 @@
 using System;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -37,17 +38,18 @@ namespace L20n
 		public sealed class GlobalString : GlobalValue
 		{
 			public delegate string Delegate();
-			private Delegate m_Callback;
+			private Option<Delegate> m_Callback;
 
 			public GlobalString(Delegate callback)
 			{
-				m_Callback = callback;
+				m_Callback = new Option<Delegate>(callback);
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var output = m_Callback();
-				return new StringOutput(output);
+				return m_Callback.MapOrWarning(
+					(callback) => new Option<L20nObject>(new StringOutput(callback())),
+					"global string couldn't be retrieved as no delegate was set");
 			}
 		}
 
@@ -58,17 +60,18 @@ namespace L20n
 		public sealed class GlobalLiteral : GlobalValue
 		{
 			public delegate int Delegate();
-			private Delegate m_Callback;
+			private Option<Delegate> m_Callback;
 			
 			public GlobalLiteral(Delegate callback)
 			{
-				m_Callback = callback;
+				m_Callback = new Option<Delegate>(callback);
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var output = m_Callback();
-				return new Literal(output);
+				return m_Callback.MapOrWarning(
+					(callback) => new Option<L20nObject>(new Literal(callback())),
+					"global literal couldn't be retrieved as no delegate was set");
 			}
 		}
 	}

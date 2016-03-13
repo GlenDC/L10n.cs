@@ -100,12 +100,15 @@ namespace L20n
 			
 			public void DropVariable(string key)
 			{
-				m_Variables.Pop(key);
+				if (!m_Variables.PopSafe (key).IsSet) {
+					Internal.Logger.WarningFormat(
+						"couldn't drop variable with key {0}", key);
+				}
 			}
 			
-			public L20nObject GetVariable(string key)
+			public Option<L20nObject> GetVariable(string key)
 			{
-				return m_Variables.Peek(key);
+				return m_Variables.PeekSafe(key);
 			}
 
 			public class Builder

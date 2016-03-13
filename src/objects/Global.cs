@@ -19,6 +19,7 @@
 using System;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -33,12 +34,11 @@ namespace L20n
 				m_Identifier = identifier;
 			}
 
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var global = ctx.GetGlobal(m_Identifier)
-							 .Expect("global value could not be found");
-
-				return global.Eval(ctx);
+				return ctx.GetGlobal(m_Identifier)
+					.MapOrWarning((global) => global.Eval(ctx),
+					              "couldn't find global with key {0}", m_Identifier);
 			}
 		}
 	}

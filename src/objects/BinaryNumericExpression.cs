@@ -18,6 +18,7 @@
 
 using System;
 
+using L20n.Utils;
 using L20n.Internal;
 using L20n.Exceptions;
 
@@ -36,12 +37,14 @@ namespace L20n
 				m_Second = second;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var first = m_First.Eval(ctx).As<Literal>();
-				var second = m_Second.Eval(ctx).As<Literal>();
-
-				return Operation(first.Value, second.Value);
+				return Option<L20nObject>.Map<L20nObject>((parameters) => {
+					var first = parameters[0].As<Literal>();
+					var second = parameters[1].As<Literal>();
+					var result = Operation(first.Value, second.Value);
+					return new Option<L20nObject>(result);
+				}, m_First.Eval(ctx), m_Second.Eval(ctx));
 			}
 
 			protected abstract L20nObject Operation(int a, int b);

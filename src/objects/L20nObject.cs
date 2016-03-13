@@ -17,9 +17,10 @@
  */
 
 using System;
-using L20n.Exceptions;
 
+using L20n.Exceptions;
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -27,7 +28,13 @@ namespace L20n
 	{
 		public abstract class L20nObject
 		{
-			public abstract L20nObject Eval(LocaleContext ctx, params L20nObject[] argv);
+			public abstract Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv);
+
+			private static Option<L20nObject> m_None = new Option<L20nObject>();
+			public static Option<L20nObject> None
+			{
+				get { return m_None; }
+			}
 
 			public T As<T>() where T: L20nObject
 			{

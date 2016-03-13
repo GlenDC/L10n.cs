@@ -19,6 +19,7 @@
 using System;
 
 using L20n.Internal;
+using L20n.Utils;
 
 namespace L20n
 {
@@ -33,12 +34,14 @@ namespace L20n
 				m_Expression = expression;
 			}
 			
-			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var expression = m_Expression.Eval(ctx);
-				var result = !(expression.As<BooleanValue>().Value);
-				
-				return new BooleanValue(result);
+				return m_Expression.Eval(ctx)
+					.MapOrWarning((expr) => {
+						var result = !(expr.As<BooleanValue>().Value);
+						var value = new BooleanValue(result);
+						return new Option<L20nObject>(value);
+					}, "negation of non-valid boolean evaluation isn't allowed");
 			}
 		}
 	}
