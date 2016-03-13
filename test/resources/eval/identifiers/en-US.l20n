@@ -10,7 +10,10 @@
 <greeting[get_greeting(@hour)] {
     morning: "Good Morning",
     afternoon: "Good Afternoon",
-    evening: "Good Evening",
+    evening: {
+        *normal: "Good Evening",
+        late: "Good Night",
+    },
 }>
 
 <timeDateGreeting "{{ greeting }}, it's {{ time }} on {{ date }}.">

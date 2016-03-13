@@ -41,32 +41,26 @@ namespace L20n
 			{
 				if (argv.Length != 1) {
 					if (m_Default == null) {
-						throw new EvaluateException (
-							String.Format (
-							"no <identifier> was given and <hash_value> has no default specified, expecting one of `{0}`",
-							m_Items.Keys));
+						throw new EvaluateException(
+							"no <identifier> was given and <hash_value> has no default specified");
 					}
 
-					return m_Items [m_Default].Eval(ctx);
+					return m_Items[m_Default].Eval(ctx);
 				}
-					
+				
+				var id = argv[0].Eval(ctx).As<Identifier>();
+
 				L20nObject obj;
-				var index = argv[0].Eval(ctx);
-				
-				Identifier id;
-				if(index.As(out id)) {
-					obj = m_Items[id.Value].Eval(ctx);
-				}
-				else {
-					var identifiers = index.As<PropertyExpression>().Identifiers;
-					obj = this;
-					for(int i = 0; i < identifiers.Length; ++i) {
-						var identifier = identifiers[i];
-						obj = obj.As<HashValue>().Eval(ctx, identifier);
+				if(!m_Items.TryGetValue(id.Value, out obj)) {
+					if(m_Default == null) {
+						throw new EvaluateException(
+							"no defined <identifier> was given and <hash_value> has no default specified");
 					}
+
+					obj = m_Items[m_Default];
 				}
-				
-				return obj.As<Primitive>();
+
+				return obj.Eval(ctx).As<Primitive>();
 			}
 			
 			public override string ToString(LocaleContext ctx, params L20nObject[] argv)

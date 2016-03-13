@@ -63,8 +63,12 @@ namespace L20n
 
 		public static string Translate(string id)
 		{
-			// TODO catch exception
-			return s_Database.Translate(id);
+			try {
+				return s_Database.Translate(id);
+			}
+			catch(Exception) {
+				return id;
+			}
 		}
 		
 		public static void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)

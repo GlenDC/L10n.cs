@@ -32,7 +32,6 @@ namespace L20n
 					var startingPos = stream.Position;
 					
 					try {
-
 						// skip opening tag
 						stream.SkipCharacter('{');
 

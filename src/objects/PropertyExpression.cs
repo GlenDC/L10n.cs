@@ -40,6 +40,14 @@ namespace L20n
 				m_Identifiers = identifiers;
 			}
 			
+			public PropertyExpression(string[] identifiers)
+			{
+				m_Identifiers = new L20nObject[identifiers.Length];
+				for (int i = 0; i < identifiers.Length; ++i) {
+					m_Identifiers [i] = new Identifier (identifiers [i]);
+				}
+			}
+			
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (argv.Length == 1 && argv[0] != null) {
@@ -47,19 +55,14 @@ namespace L20n
 				}
 				
 				var identifier = Identifiers[0].Eval(ctx).As<Identifier>().Value;
-				var entity = ctx.GetEntity(identifier)
+				L20nObject obj = ctx.GetEntity(identifier)
 							 .Expect("entity could not be found");
-				return entity.Eval(ctx, new PropertyExpression(SliceIdentifiers(1)));
-			}
 
-			private L20nObject[] SliceIdentifiers(int start)
-			{	
-				// Return new array.
-				var res = new L20nObject[m_Identifiers.Length - start];
-				for (int i = start; i < m_Identifiers.Length; i++)
-					res[i] = m_Identifiers[i];
+				for(int i = 1; i < m_Identifiers.Length; ++i) {
+					obj = obj.Eval(ctx, m_Identifiers[i]);
+				}
 
-				return res;
+				return obj.Eval(ctx);
 			}
 		}
 	}

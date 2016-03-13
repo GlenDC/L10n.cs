@@ -68,15 +68,16 @@ namespace L20n
 			
 			public string Translate(string id)
 			{
+				Objects.L20nObject identifier;
+
+				if(id.IndexOf ('.') > 0)
+					identifier = new Objects.PropertyExpression(id.Split('.'));
+				else
+					identifier = new Objects.IdentifierExpression(id);
+
 				var context = m_CurrentContext.Or(m_DefaultContext);
-				return context
-						.Map((ctx) => ctx.GetEntity(id))
-						.MapOr(id, (entity) => {
-							return context.MapOr(id, (ctx) => {
-								var output = entity.Eval(ctx);
-								return output.As<Objects.StringOutput>().Value;
-							});
-						});
+				return context.MapOr(id, (ctx) =>
+					identifier.Eval(ctx).As<Objects.StringOutput>().Value);
 			}
 			
 			public void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)

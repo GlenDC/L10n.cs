@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 using L20n.Internal;
 
@@ -25,24 +24,21 @@ namespace L20n
 {
 	namespace Objects
 	{
-		public sealed class Entity : L20nObject
+		public sealed class IdentifierExpression : L20nObject
 		{	
-			private readonly Utils.Option<L20nObject> m_Index;
-			private readonly L20nObject m_Value;
-
-			public Entity(Utils.Option<L20nObject> index, L20nObject value)
+			private readonly string m_Identifier;
+			
+			public IdentifierExpression(string identifier)
 			{
-				m_Index = index;
-				m_Value = value;
+				m_Identifier = identifier;
 			}
 			
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				if (m_Index.IsSet && argv.Length == 0) {
-					return m_Value.Eval(ctx, m_Index.UnwrapAs<Index>());
-				}
-
-				return m_Value.Eval(ctx, argv);
+				var entity = ctx.GetEntity(m_Identifier)
+					.Expect("entity could not be found");
+				
+				return entity.Eval(ctx);
 			}
 		}
 	}

@@ -115,6 +115,7 @@
     <Compile Include="src\utils\ShadowStack.cs" />
     <Compile Include="src\io\ast\Identifier.cs" />
     <Compile Include="src\utils\Option.cs" />
+    <Compile Include="src\objects\IdentifierExpression.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

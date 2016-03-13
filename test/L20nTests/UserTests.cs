@@ -65,6 +65,9 @@ namespace L20nTests
 			
 			Assert.AreEqual(greeting, Translator.Translate("greeting"));
 			Assert.AreEqual("unknown", Translator.Translate("unknown"));
+			Assert.AreEqual(
+				Translator.Translate("greeting.evening"),
+				Translator.Translate("greeting.evening.normal"));
 
 			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
 
@@ -78,6 +81,11 @@ namespace L20nTests
 				: (System.DateTime.Now.Hour < 18 ? "Boa tarde" : "Boa noite");
 			
 			Assert.AreEqual(greeting, Translator.Translate("greeting"));
+			Assert.AreEqual("Boa noite", Translator.Translate("greeting.evening"));
+			Assert.AreEqual("Boa noite", Translator.Translate("greeting.evening.late"));
+			Assert.AreEqual(
+				Translator.Translate("greeting.evening.normal"),
+				Translator.Translate("greeting.evening.late"));
 			
 			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
 		}
@@ -85,6 +93,9 @@ namespace L20nTests
 		[Test()]
 		public void SimpleDatabase()
 		{
+			Translator.AddGlobal("os", () => "win");
+			Translator.AddGlobal("screen", () => "desktop");
+
 			var pc = new PerformanceClock("SimpleDatabase");
 
 			pc.Clock("start import database");
@@ -103,4 +114,3 @@ namespace L20nTests
 		}
 	}
 }
-
