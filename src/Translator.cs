@@ -85,6 +85,11 @@ namespace L20n
 		{
 			s_Database.AddGlobal(id, callback);
 		}
+		
+		public static void ClearCache()
+		{
+			s_Database.ClearCache();
+		}
 
 		public static void SetWarningDelegate(Internal.Logger.LogDelegate callback)
 		{

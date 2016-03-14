@@ -33,6 +33,8 @@ namespace L20n
 			
 			private Option<LocaleContext> m_DefaultContext;
 			private Option<LocaleContext> m_CurrentContext;
+
+			private Cache m_Cache;
 			
 			private readonly Dictionary<string, Objects.GlobalValue> m_Globals;
 
@@ -44,6 +46,8 @@ namespace L20n
 				m_DefaultContext = new Option<LocaleContext>();
 				m_CurrentContext = new Option<LocaleContext>();
 
+				m_Cache = new Cache();
+
 				AddSystemGlobals();
 			}
 
@@ -51,6 +55,8 @@ namespace L20n
 			{
 				m_DefaultContext = new Option<LocaleContext>();
 				m_CurrentContext = new Option<LocaleContext>();
+
+				ClearCache();
 
 				Manifest.Import(manifest_path);
 				ImportLocal(Manifest.DefaultLocale, m_DefaultContext, null);
@@ -76,31 +82,35 @@ namespace L20n
 			
 			public string Translate(string id)
 			{
-				Objects.L20nObject identifier;
+				return m_Cache.TryGet(id).OrElse(() => {
+					Objects.L20nObject identifier;
 
-				if(id.IndexOf ('.') > 0)
-					identifier = new Objects.PropertyExpression(id.Split('.'));
-				else
-					identifier = new Objects.IdentifierExpression(id);
+					if(id.IndexOf ('.') > 0)
+						identifier = new Objects.PropertyExpression(id.Split('.'));
+					else
+						identifier = new Objects.IdentifierExpression(id);
 
-				var context = m_CurrentContext.Or(m_DefaultContext);
-				if (!context.IsSet) {
-					Internal.Logger.WarningFormat(
-						"{0} could not be translated as no language-context has been set", id);
-					return id;
-				}
+					var context = m_CurrentContext.Or(m_DefaultContext);
+					if (!context.IsSet) {
+						Internal.Logger.WarningFormat(
+							"{0} could not be translated as no language-context has been set", id);
+						return new Option<string>();
+					}
 
-				var output = identifier.Eval(
-					context.Unwrap(), new Objects.Dummy())
-				    .UnwrapAs<Objects.StringOutput>();
+					var output = identifier.Eval(
+						context.Unwrap(), new Objects.Dummy())
+					    .UnwrapAs<Objects.StringOutput>();
 
-				if (!output.IsSet) {
-					Internal.Logger.WarningFormat(
-						"something went wrong, {0} could not be translated", id);
-					return id;
-				}
+					if (!output.IsSet) {
+						Internal.Logger.WarningFormat(
+							"something went wrong, {0} could not be translated", id);
+						return new Option<string>();
+					}
 
-				return output.Unwrap().Value;
+					var value = output.Unwrap().Value;
+					m_Cache.Set(id, value);
+					return new Option<string>(value);
+				}).UnwrapOr(id);
 			}
 			
 			public void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)
@@ -111,6 +121,11 @@ namespace L20n
 			public void AddGlobal(string id, L20n.Objects.GlobalString.Delegate callback)
 			{
 				AddGlobalValue(id, new L20n.Objects.GlobalString(callback));
+			}
+
+			public void ClearCache()
+			{
+				m_Cache.Clear();
 			}
 			
 			private void ImportLocal(string id, Option<LocaleContext> context, LocaleContext parent)

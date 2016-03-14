@@ -118,6 +118,7 @@
     <Compile Include="src\objects\IdentifierExpression.cs" />
     <Compile Include="src\internal\Logger.cs" />
     <Compile Include="src\objects\Dummy.cs" />
+    <Compile Include="src\internal\Cache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
