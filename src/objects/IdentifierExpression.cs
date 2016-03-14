@@ -37,7 +37,7 @@ namespace L20n
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return ctx.GetEntity(m_Identifier)
-					.MapOrWarning ((entity) => entity.Eval (ctx),
+					.MapOrWarning ((entity) => entity.Eval (ctx, argv),
 					              "couldn't find an entity with key {0}", m_Identifier);
 			}
 		}

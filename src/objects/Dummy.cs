@@ -25,20 +25,14 @@ namespace L20n
 {
 	namespace Objects
 	{
-		public sealed class Global : L20nObject
+		public sealed class Dummy : L20nObject
 		{	
-			private readonly string m_Identifier;
+			public Dummy() {}
 			
-			public Global(string identifier)
-			{
-				m_Identifier = identifier;
-			}
-
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return ctx.GetGlobal(m_Identifier)
-					.MapOrWarning((global) => global.Eval(ctx, argv),
-					              "couldn't find global with key {0}", m_Identifier);
+				Logger.Warning("Evaluating a dummy object, this should never happen!");
+				return L20nObject.None;
 			}
 		}
 	}

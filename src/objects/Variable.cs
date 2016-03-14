@@ -42,7 +42,7 @@ namespace L20n
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return ctx.GetVariable(m_Identifier)
-					.MapOrWarning((variable) => variable.Eval(ctx),
+					.MapOrWarning((variable) => variable.Eval(ctx, argv),
 					              "couldn't find variable with key {0}", m_Identifier);
 			}
 		}

@@ -2,6 +2,10 @@
 <time "{{ @hour }}:{{ @minute }}:{{ @second }}">
 <date "{{ @day }}/{{ @month }}/{{ @year }}">
 
+<_hidden "123">
+
+<pssst "the password is {{ _hidden }}">
+
 <get_greeting($time) {
     $time < 12 ? morning :
         $time < 18 ? afternoon : evening

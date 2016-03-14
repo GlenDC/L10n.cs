@@ -32,12 +32,14 @@ namespace L20n
 				private readonly string m_Identifier;
 				private readonly Utils.Option<INode> m_Index;
 				private readonly INode m_Value;
+				private readonly bool m_IsPrivate;
 				
-				public Entity(string identifier, INode index, INode value)
+				public Entity(string identifier, bool is_private, INode index, INode value)
 				{
 					m_Identifier = identifier;
 					m_Index = new Utils.Option<INode>(index);
 					m_Value = value;
+					m_IsPrivate = is_private;
 				}
 				
 				public Objects.L20nObject Eval()
@@ -50,7 +52,7 @@ namespace L20n
 						index = new Utils.Option<Objects.L20nObject>();
 					var value = m_Value.Eval();
 
-					return new Objects.Entity(index, value);
+					return new Objects.Entity(index, m_IsPrivate, value);
 				}
 				
 				public string Display()

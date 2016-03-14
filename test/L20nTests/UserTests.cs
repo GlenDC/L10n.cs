@@ -71,6 +71,12 @@ namespace L20nTests
 
 			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
 
+			// private entities can only be acces from within an lol file
+			Assert.AreEqual("_hidden", Translator.Translate("_hidden"));
+
+			// in this case pssst references _hidden (123), so that does work fine
+			Assert.AreEqual("the password is 123", Translator.Translate("pssst"));
+
 			// Switching to portuguese
 
 			Translator.SetLocale("pt-BR");

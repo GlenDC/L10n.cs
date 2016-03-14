@@ -38,11 +38,19 @@ namespace L20n
 			
 			public PropertyExpression(L20nObject[] identifiers)
 			{
+				if (identifiers.Length < 2) {
+					throw new ParseException("a property needs at least 2 identifiers");
+				}
+	
 				m_Identifiers = identifiers;
 			}
 			
 			public PropertyExpression(string[] identifiers)
 			{
+				if (identifiers.Length < 2) {
+					throw new EvaluateException("a property needs at least 2 identifiers");
+				}
+
 				m_Identifiers = new L20nObject[identifiers.Length];
 				for (int i = 0; i < identifiers.Length; ++i) {
 					m_Identifiers [i] = new Identifier (identifiers [i]);
@@ -50,17 +58,19 @@ namespace L20n
 			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
-			{
-				if (argv.Length == 1 && argv[0] != null) {
-					return argv[0].As<HashValue>()
-						.Map((value) => value.Eval(ctx, this));
-				}
-				
+			{	
 				return Identifiers[0].Eval(ctx).UnwrapAs<Identifier>().Map((identifier) => {
 					return ctx.GetEntity(identifier.Value).Map((entity) => {
 						var obj = new Option<L20nObject>(entity);
 
-						for(int i = 1; i < m_Identifiers.Length; ++i) {
+						int i = 1;
+						if(argv.Length == 1 && argv[0].As<Dummy>().IsSet) {
+							obj = obj.Map((unwrapped) =>
+							              unwrapped.Eval(ctx, argv[0], m_Identifiers[i]));
+							++i;
+						}
+
+						for(; i < m_Identifiers.Length; ++i) {
 							obj = obj.Map((unwrapped) =>
 							              unwrapped.Eval(ctx, m_Identifiers[i]));
 						}

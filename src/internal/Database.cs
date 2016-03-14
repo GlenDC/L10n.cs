@@ -90,8 +90,9 @@ namespace L20n
 					return id;
 				}
 
-				var output = identifier.Eval(context.Unwrap())
-				    			.UnwrapAs<Objects.StringOutput>();
+				var output = identifier.Eval(
+					context.Unwrap(), new Objects.Dummy())
+				    .UnwrapAs<Objects.StringOutput>();
 
 				if (!output.IsSet) {
 					Internal.Logger.WarningFormat(

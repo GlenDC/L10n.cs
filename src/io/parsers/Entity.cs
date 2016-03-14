@@ -34,6 +34,10 @@ namespace L20n
 					var startingPos = stream.Position;
 
 					try {
+						// private identifiers start with an underscore
+						// and can only be referenced from within an l20n file
+						bool isPrivate = (identifier.IndexOf('_') == 0);
+
 						// an optional index is possible
 						AST.INode index = null;
 						Index.PeekAndParse(stream, out index);
@@ -49,7 +53,7 @@ namespace L20n
 
 						stream.SkipCharacter('>');
 						
-						var entityAST = new AST.Entity(identifier, index, value);
+						var entityAST = new AST.Entity(identifier, isPrivate, index, value);
 						try {
 							var entity = (Objects.Entity) entityAST.Eval();
 							builder.AddEntity(identifier, entity);
