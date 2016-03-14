@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,22 +36,9 @@ namespace L20n
 				get { return m_None; }
 			}
 
-			public T As<T>() where T: L20nObject
+			public Option<T> As<T>() where T: L20nObject
 			{
-				try {
-					return (T)this;
-				}
-				catch(Exception e) {
-					var msg = String.Format(
-						"object could not be given as {0}", typeof(T));
-					throw new UnexpectedObjectException(msg, e);
-				}
-			}
-
-			public bool As<T>(out T obj) where T: L20nObject
-			{
-				obj = this as T;
-				return obj != null;
+				return new Option<T>(this as T);
 			}
 		}
 	}

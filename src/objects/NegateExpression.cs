@@ -37,8 +37,8 @@ namespace L20n
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return m_Expression.Eval(ctx)
-					.MapOrWarning((expr) => {
-						var result = !(expr.As<BooleanValue>().Value);
+					.UnwrapAs<BooleanValue>().MapOrWarning((expr) => {
+						var result = !(expr.Value);
 						var value = new BooleanValue(result);
 						return new Option<L20nObject>(value);
 					}, "negation of non-valid boolean evaluation isn't allowed");

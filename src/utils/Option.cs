@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ namespace L20n
 		/// A class that allows you to wrap another nullable object.
 		/// This class should be used to prevent the use of null within the
 		/// rest of the code base.
-		/// 
+		///
 		/// It is heavily inspired on std::option from Rust:
 		/// https://doc.rust-lang.org/std/option/enum.Option.html
 		/// </summary>
@@ -38,7 +38,7 @@ namespace L20n
 			public bool IsSet { get; private set; }
 
 			private T m_Value;
-			
+
 			public Option()
 			{
 				Unset();
@@ -54,17 +54,17 @@ namespace L20n
 				m_Value = value;
 				IsSet = m_Value != null;
 			}
-			
+
 			public void Unset()
 			{
 				IsSet = false;
 			}
-			
+
 			public T Expect(string msg)
 			{
 				if (!IsSet)
 					throw new UnexpectedObjectException (msg);
-				
+
 				return m_Value;
 			}
 
@@ -74,16 +74,18 @@ namespace L20n
 				return Expect("cannot return an optional value when it's not set");
 			}
 
-			public V UnwrapAs<V>() where V : T
+			public Option<V> UnwrapAs<V>()
+				where V : class, T
 			{
-				try {
-					return (V)Unwrap();
-				}
-				catch(Exception e) {
-					var msg = String.Format(
-						"object could not be given as {0}", typeof(V));
-					throw new UnexpectedObjectException(msg, e);
-				}
+				return Map((x) => new Option<V>(x as V));
+			}
+			
+			public Option<V> UnwrapAsOrWarning<V>(string msg, params object[] argv)
+				where V : class, T
+			{
+				return MapOrWarning(
+					(x) => new Option<V>(x as V),
+					msg, argv);
 			}
 
 			public T UnwrapOr(T def)
@@ -94,13 +96,7 @@ namespace L20n
 				return m_Value;
 			}
 
-			public delegate U MapDelegate<U>(T value);
-			public delegate Option<U> MapOptionDelegate<U>(T value);
-			public delegate Option<U> StaticMapOptionDelegate<U>(params T[] value);
-			public delegate U MapDefaultDelegate<U>();
-			public delegate Option<U> MapDefaultOptionDelegate<U>();
-
-			public static Option<U> Map<U>(StaticMapOptionDelegate<U> map, params Option<T>[] options)
+			public static Option<U> MapAll<U>(StaticMapOptionDelegate<U> map, params Option<T>[] options)
 			{
 				var argv = new T[options.Length];
 				for(int i = 0; i < argv.Length; ++i) {
@@ -111,6 +107,23 @@ namespace L20n
 					argv[i] = options[i].Unwrap();
 				}
 
+				return map(argv);
+			}
+			
+			public static Option<U> MapAllAs<U, V>
+				(StaticMapAsOptionDelegate<U, V> map, params Option<T>[] options)
+					where V: class, T
+			{
+				var argv = new V[options.Length];
+				for(int i = 0; i < argv.Length; ++i) {
+					var option = options[i].UnwrapAs<V>();
+					if(!option.IsSet) {
+						return new Option<U>();
+					}
+					
+					argv[i] = option.Unwrap();
+				}
+				
 				return map(argv);
 			}
 
@@ -132,22 +145,22 @@ namespace L20n
 				Internal.Logger.WarningFormat(msg, argv);
 				return new Option<U>();
 			}
-			
+
 			public U MapOr<U>(U def, MapDelegate<U> map)
 			{
 				if (IsSet) {
 					return map(m_Value);
 				}
-				
+
 				return def;
 			}
-			
+
 			public U MapOrElse<U>(MapDelegate<U> map_if, MapDefaultDelegate<U> map_else)
 			{
 				if (IsSet) {
 					return map_if(m_Value);
 				}
-				
+
 				return map_else();
 			}
 
@@ -158,22 +171,29 @@ namespace L20n
 
 				return new Option<U>();
 			}
-			
+
 			public Option<T> Or(Option<T> other)
 			{
 				if(IsSet)
 					return this;
-				
+
 				return other;
 			}
-			
+
 			public Option<T> OrElse(MapDefaultOptionDelegate<T> map_else)
 			{
 				if(IsSet)
 					return this;
-				
+
 				return map_else();
 			}
+			
+			public delegate U MapDelegate<U>(T value);
+			public delegate Option<U> MapOptionDelegate<U>(T value);
+			public delegate Option<U> StaticMapOptionDelegate<U>(params T[] value);
+			public delegate Option<U> StaticMapAsOptionDelegate<U, V>(params V[] value);
+			public delegate U MapDefaultDelegate<U>();
+			public delegate Option<U> MapDefaultOptionDelegate<U>();
 		}
 	}
 }

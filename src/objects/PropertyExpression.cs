@@ -52,12 +52,12 @@ namespace L20n
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (argv.Length == 1 && argv[0] != null) {
-					return argv[0].As<HashValue>().Eval(ctx, this);
+					return argv[0].As<HashValue>()
+						.Map((value) => value.Eval(ctx, this));
 				}
 				
-				return Identifiers[0].Eval(ctx).Map((_identifier) => {
-					var identifier = _identifier.As<Identifier>().Value;
-					return ctx.GetEntity(identifier).Map((entity) => {
+				return Identifiers[0].Eval(ctx).UnwrapAs<Identifier>().Map((identifier) => {
+					return ctx.GetEntity(identifier.Value).Map((entity) => {
 						var obj = new Option<L20nObject>(entity);
 
 						for(int i = 1; i < m_Identifiers.Length; ++i) {

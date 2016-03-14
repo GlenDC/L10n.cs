@@ -43,8 +43,8 @@ namespace L20n
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return m_Condition.Eval(ctx)
-					.Map((condition) => {
-						if(condition.As<BooleanValue>().Value)
+					.UnwrapAs<BooleanValue>().Map((condition) => {
+						if(condition.Value)
 							return m_IfTrue.Eval(ctx);
 						else
 							return m_IfFalse.Eval(ctx);

@@ -114,8 +114,8 @@ namespace L20nTests
 		private T ParseAndEvalAs<T>(string buffer)
 			where T: L20n.Objects.L20nObject
 		{
-			return Expression.Parse(NC(buffer)).Eval()
-				.Eval(m_DummyContext).UnwrapAs<T>();
+			return (T) Expression.Parse(NC(buffer)).Eval()
+				.Eval(m_DummyContext).Unwrap();
 		}
 
 		private CharStream NC(string buffer)

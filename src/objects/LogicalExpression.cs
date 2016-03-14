@@ -52,15 +52,12 @@ namespace L20n
 			protected override Option<L20nObject> Operation(LocaleContext ctx)
 			{
 				return m_First.Eval(ctx)
-					.Map<L20nObject>((opA) => {
-						var a = opA.As<BooleanValue>().Value;
-						if(!a)
-							return new Option<L20nObject>(opA);
+					.UnwrapAs<BooleanValue>().Map((a) => {
+						if(!a.Value)
+							return new Option<L20nObject>(a);
 						
 						return m_Second.Eval(ctx)
-							.Map((opB) => {
-								return new Option<L20nObject>(opB);
-							});
+							.Map((b) => new Option<L20nObject>(b));
 					});
 			}
 		}
@@ -73,15 +70,12 @@ namespace L20n
 			protected override Option<L20nObject> Operation(LocaleContext ctx)
 			{
 				return m_First.Eval(ctx)
-					.Map<L20nObject>((opA) => {
-						var a = opA.As<BooleanValue>().Value;
-						if(a)
-							return new Option<L20nObject>(opA);
-
+					.UnwrapAs<BooleanValue>().Map((a) => {
+						if(a.Value)
+							return new Option<L20nObject>(a);
+						
 						return m_Second.Eval(ctx)
-							.Map((opB) => {
-								return new Option<L20nObject>(opB);
-							});
+							.Map((b) => new Option<L20nObject>(b));
 					});
 			}
 		}

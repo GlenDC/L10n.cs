@@ -57,7 +57,7 @@ namespace L20n
 				{
 					return String.Format("<{0}{1} {2}>",
 						m_Identifier,
-					    m_Index.IsSet ? m_Index.UnwrapAs<Index>().Display() : "",
+					    m_Index.IsSet ? ((Index)m_Index.Unwrap()).Display() : "",
 					    m_Value.Display());
 				}
 			}

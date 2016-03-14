@@ -50,9 +50,7 @@ namespace L20n
 					return m_Items[m_Default].Eval(ctx);
 				}
 				
-				return argv[0].Eval(ctx).Map((_id) => {
-					var id = _id.As<Identifier>();
-
+				return argv[0].Eval(ctx).UnwrapAs<Identifier>().Map((id) => {
 					L20nObject obj;
 					if(!m_Items.TryGetValue(id.Value, out obj)) {
 						if(m_Default == null) {
@@ -71,9 +69,8 @@ namespace L20n
 			public override Option<string> ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return Eval(ctx, argv)
-					.Map((primitive) => {
-						return primitive.As<Primitive>().ToString(ctx);
-					});
+					.UnwrapAs<Primitive>().Map(
+						(primitive) => primitive.ToString(ctx));
 			}
 		}
 	}

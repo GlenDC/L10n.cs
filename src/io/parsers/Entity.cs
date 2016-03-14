@@ -51,7 +51,7 @@ namespace L20n
 						
 						var entityAST = new AST.Entity(identifier, index, value);
 						try {
-							var entity = entityAST.Eval().As<Objects.Entity>();
+							var entity = (Objects.Entity) entityAST.Eval();
 							builder.AddEntity(identifier, entity);
 						}
 						catch(Exception e) {

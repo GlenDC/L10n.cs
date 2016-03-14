@@ -37,9 +37,8 @@ namespace L20n
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return m_Expression.Eval(ctx)
-					.MapOrWarning((literal) => {
-						var value = literal.As<Literal>().Value;
-						var result = Operation(value);
+					.UnwrapAs<Literal>().MapOrWarning((literal) => {
+						var result = Operation(literal.Value);
 						return new Option<L20nObject>(result);
 					}, "couldn't operate on non-valid literal evaluation");
 			}

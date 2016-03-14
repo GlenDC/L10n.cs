@@ -39,36 +39,28 @@ namespace L20n
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return Option<L20nObject>.Map<L20nObject>((parameters) => {
-					var first = parameters[0];
-					var second = parameters[1];
+				return Option<L20nObject>.MapAll<L20nObject>((parameters) => {
+					// Are they literals?
+					var output = Option<Literal>.MapAll<L20nObject>((literals) => {
+							var result = Operation(literals[0].Value, literals[1].Value);
+							return new Option<L20nObject>(result);
+					}, parameters[0].As<Literal>(), parameters[1].As<Literal>());
 
-					// need to be of the same type
-					var expectedType = first.GetType();
-					if (expectedType != second.GetType()) {
-						Logger.WarningFormat(
-							"BinaryExpression's 2nd argument is expected to be {0}, got {1}",
-						    expectedType, second.GetType());
-						return L20nObject.None;
-					}
-					
-					// for now we accept literals, booleans and literals
-					
-					Literal literal;
-					if (first.As(out literal)) {
-						var result = Operation(literal.Value, second.As<Literal>().Value);
+					if(output.IsSet) return output;
+
+					// Are they booleans?
+					output = Option<BooleanValue>.MapAll<L20nObject>((booleans) => {
+						var result = Operation(booleans[0].Value, booleans[1].Value);
 						return new Option<L20nObject>(result);
-					}
+					}, parameters[0].As<BooleanValue>(), parameters[1].As<BooleanValue>());
 					
-					BooleanValue boolValue;
-					if (first.As(out boolValue)) {
-						var result = Operation(boolValue.Value, second.As<BooleanValue>().Value);
+					if(output.IsSet) return output;
+
+					// OK.... they better be strings!
+					return Option<StringOutput>.MapAll<L20nObject>((strings) => {
+						var result = Operation(strings[0].Value, strings[1].Value);
 						return new Option<L20nObject>(result);
-					}
-					
-					return new Option<L20nObject>(Operation(
-						first.As<StringOutput>().Value,
-						second.As<StringOutput>().Value));
+					}, parameters[0].As<StringOutput>(), parameters[1].As<StringOutput>());
 				}, m_First.Eval(ctx), m_Second.Eval(ctx));
 			}
 			

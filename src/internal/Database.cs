@@ -51,6 +51,7 @@ namespace L20n
 			{
 				Manifest.Import(manifest_path);
 				ImportLocal(Manifest.DefaultLocale, m_DefaultContext, null);
+				CurrentLocale = Manifest.DefaultLocale;
 			}
 
 			public void LoadLocale(string id)
@@ -60,10 +61,13 @@ namespace L20n
 						"a locale id has to be given in order to load one");
 				}
 				
-				if (id == Manifest.DefaultLocale)
-					m_CurrentContext.Unset();
-				else
-					ImportLocal(id, m_CurrentContext, m_DefaultContext.Unwrap());
+				if (id == Manifest.DefaultLocale) {
+					m_CurrentContext.Unset ();
+					CurrentLocale = Manifest.DefaultLocale;
+				} else {
+					ImportLocal (id, m_CurrentContext, m_DefaultContext.Unwrap ());
+					CurrentLocale = id;
+				}
 			}
 			
 			public string Translate(string id)
@@ -76,9 +80,22 @@ namespace L20n
 					identifier = new Objects.IdentifierExpression(id);
 
 				var context = m_CurrentContext.Or(m_DefaultContext);
-				return context.MapOr(id, (ctx) =>
-					identifier.Eval(ctx).MapOr(id,
-				    	(output) => output.As<Objects.StringOutput>().Value));
+				if (!context.IsSet) {
+					Internal.Logger.WarningFormat(
+						"{0} could not be translated as no language-context has been set", id);
+					return id;
+				}
+
+				var output = identifier.Eval(context.Unwrap())
+				    			.UnwrapAs<Objects.StringOutput>();
+
+				if (!output.IsSet) {
+					Internal.Logger.WarningFormat(
+						"something went wrong, {0} could not be translated", id);
+					return id;
+				}
+
+				return output.Unwrap().Value;
 			}
 			
 			public void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)

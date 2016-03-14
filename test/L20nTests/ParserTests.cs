@@ -148,7 +148,7 @@ namespace L20nTests
 		public void LiteralTests()
 		{
 			StringToNumber stringToNumber = (String str) =>
-				Literal.Parse(NC(str)).Eval().As<L20n.Objects.Literal>().Value;
+				((L20n.Objects.Literal)Literal.Parse(NC(str)).Eval()).Value;
 
 			// any integer is a valid literal
 			Assert.AreEqual(-123, stringToNumber("-123"));

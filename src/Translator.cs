@@ -66,7 +66,12 @@ namespace L20n
 			try {
 				return s_Database.Translate(id);
 			}
-			catch(Exception) {
+			catch(Exception e) {
+				Internal.Logger.WarningFormat(
+					"A C# exception occured while translating {0}," +
+					" please report this as a bug @ https://github.com/GlenDC/L20n.cs." +
+					"\nInclude the <id> you tried to translate and all the L20n files involved; More Info: \n{1}",
+					id, e.ToString());
 				return id;
 			}
 		}
@@ -79,6 +84,11 @@ namespace L20n
 		public static void AddGlobal(string id, L20n.Objects.GlobalString.Delegate callback)
 		{
 			s_Database.AddGlobal(id, callback);
+		}
+
+		public static void SetWarningDelegate(Internal.Logger.LogDelegate callback)
+		{
+			Internal.Logger.SetWarningCallback(callback);
 		}
 	}
 }

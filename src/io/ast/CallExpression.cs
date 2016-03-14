@@ -44,7 +44,7 @@ namespace L20n
 				
 				public Objects.L20nObject Eval()
 				{
-					var name = m_Name.Eval().As<Objects.Identifier>().Value;
+					var name = ((Objects.Identifier)m_Name.Eval()).Value;
 					var parameters = new Objects.L20nObject[m_Parameters.Count];
 					for (int i = 0; i < parameters.Length; ++i)
 						parameters [i] = m_Parameters [i].Eval ();

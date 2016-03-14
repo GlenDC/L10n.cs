@@ -40,15 +40,16 @@ namespace L20n
 			{
 				if (m_Indeces.Length == 1) {
 					return m_Indeces[0].Eval(ctx)
-						.MapOrWarning((index) => new Option<L20nObject>(index.As<Identifier>()),
-						              "something went wrong while evaluating the only index");
+						.UnwrapAs<Identifier>().MapOrWarning(
+							(index) => new Option<L20nObject>(index),
+						    "something went wrong while evaluating the only index");
 				}
 
 				var indeces = new L20nObject[m_Indeces.Length];
 				for (int i = 0; i < indeces.Length; ++i) {
-					var index = m_Indeces[i].Eval(ctx);
+					var index = m_Indeces[i].Eval(ctx).UnwrapAs<Identifier>();
 					if(index.IsSet) {
-						indeces[i] = index.Unwrap().As<Identifier>();
+						indeces[i] = index.Unwrap();
 					}
 					else {
 						Internal.Logger.WarningFormat(

@@ -29,21 +29,6 @@ namespace L20n
 	{
 		public sealed class StringValue : Primitive
 		{
-			/*public string Value
-			{
-				get
-				{
-					if(m_Expressions.Length != 0) {
-						throw new EvaluateException(
-							String.Format(
-								"can't return `{0}` as <string_value> has {1} expression(s)",
-								m_Value, m_Expressions.Length));
-					}
-
-					return m_Value;
-				}
-			}*/
-
 			private readonly string m_Value;
 			private readonly L20nObject[] m_Expressions;
 
@@ -66,17 +51,15 @@ namespace L20n
 						return e;
 					}
 
-					Identifier identifier;
-					while(e.Unwrap().As<Identifier>(out identifier)) {
-						e = ctx.GetEntity(identifier.Value)
+					Option<Identifier> id;
+					while((id = e.UnwrapAs<Identifier>()).IsSet) {
+						e = ctx.GetEntity(id.Unwrap().Value)
 							.Map((entity) => entity.Eval(ctx));
-						
-						if(!e.IsSet) {
-							return e;
-						}
 					}
 
-					var stringOutput = e.Unwrap().As<Primitive>().ToString(ctx);
+					var stringOutput =
+						e.UnwrapAs<Primitive>().Map((o => o.ToString(ctx)));
+
 					if(!stringOutput.IsSet) {
 						return L20nObject.None;
 					}
@@ -91,8 +74,8 @@ namespace L20n
 			public override Option<string> ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return Eval(ctx)
-					.Map((primitive) =>
-					     primitive.As<Primitive>().ToString(ctx));
+					.UnwrapAs<Primitive>().Map(
+						(primitive) => primitive.ToString(ctx));
 			}
 		}
 	}

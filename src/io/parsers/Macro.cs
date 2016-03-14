@@ -67,7 +67,7 @@ namespace L20n
 
 						// return the fully parsed macro
 						try {
-							var macro = macroAST.Eval().As<Objects.Macro>();
+							var macro = (Objects.Macro) macroAST.Eval();
 							builder.AddMacro(identifier, macro);
 						}
 						catch(Exception e) {

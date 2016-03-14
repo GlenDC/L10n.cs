@@ -39,10 +39,8 @@ namespace L20n
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return Option<L20nObject>.Map<L20nObject>((parameters) => {
-					var first = parameters[0].As<Literal>();
-					var second = parameters[1].As<Literal>();
-					var result = Operation(first.Value, second.Value);
+				return Option<L20nObject>.MapAllAs<L20nObject, Literal>((parameters) => {
+					var result = Operation(parameters[0].Value, parameters[1].Value);
 					return new Option<L20nObject>(result);
 				}, m_First.Eval(ctx), m_Second.Eval(ctx));
 			}

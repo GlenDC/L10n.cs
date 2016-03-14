@@ -17,7 +17,6 @@
  */
 
 using System;
-using System.ComponentModel;
 
 namespace L20n
 {
@@ -37,9 +36,12 @@ namespace L20n
 			public static void Warning(string message)
 			{
 				if (s_CustomWarning != null) {
-					s_CustomWarning (message);
+					s_CustomWarning(
+						String.Format("[L20n][{0}] {1}",
+					    	Translator.CurrentLocale, message));
 				} else {
-					throw new WarningException(message);
+					Console.WriteLine("[L20n][{0}][WARNING] {1}",
+						Translator.CurrentLocale, message);
 				}
 			}
 
