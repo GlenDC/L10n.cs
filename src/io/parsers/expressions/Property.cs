@@ -38,7 +38,7 @@ namespace L20n
 								IdentifierExpression.Parse(stream));
 
 							while(stream.SkipIfPossible('.')) {
-								property.Add(Identifier.Parse(stream));
+								property.Add(Identifier.Parse(stream, false));
 							}
 							
 							return property;

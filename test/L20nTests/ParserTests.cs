@@ -113,33 +113,37 @@ namespace L20nTests
 			Assert.Throws<ParseException>(() => Quote.Parse(NC("")));
 		}
 
-		private delegate string StringToString(string str);
+		private delegate string StringToString(string str, bool allow_underscore);
 
 		[Test()]
 		public void RawIdentifierTests()
 		{
-			StringToString strToStr = (string str) =>
-				Identifier.Parse(NC(str));
+			StringToString strToStr = (string str, bool allow_underscore) =>
+				Identifier.Parse(NC(str), allow_underscore);
 
 			// an identifier is a string that only contains word-characters
-			Assert.AreEqual("aBcDeFgH", strToStr("aBcDeFgH"));
-			Assert.AreEqual("Hello_World", strToStr("Hello_World"));
+			Assert.AreEqual("aBcDeFgH", strToStr("aBcDeFgH", true));
+			Assert.AreEqual("Hello_World", strToStr("Hello_World", true));
+			Assert.AreEqual("_private", strToStr("_private", true));
+
+			// often we won't allow identifiers starting with a hash
+			Assert.Throws<ParseException>(() => strToStr("_shit", false));
 
 			// white-spaces are not included in that
-			Assert.AreEqual("Hello", strToStr("Hello"));
+			Assert.AreEqual("Hello", strToStr("Hello", true));
 			// neither or dashes
-			Assert.AreEqual("glen", strToStr("glen-dc"));
+			Assert.AreEqual("glen", strToStr("glen-dc", true));
 			// starting with a non-word char will however make it fail
-			Assert.Throws<ParseException>(() => Identifier.Parse(NC(" oh")));
+			Assert.Throws<ParseException>(() => Identifier.Parse(NC(" oh"), false));
 
 			// You can also Parse identifiers in a fail-safe way
 			string id;
-			Assert.IsTrue(Identifier.PeekAndParse(NC("Ho_Ho_Ho"), out id));
+			Assert.IsTrue(Identifier.PeekAndParse(NC("Ho_Ho_Ho"), out id, false));
 			Assert.AreEqual("Ho_Ho_Ho", id);
-			Assert.IsFalse(Identifier.PeekAndParse(NC(" fails"), out id));
+			Assert.IsFalse(Identifier.PeekAndParse(NC(" fails"), out id, false));
 
 			// passing in an EOF stream will give an <EOF> ParseException
-			Assert.Throws<ParseException>(() => Identifier.Parse(NC("")));
+			Assert.Throws<ParseException>(() => Identifier.Parse(NC(""), false));
 		}
 
 		private delegate int StringToNumber(string s);

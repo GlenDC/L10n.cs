@@ -31,7 +31,7 @@ namespace L20n
 					public static AST.INode Parse(CharStream stream)
 					{
 						stream.SkipCharacter('@');
-						var identifier = Identifier.Parse(stream);
+						var identifier = Identifier.Parse(stream, false);
 						return new AST.Global(identifier);
 					}
 

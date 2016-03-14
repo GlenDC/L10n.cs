@@ -42,7 +42,7 @@ namespace L20n
 								return identifier;
 
 							return new AST.Identifier(
-								Identifier.Parse(stream));
+								Identifier.Parse(stream, true));
 						}
 						catch(Exception e) {
 							string msg = String.Format(

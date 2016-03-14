@@ -36,7 +36,7 @@ namespace L20n
 						bool isDefault = stream.SkipIfPossible('*');
 						
 						// parse the raw identifier (key)
-						var identifier = Identifier.Parse(stream);
+						var identifier = Identifier.Parse(stream, false);
 						
 						// whitespace is optional
 						WhiteSpace.Parse(stream, true);
