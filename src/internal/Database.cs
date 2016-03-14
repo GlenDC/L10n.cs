@@ -78,37 +78,11 @@ namespace L20n
 				}
 			}
 			
-			public string Translate(string id)
+			public string Translate(string id, params External.IVariable[] variables)
 			{
-				return m_Cache.TryGet(id).OrElse(() => {
-					Objects.L20nObject identifier;
-
-					if(id.IndexOf ('.') > 0)
-						identifier = new Objects.PropertyExpression(id.Split('.'));
-					else
-						identifier = new Objects.IdentifierExpression(id);
-
-					var context = m_CurrentContext.Or(m_DefaultContext);
-					if (!context.IsSet) {
-						Internal.Logger.WarningFormat(
-							"{0} could not be translated as no language-context has been set", id);
-						return new Option<string>();
-					}
-
-					var output = identifier.Eval(
-						context.Unwrap(), new Objects.Dummy())
-					    .UnwrapAs<Objects.StringOutput>();
-
-					if (!output.IsSet) {
-						Internal.Logger.WarningFormat(
-							"something went wrong, {0} could not be translated", id);
-						return new Option<string>();
-					}
-
-					var value = output.Unwrap().Value;
-					m_Cache.Set(id, value);
-					return new Option<string>(value);
-				}).UnwrapOr(id);
+				if(variables == null || variables.Length == 0)
+					return TranslateSimple(id);
+				return TranslateWithVariables(id, variables);
 			}
 			
 			public void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)
@@ -163,6 +137,68 @@ namespace L20n
 				AddGlobal("year", () => System.DateTime.Today.Year);
 				AddGlobal("month", () => System.DateTime.Today.Month);
 				AddGlobal("day", () => System.DateTime.Today.Day);
+			}
+
+			private string TranslateID(string id)
+			{
+				Objects.L20nObject identifier;
+				
+				if(id.IndexOf ('.') > 0)
+					identifier = new Objects.PropertyExpression(id.Split('.'));
+				else
+					identifier = new Objects.IdentifierExpression(id);
+				
+				var context = m_CurrentContext.Or(m_DefaultContext);
+				if (!context.IsSet) {
+					Internal.Logger.WarningFormat(
+						"{0} could not be translated as no language-context has been set", id);
+					return id;
+				}
+				
+				var output = identifier.Eval(
+					context.Unwrap(), new Objects.Dummy())
+					.UnwrapAs<Objects.StringOutput>();
+				
+				if (!output.IsSet) {
+					Internal.Logger.WarningFormat(
+						"something went wrong, {0} could not be translated", id);
+					return id;
+				}
+				
+				return output.Unwrap().Value;
+			}
+
+			private string TranslateSimple(string id)
+			{
+				return m_Cache.TryGet(id).OrElse(() => {
+					string value = TranslateID(id);
+					m_Cache.Set(id, value);
+					return new Option<string>(value);
+				}).UnwrapOr(id);
+			}
+
+			private string TranslateWithVariables(string id, params External.IVariable[] variables)
+			{
+				return m_CurrentContext.Or(m_DefaultContext).MapOr(id, (ctx) => {
+					var info = new External.InfoCollector();
+					var identifiers = new string[variables.Length];
+
+					// push all variables to the stack
+					for(int i = 0; i < identifiers.Length; ++i) {
+						variables[i].Collect(out identifiers[i], info);
+						ctx.PushVariable(identifiers[i], info.Collect());
+						info.Clear();
+					}
+
+					var output = TranslateID(id);
+
+					// remove variables from stack again
+					for(int i = 0; i < identifiers.Length; ++i) {
+						ctx.DropVariable(identifiers[i]);
+					}
+
+					return output;
+				});
 			}
 		}
 	}

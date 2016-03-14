@@ -119,6 +119,8 @@
     <Compile Include="src\internal\Logger.cs" />
     <Compile Include="src\objects\Dummy.cs" />
     <Compile Include="src\internal\Cache.cs" />
+    <Compile Include="src\external\IVariable.cs" />
+    <Compile Include="src\external\InfoCollector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -132,5 +134,6 @@
     <Folder Include="src\internal\" />
     <Folder Include="src\io\ast\" />
     <Folder Include="src\utils\" />
+    <Folder Include="src\external\" />
   </ItemGroup>
 </Project>
