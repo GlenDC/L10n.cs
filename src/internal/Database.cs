@@ -49,8 +49,12 @@ namespace L20n
 
 			public void Import(string manifest_path)
 			{
+				m_DefaultContext = new Option<LocaleContext>();
+				m_CurrentContext = new Option<LocaleContext>();
+
 				Manifest.Import(manifest_path);
 				ImportLocal(Manifest.DefaultLocale, m_DefaultContext, null);
+
 				CurrentLocale = Manifest.DefaultLocale;
 			}
 

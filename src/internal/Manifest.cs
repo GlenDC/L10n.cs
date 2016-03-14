@@ -124,7 +124,7 @@ namespace L20n
 			{
 				m_Locales.Clear();
 				m_DefaultLocale = null;
-				m_Resources.Clear ();
+				m_Resources.Clear();
 			}
 			
 			private void AddResoure(string resource, string manifest)
