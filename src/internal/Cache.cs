@@ -45,19 +45,14 @@ namespace L20n
 			public Option<string> TryGet(string id)
 			{
 				string output;
-				if(m_Cache.TryGetValue(GetIdentifier(id), out output))
+				if(m_Cache.TryGetValue(id, out output))
 					return new Option<string>(output);
 				return m_None;
 			}
 
 			public void Set(string id, string value)
 			{
-				m_Cache.Add(GetIdentifier(id), value);
-			}
-
-			private string GetIdentifier(string id)
-			{
-				return Translator.CurrentLocale + id;
+				m_Cache.Add(id, value);
 			}
 		}
 	}

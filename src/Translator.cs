@@ -44,20 +44,23 @@ namespace L20n
 			get { return s_Database.CurrentLocale; }
 		}
 
+		/// <summary>
+		/// Throws an exception if something went wrong while importing
+		/// the manifest or the default locale.
+		/// </summary>
+		/// <param name="path">the path to the manifest file</param>
 		public static void ImportManifest(string path)
 		{
-			// This is probably the only public function
-			// that should be able to throw a public exception
 			s_Database.Import(path);
 		}
 
+		/// <summary>
+		/// Throws an exception if something went wrong while importing
+		/// and parsing the locale.
+		/// </summary>
+		/// <param name="id">the id of the locale to be loaded (as referenced in the manifest)</param>
 		public static void SetLocale(string id)
 		{
-			// TODO: for now we just let it give exceptions,
-			// but we might want to make sure this can never
-			// throw an exception to the outside
-			// and redirect it to a warning instead.
-			// In that case we probably just want to return a boolean.
 			s_Database.LoadLocale(id);
 		}
 
@@ -84,11 +87,6 @@ namespace L20n
 		public static void AddGlobal(string id, L20n.Objects.GlobalString.Delegate callback)
 		{
 			s_Database.AddGlobal(id, callback);
-		}
-		
-		public static void ClearCache()
-		{
-			s_Database.ClearCache();
 		}
 
 		public static void SetWarningDelegate(Internal.Logger.LogDelegate callback)

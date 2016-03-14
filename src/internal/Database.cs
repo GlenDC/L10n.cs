@@ -56,8 +56,6 @@ namespace L20n
 				m_DefaultContext = new Option<LocaleContext>();
 				m_CurrentContext = new Option<LocaleContext>();
 
-				ClearCache();
-
 				Manifest.Import(manifest_path);
 				ImportLocal(Manifest.DefaultLocale, m_DefaultContext, null);
 
@@ -122,14 +120,11 @@ namespace L20n
 			{
 				AddGlobalValue(id, new L20n.Objects.GlobalString(callback));
 			}
-
-			public void ClearCache()
-			{
-				m_Cache.Clear();
-			}
 			
 			private void ImportLocal(string id, Option<LocaleContext> context, LocaleContext parent)
 			{
+				m_Cache.Clear();
+
 				var localeFiles = Manifest.GetLocaleFiles(id);
 				if (localeFiles.Count == 0)
 				{
