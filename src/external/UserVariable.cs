@@ -30,9 +30,9 @@ namespace L20n
 		/// In case the stuff you write is flexible,
 		/// make sure that you provide your own checks to not use stuff that you don't provide.
 		/// </remarks>
-		public interface IVariable
+		public abstract class UserVariable
 		{
-			void Collect(InfoCollector info);
+			abstract public void Collect(InfoCollector info);
 		}
 	}
 }

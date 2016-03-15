@@ -28,27 +28,11 @@ namespace L20n
 	{
 		public sealed class InfoCollector
 		{
-			public bool IsHash
-			{
-				get { return !m_SimpleVariable.IsSet; }
-			}
 			private readonly Dictionary<string, L20nObject> m_Info;
-			private readonly Option<L20nObject> m_SimpleVariable;
 	
 			public InfoCollector()
 			{
 				m_Info = new Dictionary<string, L20nObject>();
-				m_SimpleVariable = new Option<L20nObject>();
-			}
-			
-			public void Set(int value)
-			{
-				SetSimpleObject(new Literal(value));
-			}
-			
-			public void Set(string value)
-			{
-				SetSimpleObject(new StringOutput(value));
 			}
 
 			public void Add(string name, int value)
@@ -66,7 +50,7 @@ namespace L20n
 				AddObject(name, new BooleanValue(value));
 			}
 			
-			public void Add(string name, IVariable value)
+			public void Add(string name, UserVariable value)
 			{
 				// Prepare the collector
 				var info = new InfoCollector();
@@ -87,43 +71,16 @@ namespace L20n
 
 			public L20nObject Collect()
 			{
-				if(m_SimpleVariable.IsSet)
-					return m_SimpleVariable.Unwrap();
-
 				return new HashValue(m_Info, null);
 			}
 
 			public void Clear()
 			{
 				m_Info.Clear();
-				m_SimpleVariable.Unset();
-			}
-
-			public void SetSimpleObject(L20nObject value)
-			{
-				if (m_SimpleVariable.IsSet) {
-					Internal.Logger.Warning(
-						"information has already a simple variable and it will be overriden");
-				}
-
-				if (m_Info.Count != 0) {
-					Internal.Logger.Warning(
-						"information has already children added, " +
-						"which will be ignored because of the simple variable you're adding now");
-				}
-
-				m_SimpleVariable.Set(value);
 			}
 
 			private void AddObject(string name, L20nObject value)
 			{
-				if (m_SimpleVariable.IsSet) {
-					Internal.Logger.Warning(
-						"external variable is marked as a simple variable, " +
-						"and thus can not have children");
-					return;
-				}
-
 				if (m_Info.ContainsKey(name)) {
 					Internal.Logger.WarningFormat(
 						"information with the name {0} will be overriden", name);

@@ -63,9 +63,16 @@ namespace L20n
 				}
 	
 				if (m_Index.IsSet && argv.Length == 0) {
-					return m_Index.UnwrapAs<Index>()
-						.Map((Index index) => m_Value.Eval(ctx, index))
-						.Map((unwrapped) => unwrapped.Eval(ctx));
+					return m_Index.Unwrap().Eval(ctx).Map((index) => {
+						Option<Identifier> maybe = index.As<Identifier>();
+						if(maybe.IsSet) {
+							return m_Value.Eval(ctx, maybe.Unwrap());
+						}
+
+						return index.As<PropertyExpression>().MapOrWarning(
+							(property) => property.Eval(ctx, this),
+							"couldn't evaluate entity as index was expexted to be a <property_expression>");
+					}).Map((unwrapped) => unwrapped.Eval(ctx));
 				}
 
 				return m_Value.Eval(ctx, argv);

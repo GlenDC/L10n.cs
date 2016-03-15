@@ -59,10 +59,19 @@ namespace L20n
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{	
-				return GetEntity(ctx, m_Identifiers[0]).Map((entity) => {
+				Option<Entity> maybe;
+				int i = 0;
+
+				if (argv == null || argv.Length == 0 || !argv[0].As<Entity>().IsSet) {
+					maybe = GetEntity(ctx, m_Identifiers[i]);
+					i += 1;
+				} else {
+					maybe = argv[0].As<Entity>();
+				}
+
+				return maybe.Map((entity) => {
 					var obj = new Option<L20nObject>(entity);
 
-					int i = 1;
 					if(argv.Length == 1 && argv[0].As<Dummy>().IsSet) {
 						obj = obj.Map((unwrapped) =>
 						              unwrapped.Eval(ctx, argv[0], m_Identifiers[i]));

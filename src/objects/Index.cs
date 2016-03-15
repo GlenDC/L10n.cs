@@ -41,22 +41,21 @@ namespace L20n
 				if (m_Indeces.Length == 1) {
 					var unwrapedIndex = m_Indeces[0].Eval(ctx);
 					return unwrapedIndex.UnwrapAs<Identifier>().OrElse(() => {
-						return unwrapedIndex.UnwrapAs<StringOutput>().Map(
-							(str) => new Option<Identifier>(new Identifier(str.Value)));
-					}).MapOrWarning(
-						(index) => new Option<L20nObject>(index),
-					    "something went wrong while evaluating the only index");
+							return unwrapedIndex.UnwrapAs<StringOutput>().Map(
+								(str) => new Option<Identifier>(new Identifier(str.Value)));
+						}).MapOrWarning(
+							(index) => new Option<L20nObject>(index),
+						    "something went wrong while evaluating the only index");
 				}
 
 				var indeces = new L20nObject[m_Indeces.Length];
 				for (int i = 0; i < indeces.Length; ++i) {
 					var wrappedIndex = m_Indeces[i].Eval(ctx);
 					var index = 
-						wrappedIndex.UnwrapAs<Identifier>()
-							.OrElse(() => {
-								return wrappedIndex.UnwrapAs<StringOutput>()
-									.Map((str) => new Option<Identifier>(new Identifier(str.Value)));
-							});
+						wrappedIndex.UnwrapAs<Identifier>().OrElse(() => {
+							return wrappedIndex.UnwrapAs<StringOutput>().Map(
+								(str) => new Option<Identifier>(new Identifier(str.Value)));
+						});
 					if(index.IsSet) {
 						indeces[i] = index.Unwrap();
 					}
@@ -67,8 +66,7 @@ namespace L20n
 					}
 				}
 
-				var propertyExpression = new Objects.PropertyExpression(indeces);
-				return propertyExpression.Eval(ctx);
+				return new Option<L20nObject>(new Objects.PropertyExpression(indeces));
 			}
 		}
 	}

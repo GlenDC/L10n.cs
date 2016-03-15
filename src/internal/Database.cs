@@ -79,14 +79,12 @@ namespace L20n
 				return TranslateID(id);
 			}
 
-			public string Translate(string id, Variables variables)
+			public string Translate(string id, UserVariables variables)
 			{
 				if(variables.Count == 0)
 					return TranslateID(id);
 
 				return m_CurrentContext.Or(m_DefaultContext).MapOr(id, (ctx) => {
-					var info = new External.InfoCollector();
-					
 					// push all variables to the stack
 					int i = 0;
 					foreach(var variable in variables) {
@@ -96,23 +94,13 @@ namespace L20n
 							break;
 						}
 
-						if(variable.Value == null) {
+						if(variable.Value == null || !variable.Value.Value.IsSet) {
 							Logger.WarningFormat("couldn't translate {0} because parameter-value #{1} is null",
 							                     id, i);
 							break;
 						}
 
-						variable.Value.Collect(info);
-						var value = info.Collect();
-						if(info.IsHash) {
-							var hash = value.As<Objects.HashValue>().Unwrap();
-							var entity = new Objects.Entity(new Option<Objects.L20nObject>(), false, hash);
-							ctx.PushVariable(variable.Key, entity);
-						} else {
-							ctx.PushVariable(variable.Key, value);
-						}
-
-						info.Clear();
+						ctx.PushVariable(variable.Key, variable.Value.Value.Unwrap());
 						++i;
 					}
 					
@@ -128,38 +116,35 @@ namespace L20n
 				});
 			}
 			
+			public void AddGlobal(string id, UserVariable value)
+			{
+				if (!value.Value.IsSet) {
+					Logger.WarningFormat(
+						"global user-variable {0} couldn't be unwrapped", id);
+					return;
+				}
+
+				var global = value.Value.Unwrap();
+
+				try {
+					m_Globals.Add(id, global);
+				}
+				catch(ArgumentException) {
+					Logger.WarningFormat(
+						"global value with id {0} isn't unique, " +
+						"and old value will be overriden", id);
+					m_Globals[id] = global;
+				}
+			}
+
 			public void AddGlobal(string id, Objects.LiteralCallback.Delegate callback)
 			{
-				AddGlobalValue(id, new Objects.LiteralCallback(callback));
+				AddGlobal(id, new UserVariable(callback));
 			}
 			
 			public void AddGlobal(string id, Objects.StringOutputCallback.Delegate callback)
 			{
-				AddGlobalValue(id, new Objects.StringOutputCallback(callback));
-			}
-			
-			public void AddGlobal(string id, External.IVariable variable)
-			{
-				var info = new External.InfoCollector();
-				variable.Collect(info);
-				if (info.IsHash) {
-					var entity = info.Collect().As<Objects.HashValue>().Map((hash) => {
-						var value = new Objects.Entity(
-							Objects.L20nObject.None,
-							false, hash);
-						return new Option<Objects.L20nObject>(value);
-					});
-
-					if(entity.IsSet) {
-						AddGlobalValue(id, entity.Unwrap());
-					} else {
-						Logger.WarningFormat(
-							"couldn't collect <hash_value> from global external variable with key {0}",
-							id);
-					}
-				} else {
-					AddGlobalValue(id, info.Collect());
-				}
+				AddGlobal(id, new UserVariable(callback));
 			}
 			
 			private void ImportLocal(string id, Option<LocaleContext> context, LocaleContext parent)
@@ -178,19 +163,6 @@ namespace L20n
 				}
 				
 				context.Set(builder.Build(m_Globals, parent));
-			}
-			
-			private void AddGlobalValue(string id, Objects.L20nObject value)
-			{
-				try {
-					m_Globals.Add(id, value);
-				}
-				catch(ArgumentException) {
-					Logger.WarningFormat(
-						"global value with id {0} isn't unique, " +
-						"and old value will be overriden", id);
-					m_Globals[id] = value;
-				}
 			}
 			
 			private void AddSystemGlobals()

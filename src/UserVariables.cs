@@ -21,5 +21,12 @@ using System.Collections.Generic;
 
 namespace L20n
 {
-	public class Variables : Dictionary<string, External.IVariable> {}
+	public class UserVariables : Dictionary<string, UserVariable>
+	{
+		public UserVariables()
+		: base() {}
+
+		public UserVariables(int capacity)
+		: base(capacity) {}
+	}
 }

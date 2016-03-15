@@ -25,15 +25,21 @@
 
 <shared_compact "{{ $user.name }} shared your post.">
 
-<followers($n) {
-    $n == 0 ? "non-existing followers"
-        : $n == 1 ? "only follower" : "{{ $n }} followers"
-}>
+<plural($n) { $n == 0 ? "zero" :
+                $n == 1 ? "one" : "many" }>
 
-<shared[$user.gender] {
-    masculine: "{{ $user.name }} shared your post to his {{ followers($user.followers) }}.",
-    feminine: "{{ $user.name }} shared your post to her {{ followers($user.followers) }}.",
-    *default: "{{ $user.name }} shared your post to their {{ followers($user.followers) }}.",
+<shared[plural($user.followers), $user.gender] {
+  zero: "{{ $user.name }} liked your post.",
+  one: {
+    masculine: "{{ $user.name }} shared your post to his one follower.",
+    feminine: "{{ $user.name }} shared your post to her one follower.",
+   *default: "{{ $user.name }} shared your post to one follower."
+  },
+  many: {
+    masculine: "{{ $user.name }} shared your post to his {{ $user.followers }} followers.",
+    feminine: "{{ $user.name }} shared your post to her {{ $user.followers }} followers.",
+   *default: "{{ $user.name }} shared your post to {{ $user.followers }} followers."
+  }
 }>
 
 <best_friend[$user.gender] {
@@ -41,6 +47,8 @@
     feminine: "{{ $user.name }} her best friend is {{ $user.friend.name }}.",
     *default: "{{ $user.name }} their best friend is {{ $user.friend.name }}.",
 }>
+
+<tooBig "Attachment too big: {{ $sizeInKB / 1024 }} MB.">
 
 <timeDateGreeting "{{ greeting }}, it's {{ time }} on {{ date }}.">
 

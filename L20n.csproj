@@ -118,11 +118,12 @@
     <Compile Include="src\internal\Logger.cs" />
     <Compile Include="src\objects\Dummy.cs" />
     <Compile Include="src\internal\Cache.cs" />
-    <Compile Include="src\external\IVariable.cs" />
     <Compile Include="src\external\InfoCollector.cs" />
     <Compile Include="src\objects\LiteralCallback.cs" />
     <Compile Include="src\objects\StringOutputCallback.cs" />
-    <Compile Include="src\Variables.cs" />
+    <Compile Include="src\UserVariables.cs" />
+    <Compile Include="src\external\UserVariable.cs" />
+    <Compile Include="src\UserVariable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

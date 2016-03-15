@@ -29,9 +29,9 @@ namespace L20nTests
 	public class UserTests
 	{
 		// an example of a custom global external variable
-		private class ScreenInfo : L20n.External.IVariable
+		private sealed class ScreenInfo : L20n.External.UserVariable
 		{
-			public void Collect(L20n.External.InfoCollector info)
+			public override void Collect(L20n.External.InfoCollector info)
 			{
 				info.Add("width", 1920);
 				info.Add("height", 1080);
@@ -57,7 +57,7 @@ namespace L20nTests
 		}
 		
 		// an example of a hash external variable
-		private class User : L20n.External.IVariable
+		private sealed class User : L20n.External.UserVariable
 		{
 			public enum Gender
 			{
@@ -95,45 +95,13 @@ namespace L20nTests
 				BestFriend = null;
 			}
 
-			public void Collect(L20n.External.InfoCollector info)
+			public override void Collect(L20n.External.InfoCollector info)
 			{
 				info.Add("name", m_Name);
 				info.Add("followers", Followers);
 				info.Add("gender", m_Gender);
 				if(BestFriend != null)
 					info.Add("friend", BestFriend);
-			}
-		}
-
-		// an example of a simple external variable
-		private class SimpleUser : L20n.External.IVariable
-		{
-			private readonly string m_Name;
-
-			public SimpleUser(string name)
-			{
-				m_Name = name;
-			}
-
-			public void Collect(L20n.External.InfoCollector info)
-			{
-				info.Set(m_Name);
-			}
-		}
-		
-		// an example of a simple external variable
-		private class LuckyNumber : L20n.External.IVariable
-		{
-			private readonly int m_Number;
-
-			public LuckyNumber()
-			{
-				m_Number = new Random().Next();
-			}
-			
-			public void Collect(L20n.External.InfoCollector info)
-			{
-				info.Set(m_Number);
 			}
 		}
 
@@ -144,9 +112,6 @@ namespace L20nTests
 			var john = new User("John", User.Gender.Male, 42);
 			var maria = new User("Maria", User.Gender.Female, 0);
 			john.BestFriend = maria;
-
-			var bianca = new SimpleUser("Bianca");
-			var luckyNumber = new LuckyNumber();
 
 			Translator.ImportManifest("../../../resources/eval/identifiers/manifest.json");
 
@@ -190,15 +155,18 @@ namespace L20nTests
 				"John shared your post.",
 				Translator.Translate("shared_compact", "user", john));
 			Assert.AreEqual(
+				"Attachment too big: 45 MB.",
+				Translator.Translate("tooBig", "sizeInKB", 46080));
+			Assert.AreEqual(
 				"John shared your post to his 42 followers.",
 				Translator.Translate("shared", "user", john));
 			Console.WriteLine(Translator.Translate("shared", "user", john));
 			Console.WriteLine(Translator.Translate("shared", "user", maria));
 			if(john.BestFriend != null)
 				Console.WriteLine(Translator.Translate("best_friend", "user", john));
-			Console.WriteLine(Translator.Translate("personal_greeting", "user", bianca));
+			Console.WriteLine(Translator.Translate("personal_greeting", "user", "Bianca"));
 			Console.WriteLine(Translator.Translate(
-				"personal_lucky_greeting", "user", bianca, "lucky_number", luckyNumber));
+				"personal_lucky_greeting", "user", "Bianca", "lucky_number", new Random().Next()));
 
 			// Switching to portuguese
 
@@ -223,9 +191,10 @@ namespace L20nTests
 			Console.WriteLine(Translator.Translate("shared", "user", maria));
 			if(john.BestFriend != null)
 				Console.WriteLine(Translator.Translate("best_friend", "user", john));
-			Console.WriteLine(Translator.Translate("personal_greeting", "user", bianca));
+			Console.WriteLine(Translator.Translate("personal_greeting", "user", "Bianca"));
 			Console.WriteLine(Translator.Translate("personal_lucky_greeting",
-				"user", bianca, "lucky_number", luckyNumber));
+				"user", "Bianca", "lucky_number", new Random().Next()));
+			Console.WriteLine(Translator.Translate("tooBig", "sizeInKB", 46080));
 		}
 
 		[Test()]

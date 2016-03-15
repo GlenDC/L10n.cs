@@ -79,7 +79,7 @@ namespace L20n
 			}
 		}
 
-		public static string Translate(string id, Variables variables)
+		public static string Translate(string id, UserVariables variables)
 		{
 			try {
 				return s_Database.Translate(id, variables);
@@ -95,35 +95,54 @@ namespace L20n
 		}
 
 		public static string Translate(string id,
-		                               string parameter_key, External.IVariable parameter_value)
+		                               string parameter_key, UserVariable parameter_value)
 		{
-			var dic = new Variables();
+			var dic = new UserVariables(1);
 			dic.Add(parameter_key, parameter_value);
 			return Translate(id, dic);
 		}
 		
 		public static string Translate(string id,
-		                               string parameter_key_a, External.IVariable parameter_value_a,
-		                               string parameter_key_b, External.IVariable parameter_value_b)
+		                               string parameter_key,
+		                               Objects.StringOutputCallback.Delegate parameter_value)
 		{
-			var dic = new Variables();
+			return Translate(id, parameter_key, new UserVariable(parameter_value));
+		}
+		
+		public static string Translate(string id,
+		                               string parameter_key,
+		                               Objects.LiteralCallback.Delegate parameter_value)
+		{
+			return Translate(id, parameter_key, new UserVariable(parameter_value));
+		}
+		
+		public static string Translate(string id,
+		                               string parameter_key_a, UserVariable parameter_value_a,
+		                               string parameter_key_b, UserVariable parameter_value_b)
+		{
+			var dic = new UserVariables(2);
 			dic.Add(parameter_key_a, parameter_value_a);
 			dic.Add(parameter_key_b, parameter_value_b);
 			return Translate(id, dic);
 		}
 		
 		public static string Translate(string id,
-		                               string parameter_key_a, External.IVariable parameter_value_a,
-		                               string parameter_key_b, External.IVariable parameter_value_b,
-		                               string parameter_key_c, External.IVariable parameter_value_c)
+		                               string parameter_key_a, UserVariable parameter_value_a,
+		                               string parameter_key_b, UserVariable parameter_value_b,
+		                               string parameter_key_c, UserVariable parameter_value_c)
 		{
-			var dic = new Variables();
+			var dic = new UserVariables(3);
 			dic.Add(parameter_key_a, parameter_value_a);
 			dic.Add(parameter_key_b, parameter_value_b);
 			dic.Add(parameter_key_c, parameter_value_c);
 			return Translate(id, dic);
 		}
-
+		
+		public static void AddGlobal(string id, UserVariable value)
+		{
+			s_Database.AddGlobal(id, value);
+		}
+		
 		public static void AddGlobal(string id, Objects.LiteralCallback.Delegate callback)
 		{
 			s_Database.AddGlobal(id, callback);
@@ -132,11 +151,6 @@ namespace L20n
 		public static void AddGlobal(string id, Objects.StringOutputCallback.Delegate callback)
 		{
 			s_Database.AddGlobal(id, callback);
-		}
-		
-		public static void AddGlobal(string id, External.IVariable variable)
-		{
-			s_Database.AddGlobal(id, variable);
 		}
 
 		public static void SetWarningDelegate(Internal.Logger.LogDelegate callback)
