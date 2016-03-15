@@ -64,7 +64,7 @@ namespace L20n
 			s_Database.LoadLocale(id);
 		}
 
-		public static string Translate(string id, params External.IVariable[] variables)
+		public static string Translate(string id, params object[] variables)
 		{
 			try {
 				return s_Database.Translate(id, variables);

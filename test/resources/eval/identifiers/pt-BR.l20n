@@ -15,7 +15,7 @@
         : $n == 1 ? "seu único seguidor" : "seus {{ $n }} seguidores"
 }>
 
-<personal_lucky_greeting "{{ greeting }} {{ $user }}, o número da sorte de hoje é {{ $lucky_number }}!">
+<personal_lucky_greeting "{{ personal_greeting }} O número da sorte de hoje é {{ $lucky_number }}!">
 
 <shared[$user.gender]
     "{{ $user.name }} compartilhou sua mensagem com {{ followers($user.followers) }}.">

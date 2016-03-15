@@ -32,7 +32,7 @@ namespace L20n
 		/// </remarks>
 		public interface IVariable
 		{
-			void Collect(out string id, InfoCollector info);
+			void Collect(InfoCollector info);
 		}
 	}
 }

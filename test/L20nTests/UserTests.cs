@@ -31,9 +31,8 @@ namespace L20nTests
 		// an example of a custom global external variable
 		private class ScreenInfo : L20n.External.IVariable
 		{
-			public void Collect(out string id, L20n.External.InfoCollector info)
+			public void Collect(L20n.External.InfoCollector info)
 			{
-				id = "not_important";
 				info.Add("width", 1920);
 				info.Add("height", 1080);
 			}
@@ -96,9 +95,8 @@ namespace L20nTests
 				BestFriend = null;
 			}
 
-			public void Collect(out string id, L20n.External.InfoCollector info)
+			public void Collect(L20n.External.InfoCollector info)
 			{
-				id = "user";
 				info.Add("name", m_Name);
 				info.Add("followers", Followers);
 				info.Add("gender", m_Gender);
@@ -117,9 +115,8 @@ namespace L20nTests
 				m_Name = name;
 			}
 
-			public void Collect(out string id, L20n.External.InfoCollector info)
+			public void Collect(L20n.External.InfoCollector info)
 			{
-				id = "user";
 				info.Set(m_Name);
 			}
 		}
@@ -134,9 +131,8 @@ namespace L20nTests
 				m_Number = new Random().Next();
 			}
 			
-			public void Collect(out string id, L20n.External.InfoCollector info)
+			public void Collect(L20n.External.InfoCollector info)
 			{
-				id = "lucky_number";
 				info.Set(m_Number);
 			}
 		}
@@ -181,7 +177,7 @@ namespace L20nTests
 				"Data Connectivity Settings",
 				Translator.Translate("dataSettings"));
 
-			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
+			Console.WriteLine(Translator.Translate("timeDateGreeting"));
 
 			// private entities can only be acces from within an lol file
 			Assert.AreEqual("_hidden", Translator.Translate("_hidden"));
@@ -192,16 +188,17 @@ namespace L20nTests
 			// translations using an external variable
 			Assert.AreEqual(
 				"John shared your post.",
-				Translator.Translate("shared_compact", john));
+				Translator.Translate("shared_compact", "user", john));
 			Assert.AreEqual(
 				"John shared your post to his 42 followers.",
-				Translator.Translate("shared", john));
-			Console.WriteLine(Translator.Translate("shared", john));
-			Console.WriteLine(Translator.Translate("shared", maria));
+				Translator.Translate("shared", "user", john));
+			Console.WriteLine(Translator.Translate("shared", "user", john));
+			Console.WriteLine(Translator.Translate("shared", "user", maria));
 			if(john.BestFriend != null)
-				Console.WriteLine(Translator.Translate("best_friend", john));
-			Console.WriteLine(Translator.Translate("personal_greeting", bianca));
-			Console.WriteLine(Translator.Translate("personal_lucky_greeting", bianca, luckyNumber));
+				Console.WriteLine(Translator.Translate("best_friend", "user", john));
+			Console.WriteLine(Translator.Translate("personal_greeting", "user", bianca));
+			Console.WriteLine(Translator.Translate("personal_lucky_greeting",
+			    "user", bianca, "lucky_number", luckyNumber));
 
 			// Switching to portuguese
 
@@ -222,12 +219,13 @@ namespace L20nTests
 			Console.WriteLine(Translator.Translate("timeDateGreeting"));
 
 			john.Followers = 31;
-			Console.WriteLine(Translator.Translate("shared", john));
-			Console.WriteLine(Translator.Translate("shared", maria));
+			Console.WriteLine(Translator.Translate("shared", "user", john));
+			Console.WriteLine(Translator.Translate("shared", "user", maria));
 			if(john.BestFriend != null)
-				Console.WriteLine(Translator.Translate("best_friend", john));
-			Console.WriteLine(Translator.Translate("personal_greeting", bianca));
-			Console.WriteLine(Translator.Translate("personal_lucky_greeting", bianca, luckyNumber));
+				Console.WriteLine(Translator.Translate("best_friend", "user", john));
+			Console.WriteLine(Translator.Translate("personal_greeting", "user", bianca));
+			Console.WriteLine(Translator.Translate("personal_lucky_greeting",
+				"user", bianca, "lucky_number", luckyNumber));
 		}
 
 		[Test()]

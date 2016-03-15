@@ -21,7 +21,7 @@
 }>
 
 <personal_greeting "{{ greeting }} {{ $user }}!">
-<personal_lucky_greeting "{{ greeting }} {{ $user }}, the lucky number of today is {{ $lucky_number }}!">
+<personal_lucky_greeting "{{ personal_greeting }} The lucky number of today is {{ $lucky_number }}!">
 
 <shared_compact "{{ $user.name }} shared your post.">
 

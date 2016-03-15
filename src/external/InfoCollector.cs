@@ -70,10 +70,9 @@ namespace L20n
 			{
 				// Prepare the collector
 				var info = new InfoCollector();
-				string whatever;
 
 				// Collect the given value
-				value.Collect(out whatever, info);
+				value.Collect(info);
 				
 				if (m_Info.Count == 0) {
 					Internal.Logger.Warning(

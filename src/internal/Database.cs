@@ -74,7 +74,7 @@ namespace L20n
 				}
 			}
 			
-			public string Translate(string id, params External.IVariable[] variables)
+			public string Translate(string id, params object[] variables)
 			{
 				if(variables == null || variables.Length == 0)
 					return TranslateID(id);
@@ -94,7 +94,7 @@ namespace L20n
 			public void AddGlobal(string id, External.IVariable variable)
 			{
 				var info = new External.InfoCollector();
-				string whatever; variable.Collect(out whatever, info);
+				variable.Collect(info);
 				if (info.IsHash) {
 					var entity = info.Collect().As<Objects.HashValue>().Map((hash) => {
 						var value = new Objects.Entity(
@@ -188,16 +188,38 @@ namespace L20n
 				return output.Unwrap().Value;
 			}
 
-			private string TranslateWithVariables(string id, params External.IVariable[] variables)
+			private string TranslateWithVariables(string id, params object[] variables)
 			{
 				return m_CurrentContext.Or(m_DefaultContext).MapOr(id, (ctx) => {
+					if(variables.Length == 0 || variables.Length % 2 != 0) {
+						Logger.Warning("couldn't translate as the last external variable has no value");
+						return id;
+					}
+					
 					var info = new External.InfoCollector();
-					var identifiers = new string[variables.Length];
+					var identifiers = new string[variables.Length / 2];
 
 					// push all variables to the stack
 					for(int i = 0; i < identifiers.Length; ++i) {
-						variables[i].Collect(out identifiers[i], info);
+						var u = i*2;
+						identifiers[i] = variables[u] as string;
+						if(identifiers[i] == null) {
+							Logger.WarningFormat("couldn't translate because parameter-key #{0} is of type {1}," +
+							                     " while expecting an string", i, variables[i].GetType());
+							break;
+						}
+
 						if(identifiers[i] != null) {
+							var variable = variables[u+1];
+							var variableType = variable.GetType();
+							var method = variableType.GetMethod("Collect");
+							if(method == null) {
+								Logger.WarningFormat("couldn't translate because parameter-value #{0} is of type {1}," +
+									" while expecting an IVariable", i, variableType);
+								break;
+							}
+
+							method.Invoke(variable, new object[]{info});
 							var value = info.Collect();
 							if(info.IsHash) {
 								var hash = value.As<Objects.HashValue>().Unwrap();
