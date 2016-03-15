@@ -39,7 +39,7 @@ namespace L20n
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Indeces.Length == 1) {
-					var unwrapedIndex =  m_Indeces[0].Eval(ctx);
+					var unwrapedIndex = m_Indeces[0].Eval(ctx);
 					return unwrapedIndex.UnwrapAs<Identifier>().OrElse(() => {
 						return unwrapedIndex.UnwrapAs<StringOutput>().Map(
 							(str) => new Option<Identifier>(new Identifier(str.Value)));

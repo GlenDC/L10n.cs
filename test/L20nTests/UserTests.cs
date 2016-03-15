@@ -28,6 +28,22 @@ namespace L20nTests
 	[TestFixture()]
 	public class UserTests
 	{
+		// an example of a custom global external variable
+		private class ScreenInfo : L20n.External.IVariable
+		{
+			public void Collect(out string id, L20n.External.InfoCollector info)
+			{
+				id = "not_important";
+				info.Add("width", 1920);
+				info.Add("height", 1080);
+			}
+		}
+
+		public UserTests()
+		{
+			Translator.AddGlobal("screen", new ScreenInfo());
+		}
+
 		[Test()]
 		public void BadManifests()
 		{
@@ -128,6 +144,7 @@ namespace L20nTests
 		[Test()]
 		public void SimpleManifest()
 		{
+			// a custom global for this test
 			var john = new User("John", User.Gender.Male, 42);
 			var maria = new User("Maria", User.Gender.Female, 0);
 			john.BestFriend = maria;
@@ -159,6 +176,10 @@ namespace L20nTests
 			Assert.AreEqual(
 				Translator.Translate("greeting.evening"),
 				Translator.Translate("greeting.evening.normal"));
+
+			Assert.AreEqual(
+				"Data Connectivity Settings",
+				Translator.Translate("dataSettings"));
 
 			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
 
@@ -213,7 +234,6 @@ namespace L20nTests
 		public void MozillasManifest()
 		{
 			Translator.AddGlobal("os", () => "win");
-			Translator.AddGlobal("screen", () => "desktop");
 
 			var pc = new PerformanceClock("SimpleDatabase");
 

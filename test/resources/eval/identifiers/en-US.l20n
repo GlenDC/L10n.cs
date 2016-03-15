@@ -43,3 +43,16 @@
 }>
 
 <timeDateGreeting "{{ greeting }}, it's {{ time }} on {{ date }}.">
+
+<formFactor($n) {
+   $n > 1200 ? "large" :
+   $n >  980 ? "desktop" :
+   $n >  768 ? "landscapeTablet" :
+   $n >  480 ? "landscapePhone" :
+                  "portraitPhone"
+}>
+<dataSettings[formFactor(@screen.width)] {
+ *wide: "Data Connectivity Settings",
+  landscapePhone: "Data Settings",
+  portraitPhone: "Data"
+}>

@@ -106,7 +106,6 @@
     <Compile Include="src\io\parsers\Identifier.cs" />
     <Compile Include="src\io\parsers\expressions\IdentifierExpression.cs" />
     <Compile Include="src\io\parsers\expressions\Logic.cs" />
-    <Compile Include="src\objects\GlobalValue.cs" />
     <Compile Include="src\internal\Manifest.cs" />
     <Compile Include="src\internal\Database.cs" />
     <Compile Include="src\internal\LocaleContext.cs" />
@@ -121,6 +120,8 @@
     <Compile Include="src\internal\Cache.cs" />
     <Compile Include="src\external\IVariable.cs" />
     <Compile Include="src\external\InfoCollector.cs" />
+    <Compile Include="src\objects\LiteralCallback.cs" />
+    <Compile Include="src\objects\StringOutputCallback.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

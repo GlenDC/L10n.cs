@@ -33,20 +33,16 @@ namespace L20n
 			
 			private Option<LocaleContext> m_DefaultContext;
 			private Option<LocaleContext> m_CurrentContext;
-
-			private Cache m_Cache;
 			
-			private readonly Dictionary<string, Objects.GlobalValue> m_Globals;
+			private readonly Dictionary<string, Objects.L20nObject> m_Globals;
 
 			public Database()
 			{
 				Manifest = new Manifest();
-				m_Globals = new Dictionary<string, Objects.GlobalValue>();
+				m_Globals = new Dictionary<string, Objects.L20nObject>();
 
 				m_DefaultContext = new Option<LocaleContext>();
 				m_CurrentContext = new Option<LocaleContext>();
-
-				m_Cache = new Cache();
 
 				AddSystemGlobals();
 			}
@@ -81,24 +77,46 @@ namespace L20n
 			public string Translate(string id, params External.IVariable[] variables)
 			{
 				if(variables == null || variables.Length == 0)
-					return TranslateSimple(id);
+					return TranslateID(id);
 				return TranslateWithVariables(id, variables);
 			}
 			
-			public void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)
+			public void AddGlobal(string id, Objects.LiteralCallback.Delegate callback)
 			{
-				AddGlobalValue(id, new L20n.Objects.GlobalLiteral(callback));
+				AddGlobalValue(id, new Objects.LiteralCallback(callback));
 			}
 			
-			public void AddGlobal(string id, L20n.Objects.GlobalString.Delegate callback)
+			public void AddGlobal(string id, Objects.StringOutputCallback.Delegate callback)
 			{
-				AddGlobalValue(id, new L20n.Objects.GlobalString(callback));
+				AddGlobalValue(id, new Objects.StringOutputCallback(callback));
+			}
+			
+			public void AddGlobal(string id, External.IVariable variable)
+			{
+				var info = new External.InfoCollector();
+				string whatever; variable.Collect(out whatever, info);
+				if (info.IsHash) {
+					var entity = info.Collect().As<Objects.HashValue>().Map((hash) => {
+						var value = new Objects.Entity(
+							Objects.L20nObject.None,
+							false, hash);
+						return new Option<Objects.L20nObject>(value);
+					});
+
+					if(entity.IsSet) {
+						AddGlobalValue(id, entity.Unwrap());
+					} else {
+						Logger.WarningFormat(
+							"couldn't collect <hash_value> from global external variable with key {0}",
+							id);
+					}
+				} else {
+					AddGlobalValue(id, info.Collect());
+				}
 			}
 			
 			private void ImportLocal(string id, Option<LocaleContext> context, LocaleContext parent)
 			{
-				m_Cache.Clear();
-
 				var localeFiles = Manifest.GetLocaleFiles(id);
 				if (localeFiles.Count == 0)
 				{
@@ -115,14 +133,16 @@ namespace L20n
 				context.Set(builder.Build(m_Globals, parent));
 			}
 			
-			private void AddGlobalValue(string id, L20n.Objects.GlobalValue value)
+			private void AddGlobalValue(string id, Objects.L20nObject value)
 			{
 				try {
 					m_Globals.Add(id, value);
 				}
 				catch(ArgumentException) {
-					throw new L20n.Exceptions.ImportException(
-						String.Format("global value with id {0} can't be added, as id isn't unique", id));
+					Logger.WarningFormat(
+						"global value with id {0} isn't unique, " +
+						"and old value will be overriden", id);
+					m_Globals[id] = value;
 				}
 			}
 			
@@ -166,15 +186,6 @@ namespace L20n
 				}
 				
 				return output.Unwrap().Value;
-			}
-
-			private string TranslateSimple(string id)
-			{
-				return m_Cache.TryGet(id).OrElse(() => {
-					string value = TranslateID(id);
-					m_Cache.Set(id, value);
-					return new Option<string>(value);
-				}).UnwrapOr(id);
 			}
 
 			private string TranslateWithVariables(string id, params External.IVariable[] variables)

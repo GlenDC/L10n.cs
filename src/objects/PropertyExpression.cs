@@ -95,11 +95,10 @@ namespace L20n
 				
 				if (wrapped.IsSet) return wrapped;
 
-				return wrapped;
-				/*// ok so it better be a global // TODO -> SUPPORT this LATER
+				// ok so it better be a global
 				return key.As<Global>()
 					.Map((global) => ctx.GetGlobal(global.Identifier))
-					.UnwrapAs<Entity>();*/
+					.UnwrapAs<Entity>();
 
 			}
 		}

@@ -29,7 +29,7 @@ namespace L20n
 	{
 		public sealed class LocaleContext
 		{	
-			private readonly Utils.DictionaryRef<string, GlobalValue> m_Globals;
+			private readonly Utils.DictionaryRef<string, L20nObject> m_Globals;
 			private readonly Dictionary<string, Macro> m_Macros;
 			private readonly Dictionary<string, Entity> m_Entities;
 			private readonly ShadowStack<L20nObject> m_Variables;
@@ -37,19 +37,19 @@ namespace L20n
 			private readonly Option<LocaleContext> m_Parent;
 
 			public LocaleContext(
-				Utils.DictionaryRef<string, GlobalValue> globals,
+				Utils.DictionaryRef<string, L20nObject> globals,
 				Dictionary<string, Macro> macros,
 				Dictionary<string, Entity> entities,
 				LocaleContext parent)
 			{
 				m_Globals = globals;
-				m_Macros = macros;
-				m_Entities = entities;
+				m_Macros = new Dictionary<string, Macro>(macros);
+				m_Entities = new Dictionary<string, Entity>(entities);
 				m_Variables = new ShadowStack<L20nObject>();
 				m_Parent = new Option<LocaleContext>(parent);
 			}
 			
-			public Option<GlobalValue> GetGlobal(string key)
+			public Option<L20nObject> GetGlobal(string key)
 			{
 				return GetGlobalPrivate(key).OrElse(() =>
 					m_Parent.Map((ctx) => ctx.GetGlobalPrivate(key)));
@@ -67,10 +67,10 @@ namespace L20n
 				    m_Parent.Map((ctx) => ctx.GetEntityPrivate(key)));
 			}
 			
-			private Option<GlobalValue> GetGlobalPrivate(string key)
+			private Option<L20nObject> GetGlobalPrivate(string key)
 			{
 				var global = m_Globals.Get(key, null);
-				return new Option<GlobalValue>(global);
+				return new Option<L20nObject>(global);
 			}
 			
 			private Option<Macro> GetMacroPrivate(string key)
@@ -159,9 +159,9 @@ namespace L20n
 					}
 				}
 				
-				public LocaleContext Build(Dictionary<string, GlobalValue> globals, LocaleContext parent)
+				public LocaleContext Build(Dictionary<string, L20nObject> globals, LocaleContext parent)
 				{
-					var globalsRef = new Utils.DictionaryRef<string, GlobalValue>(globals);
+					var globalsRef = new Utils.DictionaryRef<string, L20nObject>(globals);
 					return new LocaleContext(globalsRef, m_Macros, m_Entities, parent);
 				}
 			}

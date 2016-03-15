@@ -78,15 +78,20 @@ namespace L20n
 				return id;
 			}
 		}
-		
-		public static void AddGlobal(string id, L20n.Objects.GlobalLiteral.Delegate callback)
+
+		public static void AddGlobal(string id, Objects.LiteralCallback.Delegate callback)
 		{
 			s_Database.AddGlobal(id, callback);
 		}
 		
-		public static void AddGlobal(string id, L20n.Objects.GlobalString.Delegate callback)
+		public static void AddGlobal(string id, Objects.StringOutputCallback.Delegate callback)
 		{
 			s_Database.AddGlobal(id, callback);
+		}
+		
+		public static void AddGlobal(string id, External.IVariable variable)
+		{
+			s_Database.AddGlobal(id, variable);
 		}
 
 		public static void SetWarningDelegate(Internal.Logger.LogDelegate callback)
