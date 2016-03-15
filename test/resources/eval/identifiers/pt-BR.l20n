@@ -6,10 +6,16 @@
     evening: "Boa noite",
 }>
 
+/* In this case the translator of pt-br is in trouble,
+ * as she cannot translate the "zero" case correctly.
+ * In order to do so he/she would need the gender of the only follower.
+ */
 <followers($n) {
     $n == 0 ? "seus zero seguidores"
         : $n == 1 ? "seu único seguidor" : "seus {{ $n }} seguidores"
 }>
+
+<personal_lucky_greeting "{{ greeting }} {{ $user }}, o número da sorte de hoje é {{ $lucky_number }}!">
 
 <shared[$user.gender]
     "{{ $user.name }} compartilhou sua mensagem com {{ followers($user.followers) }}.">

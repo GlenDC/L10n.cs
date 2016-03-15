@@ -97,6 +97,7 @@ namespace L20n
 			public void Clear()
 			{
 				m_Info.Clear();
+				m_SimpleVariable.Unset();
 			}
 
 			public void SetSimpleObject(L20nObject value)

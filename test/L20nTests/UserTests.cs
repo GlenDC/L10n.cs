@@ -40,7 +40,8 @@ namespace L20nTests
 			Assert.Throws<ImportException>(
 				() => Translator.ImportManifest("../../../resources/manifest-without-resources.json"));
 		}
-
+		
+		// an example of a hash external variable
 		private class User : L20n.External.IVariable
 		{
 			public enum Gender
@@ -90,12 +91,49 @@ namespace L20nTests
 			}
 		}
 
+		// an example of a simple external variable
+		private class SimpleUser : L20n.External.IVariable
+		{
+			private readonly string m_Name;
+
+			public SimpleUser(string name)
+			{
+				m_Name = name;
+			}
+
+			public void Collect(out string id, L20n.External.InfoCollector info)
+			{
+				id = "user";
+				info.Set(m_Name);
+			}
+		}
+		
+		// an example of a simple external variable
+		private class LuckyNumber : L20n.External.IVariable
+		{
+			private readonly int m_Number;
+
+			public LuckyNumber()
+			{
+				m_Number = new Random().Next();
+			}
+			
+			public void Collect(out string id, L20n.External.InfoCollector info)
+			{
+				id = "lucky_number";
+				info.Set(m_Number);
+			}
+		}
+
 		[Test()]
 		public void SimpleManifest()
 		{
 			var john = new User("John", User.Gender.Male, 42);
 			var maria = new User("Maria", User.Gender.Female, 0);
 			john.BestFriend = maria;
+
+			var bianca = new SimpleUser("Bianca");
+			var luckyNumber = new LuckyNumber();
 
 			Translator.ImportManifest("../../../resources/eval/identifiers/manifest.json");
 
@@ -141,6 +179,8 @@ namespace L20nTests
 			Console.WriteLine(Translator.Translate("shared", maria));
 			if(john.BestFriend != null)
 				Console.WriteLine(Translator.Translate("best_friend", john));
+			Console.WriteLine(Translator.Translate("personal_greeting", bianca));
+			Console.WriteLine(Translator.Translate("personal_lucky_greeting", bianca, luckyNumber));
 
 			// Switching to portuguese
 
@@ -165,6 +205,8 @@ namespace L20nTests
 			Console.WriteLine(Translator.Translate("shared", maria));
 			if(john.BestFriend != null)
 				Console.WriteLine(Translator.Translate("best_friend", john));
+			Console.WriteLine(Translator.Translate("personal_greeting", bianca));
+			Console.WriteLine(Translator.Translate("personal_lucky_greeting", bianca, luckyNumber));
 		}
 
 		[Test()]
