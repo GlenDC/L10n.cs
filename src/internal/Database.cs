@@ -74,11 +74,58 @@ namespace L20n
 				}
 			}
 			
-			public string Translate(string id, params object[] variables)
+			public string Translate(string id)
 			{
-				if(variables == null || variables.Length == 0)
+				return TranslateID(id);
+			}
+
+			public string Translate(string id, Variables variables)
+			{
+				if(variables.Count == 0)
 					return TranslateID(id);
-				return TranslateWithVariables(id, variables);
+
+				return m_CurrentContext.Or(m_DefaultContext).MapOr(id, (ctx) => {
+					var info = new External.InfoCollector();
+					
+					// push all variables to the stack
+					int i = 0;
+					foreach(var variable in variables) {
+						if(variable.Key == null) {
+							Logger.WarningFormat("couldn't translate {0} because parameter-key #{1} is null" +
+							                     " while expecting an string", id, i);
+							break;
+						}
+
+						if(variable.Value == null) {
+							Logger.WarningFormat("couldn't translate {0} because parameter-value #{1} is null",
+							                     id, i);
+							break;
+						}
+
+						variable.Value.Collect(info);
+						var value = info.Collect();
+						if(info.IsHash) {
+							var hash = value.As<Objects.HashValue>().Unwrap();
+							var entity = new Objects.Entity(new Option<Objects.L20nObject>(), false, hash);
+							ctx.PushVariable(variable.Key, entity);
+						} else {
+							ctx.PushVariable(variable.Key, value);
+						}
+
+						info.Clear();
+						++i;
+					}
+					
+					var output = TranslateID(id);
+					
+					// remove variables from stack again
+					foreach(var key in variables.Keys) {
+						if(key != null)
+							ctx.DropVariable(key);
+					}
+					
+					return output;
+				});
 			}
 			
 			public void AddGlobal(string id, Objects.LiteralCallback.Delegate callback)
@@ -186,62 +233,6 @@ namespace L20n
 				}
 				
 				return output.Unwrap().Value;
-			}
-
-			private string TranslateWithVariables(string id, params object[] variables)
-			{
-				return m_CurrentContext.Or(m_DefaultContext).MapOr(id, (ctx) => {
-					if(variables.Length == 0 || variables.Length % 2 != 0) {
-						Logger.Warning("couldn't translate as the last external variable has no value");
-						return id;
-					}
-					
-					var info = new External.InfoCollector();
-					var identifiers = new string[variables.Length / 2];
-
-					// push all variables to the stack
-					for(int i = 0; i < identifiers.Length; ++i) {
-						var u = i*2;
-						identifiers[i] = variables[u] as string;
-						if(identifiers[i] == null) {
-							Logger.WarningFormat("couldn't translate because parameter-key #{0} is of type {1}," +
-							                     " while expecting an string", i, variables[i].GetType());
-							break;
-						}
-
-						if(identifiers[i] != null) {
-							var variable = variables[u+1];
-							var variableType = variable.GetType();
-							var method = variableType.GetMethod("Collect");
-							if(method == null) {
-								Logger.WarningFormat("couldn't translate because parameter-value #{0} is of type {1}," +
-									" while expecting an IVariable", i, variableType);
-								break;
-							}
-
-							method.Invoke(variable, new object[]{info});
-							var value = info.Collect();
-							if(info.IsHash) {
-								var hash = value.As<Objects.HashValue>().Unwrap();
-								var entity = new Objects.Entity(new Option<Objects.L20nObject>(), false, hash);
-								ctx.PushVariable(identifiers[i], entity);
-							} else {
-								ctx.PushVariable(identifiers[i], value);
-							}
-						}
-						info.Clear();
-					}
-
-					var output = TranslateID(id);
-
-					// remove variables from stack again
-					for(int i = 0; i < identifiers.Length; ++i) {
-						if(identifiers[i] != null)
-							ctx.DropVariable(identifiers[i]);
-					}
-
-					return output;
-				});
 			}
 		}
 	}

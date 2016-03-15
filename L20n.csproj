@@ -122,6 +122,7 @@
     <Compile Include="src\external\InfoCollector.cs" />
     <Compile Include="src\objects\LiteralCallback.cs" />
     <Compile Include="src\objects\StringOutputCallback.cs" />
+    <Compile Include="src\Variables.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

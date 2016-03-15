@@ -184,7 +184,7 @@ namespace L20nTests
 
 			// in this case pssst references _hidden (123), so that does work fine
 			Assert.AreEqual("the password is 123", Translator.Translate("pssst"));
-			
+
 			// translations using an external variable
 			Assert.AreEqual(
 				"John shared your post.",
@@ -197,8 +197,8 @@ namespace L20nTests
 			if(john.BestFriend != null)
 				Console.WriteLine(Translator.Translate("best_friend", "user", john));
 			Console.WriteLine(Translator.Translate("personal_greeting", "user", bianca));
-			Console.WriteLine(Translator.Translate("personal_lucky_greeting",
-			    "user", bianca, "lucky_number", luckyNumber));
+			Console.WriteLine(Translator.Translate(
+				"personal_lucky_greeting", "user", bianca, "lucky_number", luckyNumber));
 
 			// Switching to portuguese
 

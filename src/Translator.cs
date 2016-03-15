@@ -64,7 +64,22 @@ namespace L20n
 			s_Database.LoadLocale(id);
 		}
 
-		public static string Translate(string id, params object[] variables)
+		public static string Translate(string id)
+		{
+			try {
+				return s_Database.Translate(id);
+			}
+			catch(Exception e) {
+				Internal.Logger.WarningFormat(
+					"A C# exception occured while translating {0}," +
+					" please report this as a bug @ https://github.com/GlenDC/L20n.cs." +
+					"\nInclude the <id> you tried to translate and all the L20n files involved; More Info: \n{1}",
+					id, e.ToString());
+				return id;
+			}
+		}
+
+		public static string Translate(string id, Variables variables)
 		{
 			try {
 				return s_Database.Translate(id, variables);
@@ -77,6 +92,36 @@ namespace L20n
 					id, e.ToString());
 				return id;
 			}
+		}
+
+		public static string Translate(string id,
+		                               string parameter_key, External.IVariable parameter_value)
+		{
+			var dic = new Variables();
+			dic.Add(parameter_key, parameter_value);
+			return Translate(id, dic);
+		}
+		
+		public static string Translate(string id,
+		                               string parameter_key_a, External.IVariable parameter_value_a,
+		                               string parameter_key_b, External.IVariable parameter_value_b)
+		{
+			var dic = new Variables();
+			dic.Add(parameter_key_a, parameter_value_a);
+			dic.Add(parameter_key_b, parameter_value_b);
+			return Translate(id, dic);
+		}
+		
+		public static string Translate(string id,
+		                               string parameter_key_a, External.IVariable parameter_value_a,
+		                               string parameter_key_b, External.IVariable parameter_value_b,
+		                               string parameter_key_c, External.IVariable parameter_value_c)
+		{
+			var dic = new Variables();
+			dic.Add(parameter_key_a, parameter_value_a);
+			dic.Add(parameter_key_b, parameter_value_b);
+			dic.Add(parameter_key_c, parameter_value_c);
+			return Translate(id, dic);
 		}
 
 		public static void AddGlobal(string id, Objects.LiteralCallback.Delegate callback)
