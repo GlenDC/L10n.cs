@@ -30,39 +30,50 @@ namespace L20n
 		public sealed class HashValue : Primitive
 		{
 			private readonly Dictionary<string, L20nObject> m_Items;
-			private readonly string m_Default;
+			private readonly Option<string> m_Default;
 
 			public HashValue(Dictionary<string, L20nObject> items, string def)
 			{
-				m_Items = items;
-				m_Default = def;
+				m_Items = new Dictionary<string, L20nObject>(items);
+				m_Default = new Option<string>(def);
+
+				if (m_Items.Count == 0) {
+					Logger.Warning(
+						"creating a hash value with no children is useless and a mistake, " +
+						"this object will make any translation that makes use of it fail");
+				}
 			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
+				if (m_Items.Count == 0) {
+					return L20nObject.None;
+				}
+
 				if (argv.Length != 1) {
-					if (m_Default == null) {
+					if (!m_Default.IsSet) {
 						Logger.Warning(
 							"no <identifier> was given and <hash_value> has no default specified");
 						return L20nObject.None;
 					}
 
-					return m_Items[m_Default].Eval(ctx);
+					return m_Items[m_Default.Unwrap()].Eval(ctx);
 				}
 				
 				return argv[0].Eval(ctx).UnwrapAs<Identifier>().Map((id) => {
 					L20nObject obj;
 					if(!m_Items.TryGetValue(id.Value, out obj)) {
-						if(m_Default == null) {
-							Logger.Warning(
-								"no defined <identifier> was given and <hash_value> has no default specified");
+						if(!m_Default.IsSet) {
+							Logger.WarningFormat(
+								"{0} is not a valid <identifier>, " +
+								"and this <hash_value> has no default specified", id.Value);
 							return L20nObject.None;
 						}
 
-						obj = m_Items[m_Default];
+						obj = m_Items[m_Default.Unwrap()];
 					}
 
-					return obj.Eval(ctx);
+					return new Option<L20nObject>(obj);
 				});
 			}
 			

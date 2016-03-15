@@ -22,6 +22,14 @@ namespace L20n
 {
 	namespace External
 	{
+		/// <summary>
+		/// A simple interface that allows you to use objects
+		/// as external variables.
+		/// </summary>
+		/// <remarks>
+		/// In case the stuff you write is flexible,
+		/// make sure that you provide your own checks to not use stuff that you don't provide.
+		/// </remarks>
 		public interface IVariable
 		{
 			void Collect(out string id, InfoCollector info);

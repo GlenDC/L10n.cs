@@ -60,10 +60,10 @@
 /* ------------------------------------------------------------------------- */
 
 <timeOfDay($h) {
-  $h < 6 ? night :
-    $h < 12 ? morning :
-      $h < 18 ? afternoon :
-        evening }>
+  $h < 6 ? "night" :
+    $h < 12 ? "morning" :
+      $h < 18 ? "afternoon" :
+        "evening" }>
 
 <more """
   For more information, visit <a>L20n.org</a>.

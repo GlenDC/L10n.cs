@@ -59,25 +59,48 @@ namespace L20n
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{	
-				return Identifiers[0].Eval(ctx).UnwrapAs<Identifier>().Map((identifier) => {
-					return ctx.GetEntity(identifier.Value).Map((entity) => {
-						var obj = new Option<L20nObject>(entity);
+				return GetEntity(ctx, m_Identifiers[0]).Map((entity) => {
+					var obj = new Option<L20nObject>(entity);
 
-						int i = 1;
-						if(argv.Length == 1 && argv[0].As<Dummy>().IsSet) {
-							obj = obj.Map((unwrapped) =>
-							              unwrapped.Eval(ctx, argv[0], m_Identifiers[i]));
-							++i;
-						}
+					int i = 1;
+					if(argv.Length == 1 && argv[0].As<Dummy>().IsSet) {
+						obj = obj.Map((unwrapped) =>
+						              unwrapped.Eval(ctx, argv[0], m_Identifiers[i]));
+						++i;
+					}
 
-						for(; i < m_Identifiers.Length; ++i) {
-							obj = obj.Map((unwrapped) =>
-							              unwrapped.Eval(ctx, m_Identifiers[i]));
-						}
+					for(; i < m_Identifiers.Length; ++i) {
+						obj = obj.Map((unwrapped) =>
+						              unwrapped.Eval(ctx, m_Identifiers[i]));
+					}
 
-						return obj.Map((unwrapped) => unwrapped.Eval(ctx));
-					});
+					return obj.Map((unwrapped) => unwrapped.Eval(ctx));
 				});
+			}
+
+			private Option<Entity> GetEntity(LocaleContext ctx, L20nObject key)
+			{
+				Option<Entity> wrapped;
+
+				// is it an identifier?
+				wrapped = key.As<Identifier>()
+					.Map((identifier) => ctx.GetEntity(identifier.Value));
+
+				if(wrapped.IsSet) return wrapped;
+
+				// is it a variable?
+				wrapped = key.As<Variable>()
+					.Map((variable) => ctx.GetVariable(variable.Identifier))
+					.UnwrapAs<Entity>();
+				
+				if (wrapped.IsSet) return wrapped;
+
+				return wrapped;
+				/*// ok so it better be a global // TODO -> SUPPORT this LATER
+				return key.As<Global>()
+					.Map((global) => ctx.GetGlobal(global.Identifier))
+					.UnwrapAs<Entity>();*/
+
 			}
 		}
 	}

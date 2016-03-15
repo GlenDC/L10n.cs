@@ -64,7 +64,8 @@ namespace L20n
 	
 				if (m_Index.IsSet && argv.Length == 0) {
 					return m_Index.UnwrapAs<Index>()
-						.Map((Index index) => m_Value.Eval(ctx, index));
+						.Map((Index index) => m_Value.Eval(ctx, index))
+						.Map((unwrapped) => unwrapped.Eval(ctx));
 				}
 
 				return m_Value.Eval(ctx, argv);

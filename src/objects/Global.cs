@@ -27,6 +27,11 @@ namespace L20n
 	{
 		public sealed class Global : L20nObject
 		{	
+			public string Identifier
+			{
+				get { return m_Identifier; }
+			}
+
 			private readonly string m_Identifier;
 			
 			public Global(string identifier)

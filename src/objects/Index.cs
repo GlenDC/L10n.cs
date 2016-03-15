@@ -39,15 +39,24 @@ namespace L20n
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Indeces.Length == 1) {
-					return m_Indeces[0].Eval(ctx)
-						.UnwrapAs<Identifier>().MapOrWarning(
-							(index) => new Option<L20nObject>(index),
-						    "something went wrong while evaluating the only index");
+					var unwrapedIndex =  m_Indeces[0].Eval(ctx);
+					return unwrapedIndex.UnwrapAs<Identifier>().OrElse(() => {
+						return unwrapedIndex.UnwrapAs<StringOutput>().Map(
+							(str) => new Option<Identifier>(new Identifier(str.Value)));
+					}).MapOrWarning(
+						(index) => new Option<L20nObject>(index),
+					    "something went wrong while evaluating the only index");
 				}
 
 				var indeces = new L20nObject[m_Indeces.Length];
 				for (int i = 0; i < indeces.Length; ++i) {
-					var index = m_Indeces[i].Eval(ctx).UnwrapAs<Identifier>();
+					var wrappedIndex = m_Indeces[i].Eval(ctx);
+					var index = 
+						wrappedIndex.UnwrapAs<Identifier>()
+							.OrElse(() => {
+								return wrappedIndex.UnwrapAs<StringOutput>()
+									.Map((str) => new Option<Identifier>(new Identifier(str.Value)));
+							});
 					if(index.IsSet) {
 						indeces[i] = index.Unwrap();
 					}

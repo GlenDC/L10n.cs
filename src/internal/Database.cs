@@ -186,7 +186,16 @@ namespace L20n
 					// push all variables to the stack
 					for(int i = 0; i < identifiers.Length; ++i) {
 						variables[i].Collect(out identifiers[i], info);
-						ctx.PushVariable(identifiers[i], info.Collect());
+						if(identifiers[i] != null) {
+							var value = info.Collect();
+							if(info.IsHash) {
+								var hash = value.As<Objects.HashValue>().Unwrap();
+								var entity = new Objects.Entity(new Option<Objects.L20nObject>(), false, hash);
+								ctx.PushVariable(identifiers[i], entity);
+							} else {
+								ctx.PushVariable(identifiers[i], value);
+							}
+						}
 						info.Clear();
 					}
 
@@ -194,7 +203,8 @@ namespace L20n
 
 					// remove variables from stack again
 					for(int i = 0; i < identifiers.Length; ++i) {
-						ctx.DropVariable(identifiers[i]);
+						if(identifiers[i] != null)
+							ctx.DropVariable(identifiers[i]);
 					}
 
 					return output;

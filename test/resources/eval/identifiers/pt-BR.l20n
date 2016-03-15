@@ -5,3 +5,18 @@
     afternoon: "Boa tarde",
     evening: "Boa noite",
 }>
+
+<followers($n) {
+    $n == 0 ? "seus zero seguidores"
+        : $n == 1 ? "seu único seguidor" : "seus {{ $n }} seguidores"
+}>
+
+<shared[$user.gender]
+    "{{ $user.name }} compartilhou sua mensagem com {{ followers($user.followers) }}.">
+
+/* in português the possessive adjective's gender doesn't depend on the subject */
+<best_friend[$user.friend.gender] {
+    masculine: "{{ $user.name }} seu melhor amigo é {{ $user.friend.name }}.",
+    feminine: "{{ $user.name }} sua melhor amiga é {{ $user.friend.name }}.",
+    *default: "{{ $user.name }} seu melhor amigo é {{ $user.friend.name }}.",
+}>

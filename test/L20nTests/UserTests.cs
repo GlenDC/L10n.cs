@@ -41,9 +41,62 @@ namespace L20nTests
 				() => Translator.ImportManifest("../../../resources/manifest-without-resources.json"));
 		}
 
-		[Test()]
-		public void IdentifierEvalTests()
+		private class User : L20n.External.IVariable
 		{
+			public enum Gender
+			{
+				Male,
+				Female,
+				Hidden,
+			}
+
+			public int Followers { get; set; }
+
+			public User BestFriend;
+
+			private readonly string m_Name;
+			private readonly string m_Gender;
+
+			public User(string name, Gender gender, int followers = 0)
+			{
+				m_Name = name; 
+				Followers = followers;
+
+				switch(gender) {
+					case Gender.Male:
+						m_Gender = "masculine";
+						break;
+
+					case Gender.Female:
+						m_Gender = "feminine";
+						break;
+
+					default:
+						m_Gender = "default";
+						break;
+				}
+
+				BestFriend = null;
+			}
+
+			public void Collect(out string id, L20n.External.InfoCollector info)
+			{
+				id = "user";
+				info.Add("name", m_Name);
+				info.Add("followers", Followers);
+				info.Add("gender", m_Gender);
+				if(BestFriend != null)
+					info.Add("friend", BestFriend);
+			}
+		}
+
+		[Test()]
+		public void SimpleManifest()
+		{
+			var john = new User("John", User.Gender.Male, 42);
+			var maria = new User("Maria", User.Gender.Female, 0);
+			john.BestFriend = maria;
+
 			Translator.ImportManifest("../../../resources/eval/identifiers/manifest.json");
 
 			Assert.AreEqual("Hello, World!", Translator.Translate("hello"));
@@ -76,6 +129,18 @@ namespace L20nTests
 
 			// in this case pssst references _hidden (123), so that does work fine
 			Assert.AreEqual("the password is 123", Translator.Translate("pssst"));
+			
+			// translations using an external variable
+			Assert.AreEqual(
+				"John shared your post.",
+				Translator.Translate("shared_compact", john));
+			Assert.AreEqual(
+				"John shared your post to his 42 followers.",
+				Translator.Translate("shared", john));
+			Console.WriteLine(Translator.Translate("shared", john));
+			Console.WriteLine(Translator.Translate("shared", maria));
+			if(john.BestFriend != null)
+				Console.WriteLine(Translator.Translate("best_friend", john));
 
 			// Switching to portuguese
 
@@ -93,11 +158,17 @@ namespace L20nTests
 				Translator.Translate("greeting.evening.normal"),
 				Translator.Translate("greeting.evening.late"));
 			
-			Console.WriteLine(Translator.Translate ("timeDateGreeting"));
+			Console.WriteLine(Translator.Translate("timeDateGreeting"));
+
+			john.Followers = 31;
+			Console.WriteLine(Translator.Translate("shared", john));
+			Console.WriteLine(Translator.Translate("shared", maria));
+			if(john.BestFriend != null)
+				Console.WriteLine(Translator.Translate("best_friend", john));
 		}
 
 		[Test()]
-		public void SimpleDatabase()
+		public void MozillasManifest()
 		{
 			Translator.AddGlobal("os", () => "win");
 			Translator.AddGlobal("screen", () => "desktop");
