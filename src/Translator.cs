@@ -103,20 +103,6 @@ namespace L20n
 		}
 		
 		public static string Translate(string id,
-		                               string parameter_key,
-		                               Objects.StringOutputCallback.Delegate parameter_value)
-		{
-			return Translate(id, parameter_key, new UserVariable(parameter_value));
-		}
-		
-		public static string Translate(string id,
-		                               string parameter_key,
-		                               Objects.LiteralCallback.Delegate parameter_value)
-		{
-			return Translate(id, parameter_key, new UserVariable(parameter_value));
-		}
-		
-		public static string Translate(string id,
 		                               string parameter_key_a, UserVariable parameter_value_a,
 		                               string parameter_key_b, UserVariable parameter_value_b)
 		{
@@ -143,12 +129,7 @@ namespace L20n
 			s_Database.AddGlobal(id, value);
 		}
 		
-		public static void AddGlobal(string id, Objects.LiteralCallback.Delegate callback)
-		{
-			s_Database.AddGlobal(id, callback);
-		}
-		
-		public static void AddGlobal(string id, Objects.StringOutputCallback.Delegate callback)
+		public static void AddGlobal(string id, Objects.DelegatedObject.Delegate callback)
 		{
 			s_Database.AddGlobal(id, callback);
 		}

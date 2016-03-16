@@ -32,16 +32,10 @@ namespace L20n
 			Value = new Utils.Option<Objects.L20nObject>(value);
 		}
 		
-		public UserVariable(Objects.StringOutputCallback.Delegate callback)
+		public UserVariable(Objects.DelegatedObject.Delegate callback)
 		{
 			Value = new Utils.Option<Objects.L20nObject>(
-				new Objects.StringOutputCallback(callback));
-		}
-		
-		public UserVariable(Objects.LiteralCallback.Delegate callback)
-		{
-			Value = new Utils.Option<Objects.L20nObject>(
-				new Objects.LiteralCallback(callback));
+				new Objects.DelegatedObject(callback));
 		}
 
 		public static implicit operator UserVariable(string rhs)
@@ -53,8 +47,13 @@ namespace L20n
 		{
 			return new UserVariable(new Objects.Literal(rhs));
 		}
+		
+		public static implicit operator UserVariable(bool rhs)
+		{
+			return new UserVariable(new Objects.BooleanValue(rhs));
+		}
 
-		public static implicit operator UserVariable(External.UserVariable rhs)
+		public static implicit operator UserVariable(External.UserHashValue rhs)
 		{
 			var info = new External.InfoCollector();
 			rhs.Collect(info);

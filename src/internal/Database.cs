@@ -136,13 +136,8 @@ namespace L20n
 					m_Globals[id] = global;
 				}
 			}
-
-			public void AddGlobal(string id, Objects.LiteralCallback.Delegate callback)
-			{
-				AddGlobal(id, new UserVariable(callback));
-			}
 			
-			public void AddGlobal(string id, Objects.StringOutputCallback.Delegate callback)
+			public void AddGlobal(string id, Objects.DelegatedObject.Delegate callback)
 			{
 				AddGlobal(id, new UserVariable(callback));
 			}

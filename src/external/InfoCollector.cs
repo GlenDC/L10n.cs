@@ -35,22 +35,25 @@ namespace L20n
 				m_Info = new Dictionary<string, L20nObject>();
 			}
 
-			public void Add(string name, int value)
+			public void Add(string name, UserVariable variable)
 			{
-				AddObject(name, new Literal(value));
+				if(!variable.Value.IsSet) {
+					Internal.Logger.WarningFormat(
+						"couldn't add {0} because value is null", name);
+					return;
+				}
+
+				AddObject(name, variable.Value.Unwrap());
+			}
+
+			public void Add(string name, Objects.DelegatedObject.Delegate callback)
+			{
+				AddObject(
+					name,
+					new Objects.DelegatedObject(callback));
 			}
 			
-			public void Add(string name, string value)
-			{
-				AddObject(name, new StringOutput(value));
-			}
-			
-			public void Add(string name, bool value)
-			{
-				AddObject(name, new BooleanValue(value));
-			}
-			
-			public void Add(string name, UserVariable value)
+			public void Add(string name, UserHashValue value)
 			{
 				// Prepare the collector
 				var info = new InfoCollector();

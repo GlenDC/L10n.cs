@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,28 +18,21 @@
 
 using System;
 
-using L20n.Internal;
-using L20n.Utils;
-
 namespace L20n
 {
-	namespace Objects
+	namespace External
 	{
-		public sealed class LiteralCallback : L20nObject
+		/// <summary>
+		/// A simple interface that allows you to use objects
+		/// as external variables.
+		/// </summary>
+		/// <remarks>
+		/// In case the stuff you write is flexible,
+		/// make sure that you provide your own checks to not use stuff that you don't provide.
+		/// </remarks>
+		public abstract class UserHashValue
 		{
-			private readonly Delegate m_Callback;
-
-			public LiteralCallback(Delegate callback)
-			{
-				m_Callback = callback;
-			}
-
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
-			{
-				return new Option<L20nObject>(new Literal(m_Callback()));
-			}
-
-			public delegate int Delegate();
+			abstract public void Collect(InfoCollector info);
 		}
 	}
 }
