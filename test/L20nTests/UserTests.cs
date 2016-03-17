@@ -38,22 +38,18 @@ namespace L20nTests
 			}
 		}
 
-		public UserTests()
-		{
-			Translator.AddGlobal("screen", new ScreenInfo());
-		}
-
 		[Test()]
 		public void BadManifests()
 		{
+			var l20n = new Translator();
 			Assert.Throws<ImportException>(
-				() => Translator.ImportManifest("../../../resources/manifest-without-default.json"));
+				() => l20n.ImportManifest("../../../resources/manifest-without-default.json"));
 			Assert.Throws<ImportException>(
-				() => Translator.ImportManifest("../../../resources/manifest-with-invalid-default.json"));
+				() => l20n.ImportManifest("../../../resources/manifest-with-invalid-default.json"));
 			Assert.Throws<ImportException>(
-				() => Translator.ImportManifest("../../../resources/manifest-without-locales.json"));
+				() => l20n.ImportManifest("../../../resources/manifest-without-locales.json"));
 			Assert.Throws<ImportException>(
-				() => Translator.ImportManifest("../../../resources/manifest-without-resources.json"));
+				() => l20n.ImportManifest("../../../resources/manifest-without-resources.json"));
 		}
 		
 		// an example of a hash external variable
@@ -108,119 +104,125 @@ namespace L20nTests
 		[Test()]
 		public void SimpleManifest()
 		{
+			var l20n = new Translator();
+
+			l20n.AddGlobal("screen", new ScreenInfo());
+
 			// a custom global for this test
 			var john = new User("John", User.Gender.Male, 42);
 			var maria = new User("Maria", User.Gender.Female, 0);
 			john.BestFriend = maria;
 
-			Translator.ImportManifest("../../../resources/eval/identifiers/manifest.json");
+			l20n.ImportManifest("../../../resources/eval/identifiers/manifest.json");
 
-			Assert.AreEqual("Hello, World!", Translator.Translate("hello"));
+			Assert.AreEqual("Hello, World!", l20n.Translate("hello"));
 
 			var time = String.Format("{0}:{1}:{2}",
 				System.DateTime.Now.Hour,
 			    System.DateTime.Now.Minute,
 			    System.DateTime.Now.Second);
-			Assert.AreEqual(time, Translator.Translate("time"));
+			Assert.AreEqual(time, l20n.Translate("time"));
 			
 			var date = String.Format("{0}/{1}/{2}",
 			                         System.DateTime.Now.Day,
 			                         System.DateTime.Now.Month,
 			                         System.DateTime.Now.Year);
-			Assert.AreEqual(date, Translator.Translate("date"));
+			Assert.AreEqual(date, l20n.Translate("date"));
 
 			string greeting = System.DateTime.Now.Hour < 12 ? "Good Morning"
 				: (System.DateTime.Now.Hour < 18 ? "Good Afternoon" : "Good Evening");
 			
-			Assert.AreEqual(greeting, Translator.Translate("greeting"));
-			Assert.AreEqual("unknown", Translator.Translate("unknown"));
+			Assert.AreEqual(greeting, l20n.Translate("greeting"));
+			Assert.AreEqual("unknown", l20n.Translate("unknown"));
 			Assert.AreEqual(
-				Translator.Translate("greeting.evening"),
-				Translator.Translate("greeting.evening.normal"));
+				l20n.Translate("greeting.evening"),
+				l20n.Translate("greeting.evening.normal"));
 
 			Assert.AreEqual(
 				"Data Connectivity Settings",
-				Translator.Translate("dataSettings"));
+				l20n.Translate("dataSettings"));
 
-			Console.WriteLine(Translator.Translate("timeDateGreeting"));
+			Console.WriteLine(l20n.Translate("timeDateGreeting"));
 
 			// private entities can only be acces from within an lol file
-			Assert.AreEqual("_hidden", Translator.Translate("_hidden"));
+			Assert.AreEqual("_hidden", l20n.Translate("_hidden"));
 
 			// in this case pssst references _hidden (123), so that does work fine
-			Assert.AreEqual("the password is 123", Translator.Translate("pssst"));
+			Assert.AreEqual("the password is 123", l20n.Translate("pssst"));
 
 			// translations using an external variable
 			Assert.AreEqual(
 				"John shared your post.",
-				Translator.Translate("shared_compact", "user", john));
+				l20n.Translate("shared_compact", "user", john));
 			Assert.AreEqual(
 				"Attachment too big: 45 MB.",
-				Translator.Translate("tooBig", "sizeInKB", 46080));
+				l20n.Translate("tooBig", "sizeInKB", 46080));
 			Assert.AreEqual(
 				"John shared your post to his 42 followers.",
-				Translator.Translate("shared", "user", john));
-			Console.WriteLine(Translator.Translate("shared", "user", john));
-			Console.WriteLine(Translator.Translate("shared", "user", maria));
+				l20n.Translate("shared", "user", john));
+			Console.WriteLine(l20n.Translate("shared", "user", john));
+			Console.WriteLine(l20n.Translate("shared", "user", maria));
 			if(john.BestFriend != null)
-				Console.WriteLine(Translator.Translate("best_friend", "user", john));
-			Console.WriteLine(Translator.Translate("personal_greeting", "user", "Bianca"));
-			Console.WriteLine(Translator.Translate(
+				Console.WriteLine(l20n.Translate("best_friend", "user", john));
+			Console.WriteLine(l20n.Translate("personal_greeting", "user", "Bianca"));
+			Console.WriteLine(l20n.Translate(
 				"personal_lucky_greeting", "user", "Bianca", "lucky_number", new Random().Next()));
 
 			// Switching to portuguese
 
-			Translator.SetLocale("pt-BR");
+			l20n.SetLocale("pt-BR");
 			
-			Assert.AreEqual("Olá, Mundo!", Translator.Translate("hello"));
+			Assert.AreEqual("Olá, Mundo!", l20n.Translate("hello"));
 			
 			greeting = System.DateTime.Now.Hour < 12 ? "Bom dia"
 				: (System.DateTime.Now.Hour < 18 ? "Boa tarde" : "Boa noite");
 			
-			Assert.AreEqual(greeting, Translator.Translate("greeting"));
-			Assert.AreEqual("Boa noite", Translator.Translate("greeting.evening"));
-			Assert.AreEqual("Boa noite", Translator.Translate("greeting.evening.late"));
+			Assert.AreEqual(greeting, l20n.Translate("greeting"));
+			Assert.AreEqual("Boa noite", l20n.Translate("greeting.evening"));
+			Assert.AreEqual("Boa noite", l20n.Translate("greeting.evening.late"));
 			Assert.AreEqual(
-				Translator.Translate("greeting.evening.normal"),
-				Translator.Translate("greeting.evening.late"));
+				l20n.Translate("greeting.evening.normal"),
+				l20n.Translate("greeting.evening.late"));
 			
-			Console.WriteLine(Translator.Translate("timeDateGreeting"));
+			Console.WriteLine(l20n.Translate("timeDateGreeting"));
 
 			john.Followers = 31;
-			Console.WriteLine(Translator.Translate("shared", "user", john));
-			Console.WriteLine(Translator.Translate("shared", "user", maria));
+			Console.WriteLine(l20n.Translate("shared", "user", john));
+			Console.WriteLine(l20n.Translate("shared", "user", maria));
 			if(john.BestFriend != null)
-				Console.WriteLine(Translator.Translate("best_friend", "user", john));
-			Console.WriteLine(Translator.Translate("personal_greeting", "user", "Bianca"));
-			Console.WriteLine(Translator.Translate("personal_lucky_greeting",
+				Console.WriteLine(l20n.Translate("best_friend", "user", john));
+			Console.WriteLine(l20n.Translate("personal_greeting", "user", "Bianca"));
+			Console.WriteLine(l20n.Translate("personal_lucky_greeting",
 				"user", "Bianca", "lucky_number", new Random().Next()));
-			Console.WriteLine(Translator.Translate("tooBig", "sizeInKB", 46080));
+			Console.WriteLine(l20n.Translate("tooBig", "sizeInKB", 46080));
 		}
 
 		[Test()]
 		public void MozillasManifest()
 		{
-			Translator.AddGlobal("os", () => "win");
+			var l20n = new Translator();
+
+			l20n.AddGlobal("os", () => "win");
 
 			var pc = new PerformanceClock("SimpleDatabase");
 
 			pc.Clock("start import database");
-			Translator.ImportManifest("../../../resources/manifest.json");
+			l20n.ImportManifest("../../../resources/manifest.json");
 			pc.Clock("database imported (incl. default)");
 			
-			Translator.Translate("l20n");
-			Translator.Translate("hello");
-			Translator.Translate("kthxbye");
-			Translator.Translate("kthxbye.night");
+			l20n.Translate("l20n");
+			l20n.Translate("hello");
+			l20n.Translate("kthxbye");
+			l20n.Translate("kthxbye.night");
 			pc.Clock("translated some simple ids");
 
-			Translator.SetLocale("fr");
+			l20n.SetLocale("fr");
 			pc.Clock("fr locale imported");
 			
-			Translator.Translate("l20n");
-			Translator.Translate("hello");
-			Translator.Translate("kthxbye");
-			Translator.Translate("kthxbye.night");
+			l20n.Translate("l20n");
+			l20n.Translate("hello");
+			l20n.Translate("kthxbye");
+			l20n.Translate("kthxbye.night");
 			pc.Clock("translated some simple ids");
 			
 			pc.Stop();

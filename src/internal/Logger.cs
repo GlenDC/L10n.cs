@@ -28,6 +28,8 @@ namespace L20n
 
 			private static LogDelegate s_CustomWarning = null;
 
+			public static string CurrentLocale = null;
+
 			public static void SetWarningCallback(LogDelegate cb)
 			{
 				s_CustomWarning = cb;
@@ -38,10 +40,10 @@ namespace L20n
 				if (s_CustomWarning != null) {
 					s_CustomWarning(
 						String.Format("[L20n][{0}] {1}",
-					    	Translator.CurrentLocale, message));
+					    	CurrentLocale, message));
 				} else {
 					Console.WriteLine("[L20n][{0}][WARNING] {1}",
-						Translator.CurrentLocale, message);
+						CurrentLocale, message);
 				}
 			}
 

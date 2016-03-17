@@ -25,23 +25,28 @@ namespace L20n
 	/// The public static interface for L20n.
 	/// This is all you should need in order to have localization in your game.
 	/// </summary>
-	public static class Translator
+	public sealed class Translator
 	{
-		private static Internal.Database s_Database = new Internal.Database();
+		private Internal.Database m_Database;
 
-		public static List<string> Locales
+		public Translator()
 		{
-			get { return s_Database.Manifest.Locales; }
+			m_Database = new Internal.Database();
 		}
 
-		public static string DefaultLocale
+		public List<string> Locales
 		{
-			get { return s_Database.Manifest.DefaultLocale; }
+			get { return m_Database.Manifest.Locales; }
 		}
 
-		public static string CurrentLocale
+		public string DefaultLocale
 		{
-			get { return s_Database.CurrentLocale; }
+			get { return m_Database.Manifest.DefaultLocale; }
+		}
+
+		public string CurrentLocale
+		{
+			get { return m_Database.CurrentLocale; }
 		}
 
 		/// <summary>
@@ -49,9 +54,10 @@ namespace L20n
 		/// the manifest or the default locale.
 		/// </summary>
 		/// <param name="path">the path to the manifest file</param>
-		public static void ImportManifest(string path)
+		public void ImportManifest(string path)
 		{
-			s_Database.Import(path);
+			m_Database.Import(path);
+			Internal.Logger.CurrentLocale = m_Database.CurrentLocale;
 		}
 
 		/// <summary>
@@ -59,15 +65,16 @@ namespace L20n
 		/// and parsing the locale.
 		/// </summary>
 		/// <param name="id">the id of the locale to be loaded (as referenced in the manifest)</param>
-		public static void SetLocale(string id)
+		public void SetLocale(string id)
 		{
-			s_Database.LoadLocale(id);
+			m_Database.LoadLocale(id);
+			Internal.Logger.CurrentLocale = m_Database.CurrentLocale;
 		}
 
-		public static string Translate(string id)
+		public string Translate(string id)
 		{
 			try {
-				return s_Database.Translate(id);
+				return m_Database.Translate(id);
 			}
 			catch(Exception e) {
 				Internal.Logger.WarningFormat(
@@ -79,10 +86,10 @@ namespace L20n
 			}
 		}
 
-		public static string Translate(string id, UserVariables variables)
+		public string Translate(string id, UserVariables variables)
 		{
 			try {
-				return s_Database.Translate(id, variables);
+				return m_Database.Translate(id, variables);
 			}
 			catch(Exception e) {
 				Internal.Logger.WarningFormat(
@@ -94,7 +101,7 @@ namespace L20n
 			}
 		}
 
-		public static string Translate(string id,
+		public string Translate(string id,
 		                               string parameter_key, UserVariable parameter_value)
 		{
 			var dic = new UserVariables(1);
@@ -102,7 +109,7 @@ namespace L20n
 			return Translate(id, dic);
 		}
 		
-		public static string Translate(string id,
+		public string Translate(string id,
 		                               string parameter_key_a, UserVariable parameter_value_a,
 		                               string parameter_key_b, UserVariable parameter_value_b)
 		{
@@ -112,7 +119,7 @@ namespace L20n
 			return Translate(id, dic);
 		}
 		
-		public static string Translate(string id,
+		public string Translate(string id,
 		                               string parameter_key_a, UserVariable parameter_value_a,
 		                               string parameter_key_b, UserVariable parameter_value_b,
 		                               string parameter_key_c, UserVariable parameter_value_c)
@@ -124,17 +131,17 @@ namespace L20n
 			return Translate(id, dic);
 		}
 		
-		public static void AddGlobal(string id, UserVariable value)
+		public void AddGlobal(string id, UserVariable value)
 		{
-			s_Database.AddGlobal(id, value);
+			m_Database.AddGlobal(id, value);
 		}
 		
-		public static void AddGlobal(string id, Objects.DelegatedObject.Delegate callback)
+		public void AddGlobal(string id, Objects.DelegatedObject.Delegate callback)
 		{
-			s_Database.AddGlobal(id, callback);
+			m_Database.AddGlobal(id, callback);
 		}
 
-		public static void SetWarningDelegate(Internal.Logger.LogDelegate callback)
+		public void SetWarningDelegate(Internal.Logger.LogDelegate callback)
 		{
 			Internal.Logger.SetWarningCallback(callback);
 		}
