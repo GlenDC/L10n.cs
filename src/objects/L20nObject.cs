@@ -28,6 +28,7 @@ namespace L20n
 	{
 		public abstract class L20nObject
 		{
+			public abstract L20nObject Optimize();
 			public abstract Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv);
 
 			private static Option<L20nObject> m_None = new Option<L20nObject>();

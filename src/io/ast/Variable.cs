@@ -40,7 +40,7 @@ namespace L20n
 				
 				public Objects.L20nObject Eval()
 				{
-					return new Objects.Variable(m_Value);
+					return new Objects.Variable(m_Value).Optimize();
 				}
 				
 				public string Display()

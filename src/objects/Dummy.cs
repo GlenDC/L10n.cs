@@ -28,6 +28,11 @@ namespace L20n
 		public sealed class Dummy : L20nObject
 		{	
 			public Dummy() {}
+
+			public override L20nObject Optimize()
+			{
+				throw new NotImplementedException();
+			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{

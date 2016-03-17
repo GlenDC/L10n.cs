@@ -35,7 +35,7 @@ namespace L20n
 				
 				public Objects.L20nObject Eval()
 				{
-					return new Objects.Identifier(m_Value);
+					return new Objects.Identifier(m_Value).Optimize();
 				}
 				
 				public string Display()

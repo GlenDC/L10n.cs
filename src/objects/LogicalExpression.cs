@@ -49,6 +49,30 @@ namespace L20n
 			public AndExpression(L20nObject a, L20nObject b)
 			: base(a, b) {}
 			
+			public override L20nObject Optimize()
+			{
+				Option<BooleanValue> first, second;
+
+				first = m_First.Optimize().As<BooleanValue>();
+				second = m_Second.Optimize().As<BooleanValue>();
+
+				// first need to be set, otherwise there is no way to optimize an '&&' expression
+				if(first.IsSet) {
+					var unwrapped = first.Unwrap();
+					// if first is false, than we can simply return false, as it will always result in false
+					if(!unwrapped.Value) {
+						return unwrapped;
+					// otherwise let's see if second is set, if so, we can simply cache the result
+					} else if(second.IsSet) {
+						var result = unwrapped.Value && second.Unwrap().Value;
+						return new BooleanValue(result);
+						                   
+					}
+				}
+
+				return this;
+			}
+			
 			protected override Option<L20nObject> Operation(LocaleContext ctx)
 			{
 				return m_First.Eval(ctx)
@@ -66,6 +90,30 @@ namespace L20n
 		{
 			public OrExpression(L20nObject a, L20nObject b)
 			: base(a, b) {}
+			
+			public override L20nObject Optimize()
+			{
+				Option<BooleanValue> first, second;
+				
+				first = m_First.Optimize().As<BooleanValue>();
+				second = m_Second.Optimize().As<BooleanValue>();
+				
+				// first need to be set, otherwise there is no way to optimize an '||' expression
+				if(first.IsSet) {
+					var unwrapped = first.Unwrap();
+					// if first is true, than we can simply return true, as it will always result in true
+					if(unwrapped.Value) {
+						return unwrapped;
+						// otherwise let's see if second is set, if so, we can simply cache the result
+					} else if(second.IsSet) {
+						var result = unwrapped.Value || second.Unwrap().Value;
+						return new BooleanValue(result);
+						
+					}
+				}
+
+				return this;
+			}
 			
 			protected override Option<L20nObject> Operation(LocaleContext ctx)
 			{

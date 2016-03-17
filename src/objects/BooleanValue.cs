@@ -42,6 +42,11 @@ namespace L20n
 				m_StaticOption = new Option<L20nObject>(this);
 			}
 			
+			public override L20nObject Optimize()
+			{
+				return this;
+			}
+			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return m_StaticOption;

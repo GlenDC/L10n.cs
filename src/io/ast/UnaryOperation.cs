@@ -59,13 +59,13 @@ namespace L20n
 
 					switch (m_Operation) {
 					case Operation.Positive:
-						return new Objects.PositiveExpression(expression);
+						return new Objects.PositiveExpression(expression).Optimize();
 						
 					case Operation.Negative:
-						return new Objects.NegativeExpression(expression);
+						return new Objects.NegativeExpression(expression).Optimize();
 						
 					case Operation.Negate:
-						return new Objects.NegateExpression(expression);
+						return new Objects.NegateExpression(expression).Optimize();
 					}
 
 					throw new EvaluateException(

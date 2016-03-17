@@ -39,6 +39,11 @@ namespace L20n
 				m_Identifier = identifier;
 			}
 
+			public override L20nObject Optimize()
+			{
+				return this;
+			}
+
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return ctx.GetGlobal(m_Identifier)

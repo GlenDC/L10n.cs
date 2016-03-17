@@ -56,6 +56,11 @@ namespace L20n
 					m_Identifiers [i] = new Identifier (identifiers [i]);
 				}
 			}
+
+			public override L20nObject Optimize()
+			{
+				return this;
+			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{	

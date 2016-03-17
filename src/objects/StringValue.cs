@@ -71,6 +71,33 @@ namespace L20n
 				return new Option<L20nObject>(new StringOutput(output));
 			}
 
+			public override L20nObject Optimize()
+			{
+				// if we have no expressions, than we can already return with a result
+				if(m_Expressions.Length == 0)
+					return new StringOutput(m_Value);
+
+				var values = new string[m_Expressions.Length];
+				L20nObject expression;
+				Primitive primitive;
+				for(int i = 0; i < values.Length; ++i) {
+					expression = m_Expressions[i].Optimize();
+					primitive = expression.As<Primitive>().UnwrapOr(null);
+					if(primitive == null) {
+						return this; // we can't optimize this
+					}
+
+					if(primitive.As<StringValue>().IsSet) {
+						return this;
+					}
+
+					values[i] = primitive.ToString();
+				}
+
+				var output = String.Format(m_Value, values);
+				return new StringOutput(output);
+			}
+
 			public override Option<string> ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return Eval(ctx)

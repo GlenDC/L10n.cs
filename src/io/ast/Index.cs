@@ -47,12 +47,8 @@ namespace L20n
 					var indeces = new Objects.L20nObject[m_Indeces.Count];
 					for (int i = 0; i < indeces.Length; ++i)
 						indeces[i] = m_Indeces[i].Eval();
-
-					// TODO: IF all indeces are STATIC
-						// create identifier if only one
-						// ... create property if more
 					
-					return new Objects.Index(indeces);
+					return new Objects.Index(indeces).Optimize();
 				}
 				
 				public string Display()

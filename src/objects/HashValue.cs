@@ -43,6 +43,15 @@ namespace L20n
 						"this object will make any translation that makes use of it fail");
 				}
 			}
+
+			public override L20nObject Optimize ()
+			{
+				if(m_Items.Count == 1) {
+					return m_Items.Values.GetEnumerator().Current;
+				}
+
+				return this;
+			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{

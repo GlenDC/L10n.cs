@@ -45,7 +45,7 @@ namespace L20n
 					var identifiers = new Objects.L20nObject[m_Identifiers.Count];
 					for (int i = 0; i < identifiers.Length; ++i)
 						identifiers[i] = m_Identifiers[i].Eval();
-					return new Objects.PropertyExpression(identifiers);
+					return new Objects.PropertyExpression(identifiers).Optimize();
 				}
 				
 				public string Display()

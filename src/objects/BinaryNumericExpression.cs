@@ -36,6 +36,18 @@ namespace L20n
 				m_First = first;
 				m_Second = second;
 			}
+
+			public override L20nObject Optimize()
+			{
+				var first = m_First.Optimize().As<Literal>();
+				var second = m_Second.Optimize().As<Literal>();
+
+				if(first.And(second).IsSet) {
+					return Operation(first.Unwrap().Value, second.Unwrap().Value);
+				}
+
+				return this;;
+			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{

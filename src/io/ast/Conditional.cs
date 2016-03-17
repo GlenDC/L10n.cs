@@ -45,7 +45,7 @@ namespace L20n
 					var if_false = m_IfFalse.Eval();
 
 					return new Objects.IfElseExpression(
-						condition, if_true, if_false);
+						condition, if_true, if_false).Optimize();
 				}
 				
 				public string Display()

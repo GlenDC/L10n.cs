@@ -65,7 +65,7 @@ namespace L20n
 						items.Add(entry.Key, entry.Value.Eval());
 					}
 
-					return new Objects.HashValue(items, m_Default);
+					return new Objects.HashValue(items, m_Default).Optimize();
 				}
 				
 				public string Display()

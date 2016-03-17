@@ -58,7 +58,7 @@ namespace L20n
 					var expression = m_Expression.Eval();
 
 					return new Objects.Macro(
-						m_Identifier, expression, m_Parameters.ToArray());
+						m_Identifier, expression, m_Parameters.ToArray()).Optimize();
 				}
 				
 				public string Display()

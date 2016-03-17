@@ -33,6 +33,12 @@ namespace L20n
 			{
 				m_Expression = expression;
 			}
+
+			public override L20nObject Optimize()
+			{
+				return m_Expression.Optimize().As<BooleanValue>()
+					.MapOr<L20nObject>(this, (boolean) => new BooleanValue(!boolean.Value));
+			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{

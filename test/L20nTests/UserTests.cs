@@ -207,11 +207,6 @@ namespace L20nTests
 			pc.Clock("start import database");
 			Translator.ImportManifest("../../../resources/manifest.json");
 			pc.Clock("database imported (incl. default)");
-
-			pc.Pause();
-			Assert.AreEqual("en-US", Translator.DefaultLocale);
-			Assert.AreEqual(3, Translator.Locales.Count);
-			pc.Continue();
 			
 			Translator.Translate("l20n");
 			Translator.Translate("hello");
@@ -221,10 +216,12 @@ namespace L20nTests
 
 			Translator.SetLocale("fr");
 			pc.Clock("fr locale imported");
-
-			Translator.Translate("kthxbye");
+			
 			Translator.Translate("l20n");
-			pc.Clock("translated some simple defaulted ids");
+			Translator.Translate("hello");
+			Translator.Translate("kthxbye");
+			Translator.Translate("kthxbye.night");
+			pc.Clock("translated some simple ids");
 			
 			pc.Stop();
 		}

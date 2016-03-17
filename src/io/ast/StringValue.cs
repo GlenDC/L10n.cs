@@ -60,7 +60,7 @@ namespace L20n
 					var expressions = new Objects.L20nObject[m_Expressions.Count];
 					for (int i = 0; i < expressions.Length; ++i)
 						expressions[i] = m_Expressions[i].Eval();
-					return new Objects.StringValue(m_Value, expressions);
+					return new Objects.StringValue(m_Value, expressions).Optimize();
 				}
 
 				public string Display()

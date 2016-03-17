@@ -35,6 +35,12 @@ namespace L20n
 			{
 				m_Indeces = indeces;
 			}
+
+			public override L20nObject Optimize()
+			{
+				// relies on ctx use, so no way to optimize this
+				return this;
+			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{

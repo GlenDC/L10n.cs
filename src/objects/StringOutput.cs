@@ -40,15 +40,25 @@ namespace L20n
 				m_Value = value;
 				m_StaticOption = new Option<L20nObject>(this);
 			}
+
+			public override L20nObject Optimize()
+			{
+				return this;
+			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return m_StaticOption;
 			}
 			
+			public override string ToString()
+			{
+				return m_Value;
+			}
+			
 			public override Option<string> ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return new Option<string>(m_Value);
+				return new Option<string>(this.ToString());
 			}
 		}
 	}

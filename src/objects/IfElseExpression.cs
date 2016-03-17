@@ -39,6 +39,14 @@ namespace L20n
 				m_IfTrue = if_true;
 				m_IfFalse = if_false;
 			}
+
+			public override L20nObject Optimize ()
+			{
+				return m_Condition.Optimize().As<BooleanValue>()
+					.MapOr(this, (cond) => cond.Value
+					       						? m_IfTrue.Optimize()
+					       						: m_IfFalse.Optimize());
+			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{

@@ -58,10 +58,10 @@ namespace L20n
 					
 					switch (m_Operation) {
 					case Operation.And:
-						return new Objects.AndExpression(first, second);
+						return new Objects.AndExpression(first, second).Optimize();
 						
 					case Operation.Or:
-						return new Objects.OrExpression(first, second);
+						return new Objects.OrExpression(first, second).Optimize();
 					}
 					
 					throw new EvaluateException(

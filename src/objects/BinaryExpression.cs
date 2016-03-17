@@ -36,32 +36,43 @@ namespace L20n
 				m_First = first;
 				m_Second = second;
 			}
+
+			public override L20nObject Optimize()
+			{
+				return CommonEval(m_First.Optimize(), m_Second.Optimize())
+					.UnwrapOr(this);
+			}
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				return Option<L20nObject>.MapAll<L20nObject>((parameters) => {
-					// Are they literals?
-					var output = Option<Literal>.MapAll<L20nObject>((literals) => {
-							var result = Operation(literals[0].Value, literals[1].Value);
-							return new Option<L20nObject>(result);
-					}, parameters[0].As<Literal>(), parameters[1].As<Literal>());
-
-					if(output.IsSet) return output;
-
-					// Are they booleans?
-					output = Option<BooleanValue>.MapAll<L20nObject>((booleans) => {
-						var result = Operation(booleans[0].Value, booleans[1].Value);
-						return new Option<L20nObject>(result);
-					}, parameters[0].As<BooleanValue>(), parameters[1].As<BooleanValue>());
-					
-					if(output.IsSet) return output;
-
-					// OK.... they better be strings!
-					return Option<StringOutput>.MapAll<L20nObject>((strings) => {
-						var result = Operation(strings[0].Value, strings[1].Value);
-						return new Option<L20nObject>(result);
-					}, parameters[0].As<StringOutput>(), parameters[1].As<StringOutput>());
+					return CommonEval(parameters[0], parameters[1]);
 				}, m_First.Eval(ctx), m_Second.Eval(ctx));
+			}
+
+			private Option<L20nObject> CommonEval(L20nObject first, L20nObject second)
+			{
+				// Are they literals?
+				var output = Option<Literal>.MapAll<L20nObject>((literals) => {
+					var result = Operation(literals[0].Value, literals[1].Value);
+					return new Option<L20nObject>(result);
+				}, first.As<Literal>(), second.As<Literal>());
+				
+				if(output.IsSet) return output;
+				
+				// Are they booleans?
+				output = Option<BooleanValue>.MapAll<L20nObject>((booleans) => {
+					var result = Operation(booleans[0].Value, booleans[1].Value);
+					return new Option<L20nObject>(result);
+				}, first.As<BooleanValue>(), second.As<BooleanValue>());
+				
+				if(output.IsSet) return output;
+				
+				// OK.... they better be strings!
+				return Option<StringOutput>.MapAll<L20nObject>((strings) => {
+					var result = Operation(strings[0].Value, strings[1].Value);
+					return new Option<L20nObject>(result);
+				}, first.As<StringOutput>(), second.As<StringOutput>());
 			}
 			
 			protected abstract BooleanValue Operation(int a, int b);

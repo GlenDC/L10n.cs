@@ -43,6 +43,11 @@ namespace L20n
 					var first = m_First.Eval();
 					var second = m_Second.Eval();
 					
+					return CreateOperation(first, second).Optimize();
+				}
+
+				private Objects.L20nObject CreateOperation(Objects.L20nObject first, Objects.L20nObject second)
+				{
 					switch (m_Operation) {
 					case Operation.LessThan:
 						return new Objects.LessThanExpression(first, second);
@@ -77,7 +82,7 @@ namespace L20n
 					case Operation.IsNotEqual:
 						return new Objects.IsNotEqualExpression(first, second);
 					}
-					
+
 					throw new EvaluateException(
 						String.Format("{0} is not a valid <binary> operation", m_Operation));
 				}

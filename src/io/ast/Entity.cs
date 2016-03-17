@@ -52,7 +52,7 @@ namespace L20n
 						index = new Utils.Option<Objects.L20nObject>();
 					var value = m_Value.Eval();
 
-					return new Objects.Entity(index, m_IsPrivate, value);
+					return new Objects.Entity(index, m_IsPrivate, value).Optimize();
 				}
 				
 				public string Display()
