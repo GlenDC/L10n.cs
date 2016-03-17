@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 - 2017 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,19 +27,26 @@ namespace L20nCore
 	namespace Internal
 	{
 		public sealed class Database
-		{	
+		{
+			public bool IsInitialized
+			{
+				get { return CurrentLocale != null; }
+			}
+
 			public Manifest Manifest { get; private set; }
 			public string CurrentLocale { get; private set; }
-			
+
 			private Option<LocaleContext> m_DefaultContext;
 			private Option<LocaleContext> m_CurrentContext;
-			
+
 			private readonly Dictionary<string, Objects.L20nObject> m_Globals;
 
 			public Database()
 			{
 				Manifest = new Manifest();
 				m_Globals = new Dictionary<string, Objects.L20nObject>();
+
+				CurrentLocale = null;
 
 				m_DefaultContext = new Option<LocaleContext>();
 				m_CurrentContext = new Option<LocaleContext>();
@@ -64,16 +71,19 @@ namespace L20nCore
 					throw new ImportException(
 						"a locale id has to be given in order to load one");
 				}
-				
+
 				if (id == Manifest.DefaultLocale) {
 					m_CurrentContext.Unset ();
 					CurrentLocale = Manifest.DefaultLocale;
-				} else {
+				} else if (IsInitialized) {
 					ImportLocal (id, m_CurrentContext, m_DefaultContext.Unwrap ());
 					CurrentLocale = id;
+				} else {
+					throw new ImportException(
+						"couldn't load locale as the L20n databse has no been initialized");
 				}
 			}
-			
+
 			public string Translate(string id)
 			{
 				return TranslateID(id);
@@ -103,19 +113,19 @@ namespace L20nCore
 						ctx.PushVariable(variable.Key, variable.Value.Value.Unwrap());
 						++i;
 					}
-					
+
 					var output = TranslateID(id);
-					
+
 					// remove variables from stack again
 					foreach(var key in variables.Keys) {
 						if(key != null)
 							ctx.DropVariable(key);
 					}
-					
+
 					return output;
 				});
 			}
-			
+
 			public void AddGlobal(string id, UserVariable value)
 			{
 				if (!value.Value.IsSet) {
@@ -136,12 +146,12 @@ namespace L20nCore
 					m_Globals[id] = global;
 				}
 			}
-			
+
 			public void AddGlobal(string id, Objects.DelegatedObject.Delegate callback)
 			{
 				AddGlobal(id, new UserVariable(callback));
 			}
-			
+
 			private void ImportLocal(string id, Option<LocaleContext> context, LocaleContext parent)
 			{
 				var localeFiles = Manifest.GetLocaleFiles(id);
@@ -150,23 +160,23 @@ namespace L20nCore
 					string msg = string.Format("No resources were found for locale: {0}", id);
 					throw new Exceptions.ImportException(msg);
 				}
-				
+
 				var builder = new LocaleContext.Builder();
 				for(var i = 0; i < localeFiles.Count; ++i)
 				{
 					builder.Import(localeFiles[i]);
 				}
-				
+
 				context.Set(builder.Build(m_Globals, parent));
 			}
-			
+
 			private void AddSystemGlobals()
 			{
 				// time related
 				AddGlobal("hour", () => System.DateTime.Now.Hour);
 				AddGlobal("minute", () => System.DateTime.Now.Minute);
 				AddGlobal("second", () => System.DateTime.Now.Second);
-				
+
 				// date related
 				AddGlobal("year", () => System.DateTime.Today.Year);
 				AddGlobal("month", () => System.DateTime.Today.Month);
@@ -176,29 +186,29 @@ namespace L20nCore
 			private string TranslateID(string id)
 			{
 				Objects.L20nObject identifier;
-				
+
 				if(id.IndexOf ('.') > 0)
 					identifier = new Objects.PropertyExpression(id.Split('.'));
 				else
 					identifier = new Objects.IdentifierExpression(id);
-				
+
 				var context = m_CurrentContext.Or(m_DefaultContext);
 				if (!context.IsSet) {
 					Internal.Logger.WarningFormat(
 						"{0} could not be translated as no language-context has been set", id);
 					return id;
 				}
-				
+
 				var output = identifier.Eval(
 					context.Unwrap(), new Objects.Dummy())
 					.UnwrapAs<Objects.StringOutput>();
-				
+
 				if (!output.IsSet) {
 					Internal.Logger.WarningFormat(
 						"something went wrong, {0} could not be translated", id);
 					return id;
 				}
-				
+
 				return output.Unwrap().Value;
 			}
 		}

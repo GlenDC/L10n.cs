@@ -27,6 +27,11 @@ namespace L20nCore
 	/// </summary>
 	public sealed class Translator
 	{
+		public bool IsInitialized
+		{
+			get { return m_Database.IsInitialized; }
+		}
+
 		private Internal.Database m_Database;
 
 		public Translator()
@@ -108,7 +113,7 @@ namespace L20nCore
 			dic.Add(parameter_key, parameter_value);
 			return Translate(id, dic);
 		}
-		
+
 		public string Translate(string id,
 		                               string parameter_key_a, UserVariable parameter_value_a,
 		                               string parameter_key_b, UserVariable parameter_value_b)
@@ -118,7 +123,7 @@ namespace L20nCore
 			dic.Add(parameter_key_b, parameter_value_b);
 			return Translate(id, dic);
 		}
-		
+
 		public string Translate(string id,
 		                               string parameter_key_a, UserVariable parameter_value_a,
 		                               string parameter_key_b, UserVariable parameter_value_b,
@@ -130,12 +135,12 @@ namespace L20nCore
 			dic.Add(parameter_key_c, parameter_value_c);
 			return Translate(id, dic);
 		}
-		
+
 		public void AddGlobal(string id, UserVariable value)
 		{
 			m_Database.AddGlobal(id, value);
 		}
-		
+
 		public void AddGlobal(string id, Objects.DelegatedObject.Delegate callback)
 		{
 			m_Database.AddGlobal(id, callback);

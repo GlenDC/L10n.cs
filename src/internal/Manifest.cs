@@ -31,16 +31,16 @@ namespace L20nCore
 		public sealed class Manifest
 		{
 			private const string LOCALE_STRING_ID = "{{locale}}";
-			
+
 			private List<string> m_Locales;
 			private string m_DefaultLocale;
 			private List<string> m_Resources;
-			
+
 			public List<string> Locales
 			{
 				get { return m_Locales; }
 			}
-			
+
 			public string DefaultLocale
 			{
 				get { return m_DefaultLocale; }
@@ -52,11 +52,11 @@ namespace L20nCore
 						                           "it couldn't be found in the list of locales.", value);
 						throw new ImportException(msg);
 					}
-					
+
 					m_DefaultLocale = value;
 				}
 			}
-			
+
 			public Manifest()
 			{
 				m_Locales = new List<string>();
@@ -68,44 +68,49 @@ namespace L20nCore
 			{
 				Flush();
 
-				using(var sr = new StreamReader(manifest_path))
-				{
-					var json = sr.ReadToEnd();
-					var root = JSON.Parse(json);
-					
-					var locales = root["locales"];
-					if(locales == null || locales.Count == 0)
+				try {
+					using(var sr = new StreamReader(manifest_path))
 					{
-						string msg = string.Format("No locales were provided in: {0}", manifest_path);
-						throw new ImportException(msg);
-					}
-					foreach(var locale in locales.Children)
-					{
-						m_Locales.Add(locale.Value);
-					}
-					
-					var defaultLocale = root["default_locale"].Value;
-					if(defaultLocale == "")
-					{
-						string msg = string.Format("No default locale was provided in: {0}", manifest_path);
-						throw new ImportException(msg);
-					}
+						var json = sr.ReadToEnd();
+						var root = JSON.Parse(json);
 
-					DefaultLocale = defaultLocale;
-					
-					var resources = root["resources"];
-					if(resources == null || resources.Count == 0)
-					{
-						string msg = string.Format("No resources were provided in: {0}", manifest_path);
-						throw new ImportException(msg);
+						var locales = root["locales"];
+						if(locales == null || locales.Count == 0)
+						{
+							string msg = string.Format("No locales were provided in: {0}", manifest_path);
+							throw new ImportException(msg);
+						}
+						foreach(var locale in locales.Children)
+						{
+							m_Locales.Add(locale.Value);
+						}
+
+						var defaultLocale = root["default_locale"].Value;
+						if(defaultLocale == "")
+						{
+							string msg = string.Format("No default locale was provided in: {0}", manifest_path);
+							throw new ImportException(msg);
+						}
+
+						DefaultLocale = defaultLocale;
+
+						var resources = root["resources"];
+						if(resources == null || resources.Count == 0)
+						{
+							string msg = string.Format("No resources were provided in: {0}", manifest_path);
+							throw new ImportException(msg);
+						}
+						foreach(var resource in resources.Children)
+						{
+							AddResoure(resource.Value, manifest_path);
+						}
 					}
-					foreach(var resource in resources.Children)
-					{
-						AddResoure(resource.Value, manifest_path);
-					}
+				} catch(FileNotFoundException) {
+					string msg = string.Format("manifest file couldn't be found: {0}", manifest_path);
+					throw new ImportException(msg);
 				}
 			}
-			
+
 			public List<String> GetLocaleFiles(string locale)
 			{
 				var files = new List<String>();
@@ -116,7 +121,7 @@ namespace L20nCore
 						files.Add(file);
 					}
 				}
-				
+
 				return files;
 			}
 
@@ -126,7 +131,7 @@ namespace L20nCore
 				m_DefaultLocale = null;
 				m_Resources.Clear();
 			}
-			
+
 			private void AddResoure(string resource, string manifest)
 			{
 				if (!resource.Contains(LOCALE_STRING_ID))
@@ -135,11 +140,11 @@ namespace L20nCore
 					                           resource, LOCALE_STRING_ID);
 					throw new ImportException(msg);
 				}
-				
-				resource = Path.Combine(new string[] {
-					Path.GetDirectoryName(manifest),
-					resource});
-				
+
+				resource = String.Format("{0}/{1}",
+				                          Path.GetDirectoryName(manifest),
+				                          resource);
+
 				m_Resources.Add(resource);
 			}
 		}
