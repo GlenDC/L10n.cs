@@ -20,9 +20,9 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
-using L20n.Exceptions;
+using L20nCore.Exceptions;
 
-namespace L20n
+namespace L20nCore
 {
 	namespace IO
 	{

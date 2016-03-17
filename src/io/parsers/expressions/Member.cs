@@ -18,7 +18,7 @@
 
 using System;
 
-namespace L20n
+namespace L20nCore
 {
 	namespace IO
 	{
@@ -47,7 +47,7 @@ namespace L20n
 								if(Call.PeekAndParse(stream, member, out expression))
 									return expression;
 
-								// Attributes have been removed from the L20n.cs
+								// Attributes have been removed from the L20nCore.cs
 								// spec as they don't seem to add any value
 								// over a regular HashValue
 								

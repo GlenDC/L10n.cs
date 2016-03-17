@@ -20,18 +20,18 @@ using System;
 using System.IO;
 using NUnit.Framework;
 
-using L20n;
-using L20n.Exceptions;
+using L20nCore;
+using L20nCore.Exceptions;
 
-namespace L20nTests
+namespace L20nCoreTests
 {
 	[TestFixture()]
 	public class UserTests
 	{
 		// an example of a custom global external variable
-		private sealed class ScreenInfo : L20n.External.UserHashValue
+		private sealed class ScreenInfo : L20nCore.External.UserHashValue
 		{
-			public override void Collect(L20n.External.InfoCollector info)
+			public override void Collect(L20nCore.External.InfoCollector info)
 			{
 				info.Add("width", () => 1920);
 				info.Add("height", () => 1080);
@@ -53,7 +53,7 @@ namespace L20nTests
 		}
 		
 		// an example of a hash external variable
-		private sealed class User : L20n.External.UserHashValue
+		private sealed class User : L20nCore.External.UserHashValue
 		{
 			public enum Gender
 			{
@@ -91,7 +91,7 @@ namespace L20nTests
 				BestFriend = null;
 			}
 
-			public override void Collect(L20n.External.InfoCollector info)
+			public override void Collect(L20nCore.External.InfoCollector info)
 			{
 				info.Add("name", m_Name);
 				info.Add("followers", () => Followers);

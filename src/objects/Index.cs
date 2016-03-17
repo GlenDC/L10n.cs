@@ -19,11 +19,11 @@
 using System;
 using System.Collections.Generic;
 
-using L20n.Utils;
-using L20n.Internal;
-using L20n.Exceptions;
+using L20nCore.Utils;
+using L20nCore.Internal;
+using L20nCore.Exceptions;
 
-namespace L20n
+namespace L20nCore
 {
 	namespace Objects
 	{

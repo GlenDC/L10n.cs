@@ -19,7 +19,7 @@
 using System;
 using System.IO;
 
-namespace L20n
+namespace L20nCore
 {
 	namespace IO
 	{

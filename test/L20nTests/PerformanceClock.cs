@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics;
 
-namespace L20nTests
+namespace L20nCoreTests
 {
 	public class PerformanceClock
 	{

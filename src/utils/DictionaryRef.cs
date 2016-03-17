@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace L20n
+namespace L20nCore
 {
 	namespace Utils
 	{

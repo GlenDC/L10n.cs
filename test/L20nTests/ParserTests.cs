@@ -20,13 +20,13 @@ using System;
 using System.IO;
 using NUnit.Framework;
 
-using L20n.IO;
-using L20n.IO.Parsers;
-using L20n.IO.Parsers.Expressions;
-using L20n.Exceptions;
+using L20nCore.IO;
+using L20nCore.IO.Parsers;
+using L20nCore.IO.Parsers.Expressions;
+using L20nCore.Exceptions;
 using System.Collections.Generic;
 
-namespace L20nTests
+namespace L20nCoreTests
 {
 	[TestFixture()]
 	public class ParserTests
@@ -152,7 +152,7 @@ namespace L20nTests
 		public void LiteralTests()
 		{
 			StringToNumber stringToNumber = (String str) =>
-				((L20n.Objects.Literal)Literal.Parse(NC(str)).Eval()).Value;
+				((L20nCore.Objects.Literal)Literal.Parse(NC(str)).Eval()).Value;
 
 			// any integer is a valid literal
 			Assert.AreEqual(-123, stringToNumber("-123"));
@@ -203,11 +203,11 @@ namespace L20nTests
 		public void IdentifierExpressionTests()
 		{
 			// One identifier parser to rule them all (4)
-			TypeAssert<L20n.IO.AST.Identifier>(
+			TypeAssert<L20nCore.IO.AST.Identifier>(
 				IdentifierExpression.Parse(NC("identifier")));
-			TypeAssert<L20n.IO.AST.Variable>(
+			TypeAssert<L20nCore.IO.AST.Variable>(
 				IdentifierExpression.Parse(NC("$normal_variable")));
-			TypeAssert<L20n.IO.AST.Global>(
+			TypeAssert<L20nCore.IO.AST.Global>(
 				IdentifierExpression.Parse(NC("@global_variable")));
 
 			// Anything that would fail the RawIdentifier tests
@@ -227,39 +227,39 @@ namespace L20nTests
 			// One primary expression to rule them all
 
 			// literals
-			TypeAssert<L20n.IO.AST.Literal>(
+			TypeAssert<L20nCore.IO.AST.Literal>(
 				Primary.Parse(NC("-42")));
-			TypeAssert<L20n.IO.AST.Literal>(
+			TypeAssert<L20nCore.IO.AST.Literal>(
 				Primary.Parse(NC("+10")));
-			TypeAssert<L20n.IO.AST.Literal>(
+			TypeAssert<L20nCore.IO.AST.Literal>(
 				Primary.Parse(NC("123")));
 
 			// string values
-			TypeAssert<L20n.IO.AST.StringValue>(
+			TypeAssert<L20nCore.IO.AST.StringValue>(
 				Primary.Parse(NC("\"Hello Dude!\"")));
-			TypeAssert<L20n.IO.AST.StringValue>(
+			TypeAssert<L20nCore.IO.AST.StringValue>(
 				Primary.Parse(NC("'this works as well'")));
-			TypeAssert<L20n.IO.AST.StringValue>(
+			TypeAssert<L20nCore.IO.AST.StringValue>(
 				Primary.Parse(NC("'Hello {{ foo.bar }}'")));
-			TypeAssert<L20n.IO.AST.StringValue>(
+			TypeAssert<L20nCore.IO.AST.StringValue>(
 				Primary.Parse(NC("'Hello {{ $person.name }}'")));
-			TypeAssert<L20n.IO.AST.StringValue>(
+			TypeAssert<L20nCore.IO.AST.StringValue>(
 				Primary.Parse(NC("'It is {{ @time.hour }} o\' clock.'")));
 
 			// hash values
-			TypeAssert<L20n.IO.AST.HashValue>(
+			TypeAssert<L20nCore.IO.AST.HashValue>(
 				Primary.Parse(NC("{hello:'world'}")));
-			TypeAssert<L20n.IO.AST.HashValue>(
+			TypeAssert<L20nCore.IO.AST.HashValue>(
 				Primary.Parse(NC("{dev: 'go develop' , debug: 'go debug',}")));
-			TypeAssert<L20n.IO.AST.HashValue>(
+			TypeAssert<L20nCore.IO.AST.HashValue>(
 				Primary.Parse(NC("{one:{a:'a',b:'b'},two:'2', three:'3'}")));
 
 			// identifier expressions
-			TypeAssert<L20n.IO.AST.Variable>(
+			TypeAssert<L20nCore.IO.AST.Variable>(
 				Primary.Parse(NC("$ola")));
-			TypeAssert<L20n.IO.AST.Global>(
+			TypeAssert<L20nCore.IO.AST.Global>(
 				Primary.Parse(NC("@hello")));
-			TypeAssert<L20n.IO.AST.Identifier>(
+			TypeAssert<L20nCore.IO.AST.Identifier>(
 				Primary.Parse(NC("bom_dia")));
 
 			// all other type of input should fail
@@ -277,12 +277,12 @@ namespace L20nTests
 			ExpressionParseTest(
 				"5 + 2 = something - 1",
 				"'{{ 5 }} + {{ 2 }} = {{ '{{ 'something' }} - {{ 1 }}' }}'");
-			ExpressionParseTest<L20n.Objects.StringValue>
+			ExpressionParseTest<L20nCore.Objects.StringValue>
 				("'{{ 5 }} + {{ 2 }} = {{ x }}'");
 
 			// Conditional Values
 			ExpressionParseTest(5, "1 > 2 ? 2 : 5");
-			ExpressionParseTest<L20n.Objects.IfElseExpression>
+			ExpressionParseTest<L20nCore.Objects.IfElseExpression>
 				("@x ? 2 : 5");
 
 			// Binary Expression Values
@@ -306,106 +306,106 @@ namespace L20nTests
 			// this test does NOT guarantee that they also evaluate correctly
 
 			// Primary/Identifier Expressions
-			ExpressionParseTest<L20n.Objects.Variable>
+			ExpressionParseTest<L20nCore.Objects.Variable>
 				("$id");
-			ExpressionParseTest<L20n.Objects.Global>
+			ExpressionParseTest<L20nCore.Objects.Global>
 				("@id");
-			ExpressionParseTest<L20n.Objects.Identifier>
+			ExpressionParseTest<L20nCore.Objects.Identifier>
 				("whatever");
-			ExpressionParseTest<L20n.Objects.Literal>
+			ExpressionParseTest<L20nCore.Objects.Literal>
 				("42");
-			ExpressionParseTest<L20n.Objects.StringValue>
+			ExpressionParseTest<L20nCore.Objects.StringValue>
 				("'Hello {{ user }}!'");
-			ExpressionParseTest<L20n.Objects.StringOutput>
+			ExpressionParseTest<L20nCore.Objects.StringOutput>
 				("'Hello, World!'");
-			ExpressionParseTest<L20n.Objects.HashValue>
+			ExpressionParseTest<L20nCore.Objects.HashValue>
 				("{age: '23', location: 'unknown'}");
 			
 			// Parenthesis Expressions
-			ExpressionParseTest<L20n.Objects.Literal>
+			ExpressionParseTest<L20nCore.Objects.Literal>
 				("42");
-			ExpressionParseTest<L20n.Objects.Identifier>
+			ExpressionParseTest<L20nCore.Objects.Identifier>
 				("whatever");
-			ExpressionParseTest<L20n.Objects.Literal>
+			ExpressionParseTest<L20nCore.Objects.Literal>
 				("(42)");
-			ExpressionParseTest<L20n.Objects.Variable>
+			ExpressionParseTest<L20nCore.Objects.Variable>
 				("((($OK)))");
-			ExpressionParseTest<L20n.Objects.Literal>
+			ExpressionParseTest<L20nCore.Objects.Literal>
 				("((((((((((((((5))))))))))))))");
 			
 			// Property Expressions
-			ExpressionParseTest<L20n.Objects.PropertyExpression>
+			ExpressionParseTest<L20nCore.Objects.PropertyExpression>
 				("hello.world");
-			ExpressionParseTest<L20n.Objects.PropertyExpression>
+			ExpressionParseTest<L20nCore.Objects.PropertyExpression>
 				("one.two.three");
 			
 			// Call Expressions
-			ExpressionParseTest<L20n.Objects.CallExpression>
+			ExpressionParseTest<L20nCore.Objects.CallExpression>
 				("hello(world)");
-			ExpressionParseTest<L20n.Objects.CallExpression>
+			ExpressionParseTest<L20nCore.Objects.CallExpression>
 				("hello(bonjour(oi(world)))");
-			ExpressionParseTest<L20n.Objects.CallExpression>
+			ExpressionParseTest<L20nCore.Objects.CallExpression>
 				("greetings('hello', 'oi', 'bom dia', 'bonjour')");
-			ExpressionParseTest<L20n.Objects.CallExpression>
+			ExpressionParseTest<L20nCore.Objects.CallExpression>
 				("echo('hello world', 5)");
 			
 			// Unary Expressions
-			ExpressionParseTest<L20n.Objects.NegativeExpression>
+			ExpressionParseTest<L20nCore.Objects.NegativeExpression>
 				("-x");
-			ExpressionParseTest<L20n.Objects.PositiveExpression>
+			ExpressionParseTest<L20nCore.Objects.PositiveExpression>
 				("+x");
-			ExpressionParseTest<L20n.Objects.NegateExpression>
+			ExpressionParseTest<L20nCore.Objects.NegateExpression>
 				("!x");
-			ExpressionParseTest<L20n.Objects.NegateExpression>
+			ExpressionParseTest<L20nCore.Objects.NegateExpression>
 				("!(!(!(!(!$what))))");
 			
 			// Binary Expressions
-			ExpressionParseTest<L20n.Objects.SubstractExpression>
+			ExpressionParseTest<L20nCore.Objects.SubstractExpression>
 				("-x-10");
-			ExpressionParseTest<L20n.Objects.AddExpression>
+			ExpressionParseTest<L20nCore.Objects.AddExpression>
 				("(y+10)");
-			ExpressionParseTest<L20n.Objects.MultiplyExpression>
+			ExpressionParseTest<L20nCore.Objects.MultiplyExpression>
 				("(x*2)");
-			ExpressionParseTest<L20n.Objects.ModuloExpression>
+			ExpressionParseTest<L20nCore.Objects.ModuloExpression>
 				("y%60");
-			ExpressionParseTest<L20n.Objects.ModuloExpression>
+			ExpressionParseTest<L20nCore.Objects.ModuloExpression>
 				("x%(30*2)");
-			ExpressionParseTest<L20n.Objects.AddExpression>
+			ExpressionParseTest<L20nCore.Objects.AddExpression>
 				("1+2+x+4+5");
-			ExpressionParseTest<L20n.Objects.GreaterThanExpression>
+			ExpressionParseTest<L20nCore.Objects.GreaterThanExpression>
 				("x > 2");
-			ExpressionParseTest<L20n.Objects.GreaterThanOrEqualExpression>
+			ExpressionParseTest<L20nCore.Objects.GreaterThanOrEqualExpression>
 				("x >= 2");
-			ExpressionParseTest<L20n.Objects.LessThanExpression>
+			ExpressionParseTest<L20nCore.Objects.LessThanExpression>
 				("x < 5 * 100");
-			ExpressionParseTest<L20n.Objects.LessThanOrEqualExpression>
+			ExpressionParseTest<L20nCore.Objects.LessThanOrEqualExpression>
 				("x <= 5 + 8 - 3");
-			ExpressionParseTest<L20n.Objects.IsEqualExpression> // parenthesis are overrated
+			ExpressionParseTest<L20nCore.Objects.IsEqualExpression> // parenthesis are overrated
 				("x + 5 == 3 * 2 + 4");
-			ExpressionParseTest<L20n.Objects.IsNotEqualExpression>
+			ExpressionParseTest<L20nCore.Objects.IsNotEqualExpression>
 				("41 != answer");
 			
 			// Logical Expressions
-			ExpressionParseTest<L20n.Objects.AndExpression>
+			ExpressionParseTest<L20nCore.Objects.AndExpression>
 				("true && y && false");
-			ExpressionParseTest<L20n.Objects.OrExpression>
+			ExpressionParseTest<L20nCore.Objects.OrExpression>
 				("false || x");
-			ExpressionParseTest<L20n.Objects.OrExpression>
+			ExpressionParseTest<L20nCore.Objects.OrExpression>
 				("false || false || false || x");
 			
 			// Logical Expressions
-			ExpressionParseTest<L20n.Objects.IfElseExpression>
+			ExpressionParseTest<L20nCore.Objects.IfElseExpression>
 				("y ? 42 : 41");
-			ExpressionParseTest<L20n.Objects.IfElseExpression>
+			ExpressionParseTest<L20nCore.Objects.IfElseExpression>
 				("x ? shit : 'I would rather want this'");
-			ExpressionParseTest<L20n.Objects.IfElseExpression>
+			ExpressionParseTest<L20nCore.Objects.IfElseExpression>
 				("x || y ? (ok) : 42");
 		}
 
 		[Test()]
 		public void InvalidEntryParseTests()
 		{
-			var builder = new L20n.Internal.LocaleContext.Builder();
+			var builder = new L20nCore.Internal.LocaleContext.Builder();
 			// invalid comment examples
 			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("/* non-closed comment"), builder));
@@ -449,7 +449,7 @@ namespace L20nTests
 				() => Entry.Parse(NC("<invalid['value'] 42>"), builder));
 		}
 
-		private T ExpressionParseTest<T>(string input) where T : L20n.Objects.L20nObject {
+		private T ExpressionParseTest<T>(string input) where T : L20nCore.Objects.L20nObject {
 			var stream = new CharStream (input);
 			T result = (T) Expression.Parse(stream).Eval();
 			TypeAssert<T>(result);
@@ -461,19 +461,19 @@ namespace L20nTests
 		private void ExpressionParseTest(string expected, string input) {
 			Assert.AreEqual(
 				expected,
-				ExpressionParseTest<L20n.Objects.StringOutput>(input).Value);
+				ExpressionParseTest<L20nCore.Objects.StringOutput>(input).Value);
 		}
 		
 		private void ExpressionParseTest(int expected, string input) {
 			Assert.AreEqual(
 				expected,
-				ExpressionParseTest<L20n.Objects.Literal>(input).Value);
+				ExpressionParseTest<L20nCore.Objects.Literal>(input).Value);
 		}
 		
 		private void ExpressionParseTest(bool expected, string input) {
 			Assert.AreEqual(
 				expected,
-				ExpressionParseTest<L20n.Objects.BooleanValue>(input).Value);
+				ExpressionParseTest<L20nCore.Objects.BooleanValue>(input).Value);
 		}
 
 		private void TypeAssert<T>(object obj)

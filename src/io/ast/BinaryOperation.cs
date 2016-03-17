@@ -17,9 +17,9 @@
  */
 
 using System;
-using L20n.Exceptions;
+using L20nCore.Exceptions;
 
-namespace L20n
+namespace L20nCore
 {
 	namespace IO
 	{

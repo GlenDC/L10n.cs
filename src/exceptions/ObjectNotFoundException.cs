@@ -19,7 +19,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace L20n
+namespace L20nCore
 {
 	namespace Exceptions
 	{

@@ -19,10 +19,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace L20n
+namespace L20nCore
 {
 	/// <summary>
-	/// The public static interface for L20n.
+	/// The public static interface for L20nCore.
 	/// This is all you should need in order to have localization in your game.
 	/// </summary>
 	public sealed class Translator
@@ -79,7 +79,7 @@ namespace L20n
 			catch(Exception e) {
 				Internal.Logger.WarningFormat(
 					"A C# exception occured while translating {0}," +
-					" please report this as a bug @ https://github.com/GlenDC/L20n.cs." +
+					" please report this as a bug @ https://github.com/GlenDC/L20nCore.cs." +
 					"\nInclude the <id> you tried to translate and all the L20n files involved; More Info: \n{1}",
 					id, e.ToString());
 				return id;
@@ -94,7 +94,7 @@ namespace L20n
 			catch(Exception e) {
 				Internal.Logger.WarningFormat(
 					"A C# exception occured while translating {0}," +
-					" please report this as a bug @ https://github.com/GlenDC/L20n.cs." +
+					" please report this as a bug @ https://github.com/GlenDC/L20nCore.cs." +
 					"\nInclude the <id> you tried to translate and all the L20n files involved; More Info: \n{1}",
 					id, e.ToString());
 				return id;

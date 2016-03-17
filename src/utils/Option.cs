@@ -17,11 +17,11 @@
  */
 
 using System;
-using L20n.Exceptions;
+using L20nCore.Exceptions;
 
-using L20n.Internal;
+using L20nCore.Internal;
 
-namespace L20n
+namespace L20nCore
 {
 	namespace Utils
 	{

@@ -18,7 +18,7 @@
 
 using System;
 
-namespace L20n
+namespace L20nCore
 {
 	public sealed class UserVariable
 	{

@@ -19,10 +19,10 @@
 using System;
 using System.Collections.Generic;
 
-using L20n.Objects;
+using L20nCore.Objects;
 using System.Collections;
 
-namespace L20n
+namespace L20nCore
 {
 	namespace Utils
 	{

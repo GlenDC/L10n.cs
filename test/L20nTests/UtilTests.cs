@@ -20,10 +20,10 @@ using System;
 using System.IO;
 using NUnit.Framework;
 
-using L20n.Utils;
-using L20n.Exceptions;
+using L20nCore.Utils;
+using L20nCore.Exceptions;
 
-namespace L20nTests
+namespace L20nCoreTests
 {
 	[TestFixture()]
 	public class UtilTests
