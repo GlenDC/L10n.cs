@@ -56,7 +56,7 @@ namespace L20nCore
 
 			public static CharStream CreateFromFile(String path)
 			{
-				using (var sr = new StreamReader(path, System.Text.Encoding.UTF8, false))
+				using (var sr = IO.StreamReaderFactory.Create(path))
 				{
 					return new CharStream(sr.ReadToEnd(), path);
 				}

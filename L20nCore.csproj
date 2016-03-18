@@ -7,9 +7,10 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5AA0473C-61F6-45E8-8019-CE1DEF0A973D}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>L20n</RootNamespace>
-    <AssemblyName>L20n</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>L20nCore</RootNamespace>
+    <AssemblyName>L20nCore</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <ReleaseVersion>1.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -123,6 +124,7 @@
     <Compile Include="src\UserVariable.cs" />
     <Compile Include="src\objects\DelegatedObject.cs" />
     <Compile Include="src\external\UserHashValue.cs" />
+    <Compile Include="src\io\StreamReaderFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

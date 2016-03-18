@@ -69,7 +69,7 @@ namespace L20nCore
 				Flush();
 
 				try {
-					using(var sr = new StreamReader(manifest_path))
+					using(var sr = IO.StreamReaderFactory.Create(manifest_path))
 					{
 						var json = sr.ReadToEnd();
 						var root = JSON.Parse(json);
@@ -116,10 +116,7 @@ namespace L20nCore
 				var files = new List<String>();
 				foreach(var resource in m_Resources) {
 					var file = resource.Replace(LOCALE_STRING_ID, locale);
-					if(File.Exists(file))
-					{
-						files.Add(file);
-					}
+					files.Add(file);
 				}
 
 				return files;
@@ -141,10 +138,7 @@ namespace L20nCore
 					throw new ImportException(msg);
 				}
 
-				resource = String.Format("{0}/{1}",
-				                          Path.GetDirectoryName(manifest),
-				                          resource);
-
+				resource = manifest.Replace(Path.GetFileName(manifest), resource);
 				m_Resources.Add(resource);
 			}
 		}

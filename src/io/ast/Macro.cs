@@ -65,7 +65,7 @@ namespace L20nCore
 				{;
 					return String.Format("{0}({1}){{2}}",
 						m_Identifier,
-					    String.Join(",", m_Parameters),
+					    String.Join(",", m_Parameters.ToArray()),
 					    m_Expression.Display());
 				}
 			}
