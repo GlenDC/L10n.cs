@@ -25,7 +25,8 @@ namespace L20nCore
 {
 	namespace Objects
 	{
-		public sealed class DelegatedObject : L20nObject
+		public sealed class DelegatedObject<T> : L20nObject
+			where T: L20nObject
 		{
 			private readonly Delegate m_Callback;
 			
@@ -41,10 +42,54 @@ namespace L20nCore
 			
 			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return m_Callback().Value;
+				return new Option<L20nObject>(m_Callback());
 			}
 			
-			public delegate UserVariable Delegate();
+			public delegate T Delegate();
+		}
+
+		public sealed class DelegatedLiteral : L20nObject
+		{
+			private readonly Delegate m_Callback;
+			
+			public DelegatedLiteral(Delegate callback)
+			{
+				m_Callback = callback;
+			}
+			
+			public override L20nObject Optimize()
+			{
+				return this;
+			}
+			
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			{
+				return new Option<L20nObject>(new Literal(m_Callback()));
+			}
+			
+			public delegate int Delegate();
+		}
+
+		public sealed class DelegatedString : L20nObject
+		{
+			private readonly Delegate m_Callback;
+			
+			public DelegatedString(Delegate callback)
+			{
+				m_Callback = callback;
+			}
+			
+			public override L20nObject Optimize()
+			{
+				return this;
+			}
+			
+			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			{
+				return new Option<L20nObject>(new StringOutput(m_Callback()));
+			}
+			
+			public delegate string Delegate();
 		}
 	}
 }

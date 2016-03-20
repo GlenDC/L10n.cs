@@ -91,10 +91,10 @@ namespace L20nCore
 			}
 		}
 
-		public string Translate(string id, UserVariables variables)
+		public string Translate(string id, string[] keys, Objects.L20nObject[] values)
 		{
 			try {
-				return m_Database.Translate(id, variables);
+				return m_Database.Translate(id, keys, values);
 			}
 			catch(Exception e) {
 				Internal.Logger.WarningFormat(
@@ -105,45 +105,59 @@ namespace L20nCore
 				return id;
 			}
 		}
-
-		public string Translate(string id,
-		                               string parameter_key, UserVariable parameter_value)
+		
+		public string Translate(string id, string key, int value)
 		{
-			var dic = new UserVariables(1);
-			dic.Add(parameter_key, parameter_value);
-			return Translate(id, dic);
+			var keys = new string[] { key };
+			var values = new Objects.L20nObject[]
+				{ new Objects.Literal(value) };
+			return Translate(id, keys, values);
 		}
 
-		public string Translate(string id,
-		                               string parameter_key_a, UserVariable parameter_value_a,
-		                               string parameter_key_b, UserVariable parameter_value_b)
+		public string Translate(string id, string key, string value)
 		{
-			var dic = new UserVariables(2);
-			dic.Add(parameter_key_a, parameter_value_a);
-			dic.Add(parameter_key_b, parameter_value_b);
-			return Translate(id, dic);
+			var keys = new string[] {key};
+			var values = new Objects.L20nObject[]
+				{ new Objects.StringOutput(value) };
+			return Translate(id, keys, values);
+		}
+		
+		public string Translate(string id, string key, External.IHashValue value)
+		{
+			var keys = new string[] {key};
+			var values = new Objects.L20nObject[]
+				{ new Objects.Entity(value) };
+			return Translate(id, keys, values);
 		}
 
-		public string Translate(string id,
-		                               string parameter_key_a, UserVariable parameter_value_a,
-		                               string parameter_key_b, UserVariable parameter_value_b,
-		                               string parameter_key_c, UserVariable parameter_value_c)
+		public void AddGlobal(string id, int value)
 		{
-			var dic = new UserVariables(3);
-			dic.Add(parameter_key_a, parameter_value_a);
-			dic.Add(parameter_key_b, parameter_value_b);
-			dic.Add(parameter_key_c, parameter_value_c);
-			return Translate(id, dic);
+			m_Database.AddGlobal(id, value);
 		}
-
-		public void AddGlobal(string id, UserVariable value)
+		
+		public void AddGlobal(string id, string value)
 		{
 			m_Database.AddGlobal(id, value);
 		}
 
-		public void AddGlobal(string id, Objects.DelegatedObject.Delegate callback)
+		public void AddGlobal(string id, External.IHashValue value)
+		{
+			m_Database.AddGlobal(id, value);
+		}
+		
+		public void AddGlobal(string id, Objects.DelegatedLiteral.Delegate callback)
 		{
 			m_Database.AddGlobal(id, callback);
+		}
+		
+		public void AddGlobal(string id, Objects.DelegatedString.Delegate callback)
+		{
+			m_Database.AddGlobal(id, callback);
+		}
+		
+		public void AddGlobal(string id, Objects.L20nObject value)
+		{
+			m_Database.AddGlobal(id, value);
 		}
 
 		public void SetWarningDelegate(Internal.Logger.LogDelegate callback)

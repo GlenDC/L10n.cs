@@ -44,6 +44,16 @@ namespace L20nCore
 				m_IsPrivate = is_private;
 			}
 
+			public Entity(External.IHashValue value)
+			{
+				var info = new External.InfoCollector();
+				value.Collect(info);
+
+				m_Index = new Utils.Option<Objects.L20nObject> ();
+				m_Value = info.Collect();
+				m_IsPrivate = false;
+			}
+
 			public override L20nObject Optimize()
 			{
 				return this;

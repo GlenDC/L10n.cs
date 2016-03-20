@@ -120,11 +120,9 @@
     <Compile Include="src\objects\Dummy.cs" />
     <Compile Include="src\internal\Cache.cs" />
     <Compile Include="src\external\InfoCollector.cs" />
-    <Compile Include="src\UserVariables.cs" />
-    <Compile Include="src\UserVariable.cs" />
     <Compile Include="src\objects\DelegatedObject.cs" />
-    <Compile Include="src\external\UserHashValue.cs" />
     <Compile Include="src\io\StreamReaderFactory.cs" />
+    <Compile Include="src\external\IHashValue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

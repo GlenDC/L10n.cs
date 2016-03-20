@@ -89,67 +89,92 @@ namespace L20nCore
 				return TranslateID(id);
 			}
 
-			public string Translate(string id, UserVariables variables)
+			public string Translate(string id, string[] keys, Objects.L20nObject[] values)
 			{
-				if(variables.Count == 0)
-					return TranslateID(id);
+				if (keys.Length == 0) {
+					Internal.Logger.WarningFormat(
+						"couldn't translate {0} as no keys were given", id);
+					return id;
+				}
+
+				if (keys.Length != values.Length) {
+					Internal.Logger.WarningFormat(
+						"couldn't translate {0} as the amount of keys and values isn't equal," +
+						" expected {1}, got {2}", id, keys.Length, values.Length);
+					return id;
+				}
 
 				return m_CurrentContext.Or(m_DefaultContext).MapOr(id, (ctx) => {
 					// push all variables to the stack
-					int i = 0;
-					foreach(var variable in variables) {
-						if(variable.Key == null) {
+					for(int i = 0; i < keys.Length; ++i) {
+						if(keys[i] == null) {
 							Logger.WarningFormat("couldn't translate {0} because parameter-key #{1} is null" +
 							                     " while expecting an string", id, i);
 							break;
 						}
 
-						if(variable.Value == null || !variable.Value.Value.IsSet) {
+						if(values[i] == null) {
 							Logger.WarningFormat("couldn't translate {0} because parameter-value #{1} is null",
 							                     id, i);
 							break;
 						}
 
-						ctx.PushVariable(variable.Key, variable.Value.Value.Unwrap());
-						++i;
+						ctx.PushVariable(keys[i], values[i]);
 					}
 
 					var output = TranslateID(id);
 
 					// remove variables from stack again
-					foreach(var key in variables.Keys) {
-						if(key != null)
-							ctx.DropVariable(key);
+					for(int i = 0; i < keys.Length; ++i) {
+						ctx.DropVariable(keys[i]);
 					}
 
 					return output;
 				});
 			}
-
-			public void AddGlobal(string id, UserVariable value)
+			
+			public void AddGlobal(string id, int value)
 			{
-				if (!value.Value.IsSet) {
+				AddGlobal(id, new Objects.Literal(value));
+			}
+			
+			public void AddGlobal(string id, string value)
+			{
+				AddGlobal(id, new Objects.StringOutput(value));
+			}
+			
+			public void AddGlobal(string id, External.IHashValue value)
+			{
+				AddGlobal(id, new Objects.Entity(value));
+			}
+			
+			public void AddGlobal(string id, Objects.DelegatedLiteral.Delegate callback)
+			{
+				AddGlobal(id, new Objects.DelegatedLiteral(callback));
+			}
+			
+			public void AddGlobal(string id, Objects.DelegatedString.Delegate callback)
+			{
+				AddGlobal(id, new Objects.DelegatedString(callback));
+			}
+
+			public void AddGlobal(string id, Objects.L20nObject value)
+			{
+				if(value == null) {
 					Logger.WarningFormat(
 						"global user-variable {0} couldn't be unwrapped", id);
 					return;
 				}
 
-				var global = value.Value.Unwrap();
-
 				try {
-					m_Globals.Add(id, global);
+					m_Globals.Add(id, value);
 				}
 				catch(ArgumentException) {
 					Logger.WarningFormat(
 						"global value with id {0} isn't unique, " +
 						"and old value will be overriden", id);
-					m_Globals[id] = global;
+					m_Globals[id] = value;
 				}
-			}
-
-			public void AddGlobal(string id, Objects.DelegatedObject.Delegate callback)
-			{
-				AddGlobal(id, new UserVariable(callback));
 			}
 
 			private void ImportLocal(string id, Option<LocaleContext> context, LocaleContext parent)

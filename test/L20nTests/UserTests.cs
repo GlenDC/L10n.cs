@@ -29,9 +29,9 @@ namespace L20nCoreTests
 	public class UserTests
 	{
 		// an example of a custom global external variable
-		private sealed class ScreenInfo : L20nCore.External.UserHashValue
+		private sealed class ScreenInfo : L20nCore.External.IHashValue
 		{
-			public override void Collect(L20nCore.External.InfoCollector info)
+			public void Collect(L20nCore.External.InfoCollector info)
 			{
 				info.Add("width", () => 1920);
 				info.Add("height", () => 1080);
@@ -53,7 +53,7 @@ namespace L20nCoreTests
 		}
 		
 		// an example of a hash external variable
-		private sealed class User : L20nCore.External.UserHashValue
+		private sealed class User : L20nCore.External.IHashValue
 		{
 			public enum Gender
 			{
@@ -91,7 +91,7 @@ namespace L20nCoreTests
 				BestFriend = null;
 			}
 
-			public override void Collect(L20nCore.External.InfoCollector info)
+			public void Collect(L20nCore.External.InfoCollector info)
 			{
 				info.Add("name", m_Name);
 				info.Add("followers", () => Followers);
@@ -165,8 +165,11 @@ namespace L20nCoreTests
 			if(john.BestFriend != null)
 				Console.WriteLine(l20n.Translate("best_friend", "user", john));
 			Console.WriteLine(l20n.Translate("personal_greeting", "user", "Bianca"));
-			Console.WriteLine(l20n.Translate(
-				"personal_lucky_greeting", "user", "Bianca", "lucky_number", new Random().Next()));
+			Console.WriteLine(l20n.Translate("personal_lucky_greeting",
+				new string[] {"user", "lucky_number"},
+				new L20nCore.Objects.L20nObject[] {
+					new L20nCore.Objects.StringOutput("Bianca"),
+				new L20nCore.Objects.Literal(new Random().Next())}));
 
 			// Switching to portuguese
 
@@ -193,7 +196,11 @@ namespace L20nCoreTests
 				Console.WriteLine(l20n.Translate("best_friend", "user", john));
 			Console.WriteLine(l20n.Translate("personal_greeting", "user", "Bianca"));
 			Console.WriteLine(l20n.Translate("personal_lucky_greeting",
-				"user", "Bianca", "lucky_number", new Random().Next()));
+				new string[] {"user", "lucky_number"},
+				new L20nCore.Objects.L20nObject[] {
+					new L20nCore.Objects.StringOutput("Bianca"),
+					new L20nCore.Objects.Literal(new Random().Next())
+			}));
 			Console.WriteLine(l20n.Translate("tooBig", "sizeInKB", 46080));
 		}
 

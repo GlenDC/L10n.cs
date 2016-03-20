@@ -30,9 +30,9 @@ namespace L20nCore
 		/// In case the stuff you write is flexible,
 		/// make sure that you provide your own checks to not use stuff that you don't provide.
 		/// </remarks>
-		public abstract class UserHashValue
+		public interface IHashValue
 		{
-			abstract public void Collect(InfoCollector info);
+			void Collect(InfoCollector info);
 		}
 	}
 }
