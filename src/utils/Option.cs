@@ -80,6 +80,12 @@ namespace L20nCore
 				return Map((x) => new Option<V>(x as V));
 			}
 			
+			public void UnwrapIf(UnwrapIfDelegate callback)
+			{
+				if (IsSet)
+					callback(m_Value);
+			}
+			
 			public Option<V> UnwrapAsOrWarning<V>(string msg, params object[] argv)
 				where V : class, T
 			{
@@ -188,6 +194,7 @@ namespace L20nCore
 				return map_else();
 			}
 			
+			public delegate void UnwrapIfDelegate(T value);
 			public delegate U MapDelegate<U>(T value);
 			public delegate Option<U> MapOptionDelegate<U>(T value);
 			public delegate Option<U> StaticMapOptionDelegate<U>(params T[] value);
