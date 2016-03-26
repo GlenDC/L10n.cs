@@ -28,10 +28,12 @@ namespace L20nCore
 		public sealed class NegateExpression : L20nObject
 		{	
 			private readonly L20nObject m_Expression;
+			private BooleanValue m_Output;
 			
 			public NegateExpression(L20nObject expression)
 			{
 				m_Expression = expression;
+				m_Output = new BooleanValue();
 			}
 
 			public override L20nObject Optimize()
@@ -40,7 +42,8 @@ namespace L20nCore
 				if (expression == null)
 					return this;
 
-				return new BooleanValue(!expression.Value);
+				m_Output.Value = !expression.Value;
+				return m_Output;
 			}
 			
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
@@ -51,7 +54,8 @@ namespace L20nCore
 					return expression;
 				}
 
-				return new BooleanValue(!expression.Value);
+				m_Output.Value = !expression.Value;
+				return m_Output;
 			}
 		}
 	}

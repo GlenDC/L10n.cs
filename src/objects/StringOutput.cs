@@ -30,9 +30,15 @@ namespace L20nCore
 			public string Value
 			{
 				get { return m_Value; }
+				set { m_Value = value; }
 			}
 
-			private readonly string m_Value;
+			private string m_Value;
+
+			public StringOutput()
+			{
+				m_Value = "";
+			}
 			
 			public StringOutput(string value)
 			{

@@ -32,16 +32,22 @@ namespace L20nCore
 			private readonly string m_Value;
 			private readonly L20nObject[] m_Expressions;
 
+			// objects to stay responsible with the GC
+			private readonly string[] m_EvaluatedExpressions;
+			private readonly StringOutput m_Output;
+
 			public StringValue(string value, L20nObject[] expressions)
 			{
 				m_Value = value;
 				m_Expressions = expressions;
+
+				m_EvaluatedExpressions = new string[expressions.Length];
+				m_Output = new StringOutput();
 			}
 
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				string[] expressions = new string[m_Expressions.Length];
-				for (int i = 0; i < expressions.Length; ++i) {
+				for (int i = 0; i < m_EvaluatedExpressions.Length; ++i) {
 					var e = m_Expressions[i].Eval(ctx);
 
 					if(e == null) {
@@ -69,11 +75,11 @@ namespace L20nCore
 						return null;
 					}
 
-					expressions[i] = stringOutput;
+					m_EvaluatedExpressions[i] = stringOutput;
 				}
 
-				var output = String.Format(m_Value, expressions);
-				return new StringOutput(output);
+				m_Output.Value = String.Format(m_Value, m_EvaluatedExpressions);
+				return m_Output;
 			}
 
 			public override L20nObject Optimize()
@@ -98,8 +104,8 @@ namespace L20nCore
 					values[i] = primitive.ToString();
 				}
 
-				var output = String.Format(m_Value, values);
-				return new StringOutput(output);
+				m_Output.Value = String.Format(m_Value, values);
+				return m_Output;
 			}
 
 			public override string ToString(LocaleContext ctx, params L20nObject[] argv)

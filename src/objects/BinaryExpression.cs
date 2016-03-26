@@ -30,11 +30,14 @@ namespace L20nCore
 		{	
 			private readonly L20nObject m_First;
 			private readonly L20nObject m_Second;
+
+			private readonly BooleanValue m_Output;
 			
 			public BinaryExpression(L20nObject first, L20nObject second)
 			{
 				m_First = first;
 				m_Second = second;
+				m_Output = new BooleanValue();
 			}
 
 			public override L20nObject Optimize()
@@ -54,29 +57,35 @@ namespace L20nCore
 				var l1 = first as Literal;
 				var l2 = second as Literal;
 
-				if(l1 != null && l2 != null)
-					return Operation(l1.Value, l2.Value);
+				if (l1 != null && l2 != null) {
+					m_Output.Value = Operation (l1.Value, l2.Value);
+					return m_Output;
+				}
 				
 				// Are they booleans?
 				var b1 = first as BooleanValue;
 				var b2 = second as BooleanValue;
 				
-				if(b1 != null && b2 != null)
-					return Operation(b1.Value, b2.Value);
+				if (b1 != null && b2 != null) {
+					m_Output.Value = Operation (b1.Value, b2.Value);
+					return m_Output;
+				}
 				
 				// Are they strings!
 				var s1 = first as StringOutput;
 				var s2 = second as StringOutput;
 				
-				if(s1 != null && s2 != null)
-					return Operation(s1.Value, s2.Value);
+				if (s1 != null && s2 != null) {
+					m_Output.Value = Operation (s1.Value, s2.Value);
+					return m_Output;
+				}
 
 				return null;
 			}
 			
-			protected abstract BooleanValue Operation(int a, int b);
-			protected abstract BooleanValue Operation(bool a, bool b);
-			protected abstract BooleanValue Operation(string a, string b);
+			protected abstract bool Operation(int a, int b);
+			protected abstract bool Operation(bool a, bool b);
+			protected abstract bool Operation(string a, string b);
 		}
 		
 		public sealed class IsEqualExpression : BinaryExpression
@@ -84,19 +93,19 @@ namespace L20nCore
 			public IsEqualExpression(L20nObject a, L20nObject b)
 			: base(a, b) {}
 			
-			protected override BooleanValue Operation(int a, int b)
+			protected override bool Operation(int a, int b)
 			{
-				return new BooleanValue(a == b);
+				return a == b;
 			}
 			
-			protected override BooleanValue Operation(bool a, bool b)
+			protected override bool Operation(bool a, bool b)
 			{
-				return new BooleanValue(a == b);
+				return a == b;
 			}
 			
-			protected override BooleanValue Operation(string a, string b)
+			protected override bool Operation(string a, string b)
 			{
-				return new BooleanValue(a == b);
+				return a == b;
 			}
 		}
 		
@@ -105,19 +114,19 @@ namespace L20nCore
 			public IsNotEqualExpression(L20nObject a, L20nObject b)
 			: base(a, b) {}
 			
-			protected override BooleanValue Operation(int a, int b)
+			protected override bool Operation(int a, int b)
 			{
-				return new BooleanValue(a != b);
+				return a != b;
 			}
 			
-			protected override BooleanValue Operation(bool a, bool b)
+			protected override bool Operation(bool a, bool b)
 			{
-				return new BooleanValue(a != b);
+				return a != b;
 			}
 			
-			protected override BooleanValue Operation(string a, string b)
+			protected override bool Operation(string a, string b)
 			{
-				return new BooleanValue(a != b);
+				return a != b;
 			}
 		}
 	}

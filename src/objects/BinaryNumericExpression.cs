@@ -64,100 +64,154 @@ namespace L20nCore
 		
 		public sealed class SubstractExpression : BinaryNumericExpression
 		{
+			Literal m_Output;
+
 			public SubstractExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+				m_Output = new Literal();
+			}
 
 			protected override L20nObject Operation(int a, int b)
 			{
-				return new Literal(a - b);
+				m_Output.Value = a - b;
+				return m_Output;
 			}
 		}
 		
 		public sealed class AddExpression : BinaryNumericExpression
 		{
+			Literal m_Output;
+
 			public AddExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+				m_Output = new Literal();
+			}
 
 			protected override L20nObject Operation(int a, int b)
 			{
-				return new Literal(a + b);
+				m_Output.Value = a + b;
+				return m_Output;
 			}
 		}
 		
 		public sealed class MultiplyExpression : BinaryNumericExpression
 		{
+			Literal m_Output;
+
 			public MultiplyExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+				m_Output = new Literal();
+			}
 
 			protected override L20nObject Operation(int a, int b)
 			{
-				return new Literal(a * b);
+				m_Output.Value = a * b;
+				return m_Output;
 			}
 		}
 		
 		public sealed class DivideExpression : BinaryNumericExpression
 		{
+			Literal m_Output;
+
 			public DivideExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+				m_Output = new Literal();
+			}
 
 			protected override L20nObject Operation(int a, int b)
 			{
-				return new Literal(a / b);
+				m_Output.Value = a / b;
+				return m_Output;
 			}
 		}
 		
 		public sealed class ModuloExpression : BinaryNumericExpression
 		{
+			Literal m_Output;
+
 			public ModuloExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+				m_Output = new Literal();
+			}
 
 			protected override L20nObject Operation(int a, int b)
 			{
-				return new Literal(a % b);
+				m_Output.Value = a % b;
+				return m_Output;
 			}
 		}
 		
 		public sealed class LessThanExpression : BinaryNumericExpression
 		{
+			BooleanValue m_Output;
+
 			public LessThanExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+				m_Output = new BooleanValue();
+			}
 
 			protected override L20nObject Operation(int a, int b)
 			{
-				return new BooleanValue(a < b);
+				m_Output.Value = a < b;
+				return m_Output;
 			}
 		}
 		
 		public sealed class LessThanOrEqualExpression : BinaryNumericExpression
 		{
+			BooleanValue m_Output;
+
 			public LessThanOrEqualExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+				m_Output = new BooleanValue();
+			}
 
 			protected override L20nObject Operation(int a, int b)
 			{
-				return new BooleanValue(a <= b);
+				m_Output.Value = a <= b;
+				return m_Output;
 			}
 		}
 		
 		public sealed class GreaterThanExpression : BinaryNumericExpression
 		{
+			BooleanValue m_Output;
+
 			public GreaterThanExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+				m_Output = new BooleanValue();
+			}
 
 			protected override L20nObject Operation(int a, int b)
 			{
-				return new BooleanValue(a > b);
+				m_Output.Value = a > b;
+				return m_Output;
 			}
 		}
 		
 		public sealed class GreaterThanOrEqualExpression : BinaryNumericExpression
 		{
+			BooleanValue m_Output;
+
 			public GreaterThanOrEqualExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+				m_Output = new BooleanValue ();
+			}
 
 			protected override L20nObject Operation(int a, int b)
 			{
-				return new BooleanValue(a >= b);
+				m_Output.Value = a >= b;
+				return m_Output;
 			}
 		}
 	}

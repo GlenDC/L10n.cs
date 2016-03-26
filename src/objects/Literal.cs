@@ -30,10 +30,13 @@ namespace L20nCore
 			public int Value
 			{
 				get { return m_Value; }
+				set { m_Value = value; }
 			}
 			
-			private readonly int m_Value;
-			
+			private int m_Value;
+
+			public Literal() {}
+
 			public Literal(int value)
 			{
 				m_Value = value;

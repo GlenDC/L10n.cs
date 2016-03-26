@@ -50,7 +50,7 @@ namespace L20nCore
 					return macro;
 				}
 
-				return macro.Eval (ctx, m_Variables);
+				return macro.Eval(ctx, m_Variables);
 			}
 		}
 	}

@@ -31,9 +31,12 @@ namespace L20nCore
 			public bool Value
 			{
 				get { return m_Value; }
+				set { m_Value = value; }
 			}
 			
-			private readonly bool m_Value;
+			private bool m_Value;
+
+			public BooleanValue(){}
 			
 			public BooleanValue(bool value)
 			{

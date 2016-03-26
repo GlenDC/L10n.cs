@@ -28,17 +28,21 @@ namespace L20nCore
 		public abstract class UnaryNumericExpression : L20nObject
 		{	
 			private readonly L20nObject m_Expression;
+			private Literal m_Output;
 			
 			public UnaryNumericExpression(L20nObject expression)
 			{
 				m_Expression = expression;
+				m_Output = new Literal();
 			}
 
 			public override L20nObject Optimize()
 			{
 				var literal = m_Expression.Optimize() as Literal;
-				if (literal != null)
-					return Operation(literal.Value);
+				if (literal != null) {
+					m_Output.Value = Operation(literal.Value);
+					return m_Output;
+				}
 
 				return this;
 			}
@@ -51,19 +55,20 @@ namespace L20nCore
 					return literal;
 				}
 
-				return Operation(literal.Value);
+				m_Output.Value = Operation(literal.Value);
+				return m_Output;
 			}
 			
-			protected abstract Literal Operation(int a);
+			protected abstract int Operation(int a);
 		}
 		
 		public sealed class PositiveExpression : UnaryNumericExpression
 		{
 			public PositiveExpression(L20nObject e) : base(e) {}
 			
-			protected override Literal Operation(int a)
+			protected override int Operation(int a)
 			{
-				return new Literal(+a);
+				return +a;
 			}
 		}
 		
@@ -71,9 +76,9 @@ namespace L20nCore
 		{
 			public NegativeExpression(L20nObject e) : base(e) {}
 			
-			protected override Literal Operation(int a)
+			protected override int Operation(int a)
 			{
-				return new Literal(-a);
+				return -a;
 			}
 		}
 	}

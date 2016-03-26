@@ -30,10 +30,13 @@ namespace L20nCore
 		public sealed class Index : L20nObject
 		{
 			private readonly L20nObject[] m_Indeces;
+
+			private L20nObject[] m_EvaluatedIndeces;
 			
 			public Index(L20nObject[] indeces)
 			{
 				m_Indeces = indeces;
+				m_EvaluatedIndeces = new L20nObject[indeces.Length];
 			}
 
 			public override L20nObject Optimize()
@@ -59,8 +62,7 @@ namespace L20nCore
 					return null;
 				}
 
-				var indeces = new L20nObject[m_Indeces.Length];
-				for (int i = 0; i < indeces.Length; ++i) {
+				for (int i = 0; i < m_EvaluatedIndeces.Length; ++i) {
 					var index = m_Indeces[i].Eval(ctx);
 					var identifier = index as Identifier;
 					if(identifier == null) {
@@ -70,7 +72,7 @@ namespace L20nCore
 					}
 
 					if(identifier != null) {
-						indeces[i] = identifier;
+						m_EvaluatedIndeces[i] = identifier;
 					}
 					else {
 						Internal.Logger.WarningFormat(
@@ -79,7 +81,7 @@ namespace L20nCore
 					}
 				}
 
-				return new PropertyExpression(indeces);
+				return new PropertyExpression(m_EvaluatedIndeces);
 			}
 		}
 	}
