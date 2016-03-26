@@ -85,12 +85,26 @@ namespace L20nCore
 					}
 
 					var identifier = index as Identifier;
-					if(identifier != null)
-						return m_Value.Eval(ctx, identifier);
+					if(identifier != null) {
+						var result = m_Value.Eval(ctx, identifier);
+						if(result == null) {
+							Logger.Warning("<Entity>: <Identifier>-index got evaluated to null");
+							return null;
+						}
+
+						return result.Eval(ctx);
+					}
 
 					var property = index as PropertyExpression;
-					if(property != null)
-						return property.Eval(ctx, this);
+					if(property != null) {
+						var result = property.Eval(ctx, this);
+						if(result == null) {
+							Logger.Warning("<Entity>: <PropertyExpression>-index got evaluated to null");
+							return null;
+						}
+
+						return result.Eval(ctx);
+					}
 
 					Logger.Warning("couldn't evaluate entity as index was expexted to be a <property_expression>");
 					return null;
