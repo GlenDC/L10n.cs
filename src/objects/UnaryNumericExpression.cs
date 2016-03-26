@@ -36,17 +36,22 @@ namespace L20nCore
 
 			public override L20nObject Optimize()
 			{
-				return m_Expression.Optimize().As<Literal>()
-					.MapOr<L20nObject>(this, (literal) => Operation(literal.Value));
+				var literal = m_Expression.Optimize() as Literal;
+				if (literal != null)
+					return Operation(literal.Value);
+
+				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return m_Expression.Eval(ctx)
-					.UnwrapAs<Literal>().MapOrWarning((literal) => {
-						var result = Operation(literal.Value);
-						return new Option<L20nObject>(result);
-					}, "couldn't operate on non-valid literal evaluation");
+				var literal = m_Expression.Eval(ctx) as Literal;
+				if(literal == null) {
+					Logger.Warning("couldn't operate on non-valid literal evaluation");
+					return literal;
+				}
+
+				return Operation(literal.Value);
 			}
 			
 			protected abstract Literal Operation(int a);

@@ -62,58 +62,67 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
-			{	
-				Option<Entity> maybe;
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
+			{
+				Entity maybe;
 				int i = 0;
 
-				if (argv == null || argv.Length == 0 || !argv[0].As<Entity>().IsSet) {
+				if (argv == null || argv.Length == 0 || (argv[0] as Entity) == null) {
 					maybe = GetEntity(ctx, m_Identifiers[i]);
 					i += 1;
 				} else {
-					maybe = argv[0].As<Entity>();
+					maybe = argv[0] as Entity;
 				}
 
-				return maybe.Map((entity) => {
-					var obj = new Option<L20nObject>(entity);
+				if (maybe == null) {
+					Logger.Warning("<PropertyExpression>: couldn't evaluate first expression");
+					return maybe;
+				}
 
-					if(argv.Length == 1 && argv[0].As<Dummy>().IsSet) {
-						obj = obj.Map((unwrapped) =>
-						              unwrapped.Eval(ctx, argv[0], m_Identifiers[i]));
-						++i;
+				L20nObject obj = maybe;
+
+				if(argv.Length == 1 && (argv[0] as Dummy) != null) {
+					obj = obj.Eval(ctx, argv[0], m_Identifiers[i]);
+					++i;
+				}
+
+				for(; i < m_Identifiers.Length; ++i) {
+					if(obj == null) {
+						Logger.WarningFormat(
+							"<PropertyExpression>: couldn't evaluate expression #{0}", i);
+						return obj;
 					}
 
-					for(; i < m_Identifiers.Length; ++i) {
-						obj = obj.Map((unwrapped) =>
-						              unwrapped.Eval(ctx, m_Identifiers[i]));
-					}
+					obj = obj.Eval(ctx, m_Identifiers[i]);
+				}
 
-					return obj.Map((unwrapped) => unwrapped.Eval(ctx));
-				});
+				if (obj == null) {
+					Logger.Warning(
+						"<PropertyExpression>: couldn't evaluate the final expression");
+					return obj;
+				}
+
+				return obj.Eval(ctx);
 			}
 
-			private Option<Entity> GetEntity(LocaleContext ctx, L20nObject key)
+			private Entity GetEntity(LocaleContext ctx, L20nObject key)
 			{
-				Option<Entity> wrapped;
-
 				// is it an identifier?
-				wrapped = key.As<Identifier>()
-					.Map((identifier) => ctx.GetEntity(identifier.Value));
-
-				if(wrapped.IsSet) return wrapped;
+				var identifier = key as Identifier;
+				if(identifier != null)
+					return ctx.GetEntity(identifier.Value);
 
 				// is it a variable?
-				wrapped = key.As<Variable>()
-					.Map((variable) => ctx.GetVariable(variable.Identifier))
-					.UnwrapAs<Entity>();
-				
-				if (wrapped.IsSet) return wrapped;
+				var variable = key as Variable;
+				if(variable != null)
+					return ctx.GetVariable(variable.Identifier) as Entity;
 
-				// ok so it better be a global
-				return key.As<Global>()
-					.Map((global) => ctx.GetGlobal(global.Identifier))
-					.UnwrapAs<Entity>();
+				// is it a global?
+				var global = key as Global;
+				if (global != null)
+					return ctx.GetGlobal (global.Identifier) as Entity;
 
+				return null;
 			}
 		}
 	}

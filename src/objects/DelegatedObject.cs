@@ -40,9 +40,9 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return new Option<L20nObject>(m_Callback());
+				return m_Callback();
 			}
 			
 			public delegate T Delegate();
@@ -62,9 +62,9 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return new Option<L20nObject>(new Literal(m_Callback()));
+				return new Literal(m_Callback());
 			}
 			
 			public delegate int Delegate();
@@ -84,9 +84,9 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return new Option<L20nObject>(new StringOutput(m_Callback()));
+				return new StringOutput(m_Callback());
 			}
 			
 			public delegate string Delegate();

@@ -36,12 +36,12 @@ namespace L20nCore
 				m_Second = second;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{	
 				return Operation(ctx);
 			}
 			
-			protected abstract Option<L20nObject> Operation(LocaleContext ctx);
+			protected abstract L20nObject Operation(LocaleContext ctx);
 		}
 		
 		public sealed class AndExpression : LogicalExpression
@@ -51,38 +51,29 @@ namespace L20nCore
 			
 			public override L20nObject Optimize()
 			{
-				Option<BooleanValue> first, second;
-
-				first = m_First.Optimize().As<BooleanValue>();
-				second = m_Second.Optimize().As<BooleanValue>();
+				var first = m_First.Optimize() as BooleanValue;
+				var second = m_Second.Optimize() as BooleanValue;
 
 				// first need to be set, otherwise there is no way to optimize an '&&' expression
-				if(first.IsSet) {
-					var unwrapped = first.Unwrap();
+				if(first != null) {
 					// if first is false, than we can simply return false, as it will always result in false
-					if(!unwrapped.Value) {
-						return unwrapped;
+					if(!first.Value) {
+						return first;
 					// otherwise let's see if second is set, if so, we can simply cache the result
-					} else if(second.IsSet) {
-						var result = unwrapped.Value && second.Unwrap().Value;
-						return new BooleanValue(result);
-						                   
+					} else if(second != null) {
+						return second;           
 					}
 				}
 
 				return this;
 			}
 			
-			protected override Option<L20nObject> Operation(LocaleContext ctx)
+			protected override L20nObject Operation(LocaleContext ctx)
 			{
-				return m_First.Eval(ctx)
-					.UnwrapAs<BooleanValue>().Map((a) => {
-						if(!a.Value)
-							return new Option<L20nObject>(a);
-						
-						return m_Second.Eval(ctx)
-							.Map((b) => new Option<L20nObject>(b));
-					});
+				var first = m_First.Eval(ctx) as BooleanValue;
+				if(first == null || !first.Value)
+					return first;
+				return m_Second.Eval(ctx) as BooleanValue;
 			}
 		}
 		
@@ -93,38 +84,29 @@ namespace L20nCore
 			
 			public override L20nObject Optimize()
 			{
-				Option<BooleanValue> first, second;
-				
-				first = m_First.Optimize().As<BooleanValue>();
-				second = m_Second.Optimize().As<BooleanValue>();
+				var first = m_First.Optimize() as BooleanValue;
+				var second = m_Second.Optimize() as BooleanValue;
 				
 				// first need to be set, otherwise there is no way to optimize an '||' expression
-				if(first.IsSet) {
-					var unwrapped = first.Unwrap();
+				if(first != null) {
 					// if first is true, than we can simply return true, as it will always result in true
-					if(unwrapped.Value) {
-						return unwrapped;
+					if(first.Value) {
+						return first;
 						// otherwise let's see if second is set, if so, we can simply cache the result
-					} else if(second.IsSet) {
-						var result = unwrapped.Value || second.Unwrap().Value;
-						return new BooleanValue(result);
-						
+					} else if(second != null) {
+						return second;
 					}
 				}
 
 				return this;
 			}
 			
-			protected override Option<L20nObject> Operation(LocaleContext ctx)
+			protected override L20nObject Operation(LocaleContext ctx)
 			{
-				return m_First.Eval(ctx)
-					.UnwrapAs<BooleanValue>().Map((a) => {
-						if(a.Value)
-							return new Option<L20nObject>(a);
-						
-						return m_Second.Eval(ctx)
-							.Map((b) => new Option<L20nObject>(b));
-					});
+				var first = m_First.Eval(ctx) as BooleanValue;
+				if (first == null || first.Value)
+					return first;
+				return m_Second.Eval(ctx) as BooleanValue;
 			}
 		}
 	}

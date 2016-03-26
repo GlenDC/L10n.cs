@@ -39,11 +39,15 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return ctx.GetEntity(m_Identifier)
-					.MapOrWarning ((entity) => entity.Eval (ctx, argv),
-					              "couldn't find an entity with key {0}", m_Identifier);
+				var entity = ctx.GetEntity(m_Identifier);
+				if (entity == null) {
+					Logger.WarningFormat("couldn't find an entity with key {0}", m_Identifier);
+					return entity;
+				}
+
+				return entity.Eval(ctx, argv);
 			}
 		}
 	}

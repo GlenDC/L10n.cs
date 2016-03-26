@@ -27,6 +27,7 @@ namespace L20nCore
 	namespace Utils
 	{
 		public sealed class ShadowStack<T>
+			where T: class
 		{
 			private Dictionary<string, Stack<T>> m_StackDictionary;
 			
@@ -47,12 +48,13 @@ namespace L20nCore
 				return stack.Peek();
 			}
 
-			public Option<T> PeekSafe(string key)
+			public T PeekSafe(string key)
 			{
 				var stack = CreateOrGetStack(key);
-				if(stack.Count == 0)
-					return new Option<T>();
-				return new Option<T>(stack.Peek ());
+				if(stack.Count > 0)
+					return stack.Peek();
+
+				return null;
 			}
 
 			public T Pop(string key)
@@ -61,12 +63,13 @@ namespace L20nCore
 				return stack.Pop();
 			}
 			
-			public Option<T> PopSafe(string key)
+			public T PopSafe(string key)
 			{
 				var stack = CreateOrGetStack(key);
 				if(stack.Count > 0)
-					return new Option<T>(stack.Pop());
-				return new Option<T>();
+					return stack.Pop();
+
+				return null;
 			}
 			
 			private Stack<T> CreateOrGetStack(string key)

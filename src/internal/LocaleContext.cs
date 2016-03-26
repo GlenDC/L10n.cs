@@ -34,7 +34,7 @@ namespace L20nCore
 			private readonly Dictionary<string, Entity> m_Entities;
 			private readonly ShadowStack<L20nObject> m_Variables;
 
-			private readonly Option<LocaleContext> m_Parent;
+			private readonly LocaleContext m_Parent;
 
 			public LocaleContext(
 				Utils.DictionaryRef<string, L20nObject> globals,
@@ -46,51 +46,68 @@ namespace L20nCore
 				m_Macros = new Dictionary<string, Macro>(macros);
 				m_Entities = new Dictionary<string, Entity>(entities);
 				m_Variables = new ShadowStack<L20nObject>();
-				m_Parent = new Option<LocaleContext>(parent);
+				m_Parent = parent;
 			}
 			
-			public Option<L20nObject> GetGlobal(string key)
+			public L20nObject GetGlobal(string key)
 			{
-				return GetGlobalPrivate(key).OrElse(() =>
-					m_Parent.Map((ctx) => ctx.GetGlobalPrivate(key)));
+				var global = GetGlobalPrivate(key);
+				if(global != null)
+					return global;
+
+				if(m_Parent != null)
+					global = m_Parent.GetGlobalPrivate(key);
+
+				return global;
 			}
 			
-			public Option<Macro> GetMacro(string key)
+			public Macro GetMacro(string key)
 			{
-				return GetMacroPrivate(key).OrElse(() =>
-					m_Parent.Map((ctx) => ctx.GetMacroPrivate(key)));
+				var macro = GetMacroPrivate(key);
+				if(macro != null)
+					return macro;
+				
+				if(m_Parent != null)
+					macro = m_Parent.GetMacroPrivate(key);
+				
+				return macro;
 			}
 			
-			public Option<Entity> GetEntity(string key)
+			public Entity GetEntity(string key)
 			{
-				return GetEntityPrivate(key).OrElse(() =>
-				    m_Parent.Map((ctx) => ctx.GetEntityPrivate(key)));
+				var entity = GetEntityPrivate(key);
+				if(entity != null)
+					return entity;
+				
+				if(m_Parent != null)
+					entity = m_Parent.GetEntityPrivate(key);
+				
+				return entity;
 			}
 			
-			private Option<L20nObject> GetGlobalPrivate(string key)
+			private L20nObject GetGlobalPrivate(string key)
 			{
-				var global = m_Globals.Get(key, null);
-				return new Option<L20nObject>(global);
+				return m_Globals.Get(key, null);
 			}
 			
-			private Option<Macro> GetMacroPrivate(string key)
+			private Macro GetMacroPrivate(string key)
 			{
 				Macro macro;
 				if (m_Macros.TryGetValue(key, out macro)) {
-					return new Option<Macro>(macro);
+					return macro;
 				}
 				
-				return new Option<Macro>();
+				return null;
 			}
 			
-			private Option<Entity> GetEntityPrivate(string key)
+			private Entity GetEntityPrivate(string key)
 			{
 				Entity entity;
 				if (m_Entities.TryGetValue(key, out entity)) {
-					return new Option<Entity>(entity);
+					return entity;
 				}
 				
-				return new Option<Entity>();
+				return null;
 			}
 			
 			public void PushVariable(string key, L20nObject value)
@@ -100,13 +117,13 @@ namespace L20nCore
 			
 			public void DropVariable(string key)
 			{
-				if (!m_Variables.PopSafe (key).IsSet) {
+				if (m_Variables.PopSafe(key) == null) {
 					Internal.Logger.WarningFormat(
 						"couldn't drop variable with key {0}", key);
 				}
 			}
 			
-			public Option<L20nObject> GetVariable(string key)
+			public L20nObject GetVariable(string key)
 			{
 				return m_Variables.PeekSafe(key);
 			}

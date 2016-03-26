@@ -34,10 +34,9 @@ namespace L20nCore
 				throw new NotImplementedException();
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				Logger.Warning("Evaluating a dummy object, this should never happen!");
-				return L20nObject.None;
+				throw new NotImplementedException();
 			}
 		}
 	}

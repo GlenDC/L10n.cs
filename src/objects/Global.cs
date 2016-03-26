@@ -44,11 +44,15 @@ namespace L20nCore
 				return this;
 			}
 
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return ctx.GetGlobal(m_Identifier)
-					.MapOrWarning((global) => global.Eval(ctx, argv),
-					              "couldn't find global with key {0}", m_Identifier);
+				var global = ctx.GetGlobal(m_Identifier);
+				if (global == null) {
+					Logger.WarningFormat("couldn't find global with key {0}", m_Identifier);
+					return global;
+				}
+
+				return global.Eval(ctx, argv);
 			}
 		}
 	}

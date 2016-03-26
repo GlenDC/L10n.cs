@@ -42,21 +42,22 @@ namespace L20nCore
 
 			public override L20nObject Optimize ()
 			{
-				return m_Condition.Optimize().As<BooleanValue>()
-					.MapOr(this, (cond) => cond.Value
-					       						? m_IfTrue.Optimize()
-					       						: m_IfFalse.Optimize());
+				var condition = m_Condition.Optimize() as BooleanValue;
+				if (condition == null)
+					return this;
+
+				return condition.Value ? m_IfTrue.Optimize()
+					       		 : m_IfFalse.Optimize();
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return m_Condition.Eval(ctx)
-					.UnwrapAs<BooleanValue>().Map((condition) => {
-						if(condition.Value)
-							return m_IfTrue.Eval(ctx);
-						else
-							return m_IfFalse.Eval(ctx);
-					});
+				var condition = m_Condition.Eval(ctx) as BooleanValue;
+				if(condition == null)
+					return condition;
+
+				return condition.Value ? m_IfTrue.Eval(ctx)
+								 : m_IfFalse.Eval(ctx);
 			}
 		}
 	}

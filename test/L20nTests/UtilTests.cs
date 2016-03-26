@@ -64,30 +64,30 @@ namespace L20nCoreTests
 		[Test()]
 		public void ShadowStackTests()
 		{
-			var stack = new ShadowStack<int>();
+			var stack = new ShadowStack<string>();
 			
 			Assert.Throws<InvalidOperationException>(() => stack.Pop("oops"));
 
-			stack.Push("apples", 1);
-			stack.Push("bananas", 2);
-			stack.Push("apples", 5);
+			stack.Push("fruit", "banana");
+			stack.Push("vegetable", "bean");
+			stack.Push("meat", "steak");
 			
-			Assert.AreEqual(5, stack.Peek("apples"));
-			Assert.AreEqual(2, stack.Peek("bananas"));
+			Assert.AreEqual("banana", stack.Peek("fruit"));
+			Assert.AreEqual("bean", stack.Peek("vegetable"));
 
-			Assert.AreEqual(5, stack.Pop("apples"));
-			Assert.AreEqual(2, stack.Pop("bananas"));
+			Assert.AreEqual("bean", stack.Pop("vegetable"));
+			Assert.AreEqual("banana", stack.Pop("fruit"));
 			
-			stack.Push("bananas", 8);
-			stack.Push("oranges", 99);
-			stack.Push("apples", 34);
+			stack.Push("fruit", "apple");
+			stack.Push("fruit", "orange");
+			stack.Push("vegetable", "carrot");
 			
-			Assert.AreEqual(8, stack.Pop("bananas"));
-			Assert.AreEqual(34, stack.Pop("apples"));
-			Assert.AreEqual(1, stack.Pop("apples"));
-			Assert.AreEqual(99, stack.Pop("oranges"));
+			Assert.AreEqual("orange", stack.Pop("fruit"));
+			Assert.AreEqual("apple", stack.Pop("fruit"));
+			Assert.AreEqual("steak", stack.Pop("meat"));
+			Assert.AreEqual("carrot", stack.Pop("vegetable"));
 
-			Assert.Throws<InvalidOperationException>(() => stack.Pop ("apples"));
+			Assert.Throws<InvalidOperationException>(() => stack.Pop("fruit"));
 		}
 	}
 }

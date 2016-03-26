@@ -30,12 +30,12 @@ namespace L20nCore
 		public sealed class HashValue : Primitive
 		{
 			private readonly Dictionary<string, L20nObject> m_Items;
-			private readonly Option<string> m_Default;
+			private readonly string m_Default;
 
 			public HashValue(Dictionary<string, L20nObject> items, string def)
 			{
 				m_Items = new Dictionary<string, L20nObject>(items);
-				m_Default = new Option<string>(def);
+				m_Default = def;
 
 				if (m_Items.Count == 0) {
 					Logger.Warning(
@@ -53,44 +53,50 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Items.Count == 0) {
-					return L20nObject.None;
+					return null;
 				}
 
 				if (argv.Length != 1) {
-					if (!m_Default.IsSet) {
+					if (m_Default == null) {
 						Logger.Warning(
 							"no <identifier> was given and <hash_value> has no default specified");
-						return L20nObject.None;
+						return null;
 					}
 
-					return m_Items[m_Default.Unwrap()].Eval(ctx);
+					return m_Items[m_Default].Eval(ctx);
 				}
-				
-				return argv[0].Eval(ctx).UnwrapAs<Identifier>().Map((id) => {
-					L20nObject obj;
-					if(!m_Items.TryGetValue(id.Value, out obj)) {
-						if(!m_Default.IsSet) {
-							Logger.WarningFormat(
-								"{0} is not a valid <identifier>, " +
-								"and this <hash_value> has no default specified", id.Value);
-							return L20nObject.None;
-						}
 
-						obj = m_Items[m_Default.Unwrap()];
+				var id = argv[0].Eval(ctx) as Identifier;
+				if (id == null) {
+					Logger.Warning("HashValue: first variadic argument couldn't be evaluated as an <Identifier>");
+					return id;
+				}
+
+				L20nObject obj;
+				if(!m_Items.TryGetValue(id.Value, out obj)) {
+					if(m_Default == null) {
+						Logger.WarningFormat(
+							"{0} is not a valid <identifier>, " +
+							"and this <hash_value> has no default specified", id.Value);
+						return null;
 					}
 
-					return new Option<L20nObject>(obj);
-				});
+					obj = m_Items[m_Default];
+				}
+
+				return obj;
 			}
 			
-			public override Option<string> ToString(LocaleContext ctx, params L20nObject[] argv)
+			public override string ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return Eval(ctx, argv)
-					.UnwrapAs<Primitive>().Map(
-						(primitive) => primitive.ToString(ctx));
+				var primitive = Eval(ctx, argv) as Primitive;
+				if(primitive != null)
+					return primitive.ToString(ctx);
+
+				return null;
 			}
 		}
 	}

@@ -36,8 +36,10 @@ namespace L20nCore
 			public Manifest Manifest { get; private set; }
 			public string CurrentLocale { get; private set; }
 
-			private Option<LocaleContext> m_DefaultContext;
-			private Option<LocaleContext> m_CurrentContext;
+			private LocaleContext m_DefaultContext;
+			private LocaleContext m_CurrentContext;
+
+			private Objects.Dummy m_DummyObject;
 
 			private readonly Dictionary<string, Objects.L20nObject> m_Globals;
 
@@ -46,21 +48,23 @@ namespace L20nCore
 				Manifest = new Manifest();
 				m_Globals = new Dictionary<string, Objects.L20nObject>();
 
+				m_DummyObject = new Objects.Dummy();
+
 				CurrentLocale = null;
 
-				m_DefaultContext = new Option<LocaleContext>();
-				m_CurrentContext = new Option<LocaleContext>();
+				m_DefaultContext = null;
+				m_CurrentContext = null;
 
 				AddSystemGlobals();
 			}
 
 			public void Import(string manifest_path)
 			{
-				m_DefaultContext = new Option<LocaleContext>();
-				m_CurrentContext = new Option<LocaleContext>();
+				m_DefaultContext = null;
+				m_CurrentContext = null;
 
 				Manifest.Import(manifest_path);
-				ImportLocal(Manifest.DefaultLocale, m_DefaultContext, null);
+				ImportLocal(Manifest.DefaultLocale, out m_DefaultContext, null);
 
 				CurrentLocale = Manifest.DefaultLocale;
 			}
@@ -73,10 +77,10 @@ namespace L20nCore
 				}
 
 				if (id == Manifest.DefaultLocale) {
-					m_CurrentContext.Unset ();
+					m_CurrentContext = null;
 					CurrentLocale = Manifest.DefaultLocale;
 				} else if (IsInitialized) {
-					ImportLocal (id, m_CurrentContext, m_DefaultContext.Unwrap ());
+					ImportLocal (id, out m_CurrentContext, m_DefaultContext);
 					CurrentLocale = id;
 				} else {
 					throw new ImportException(
@@ -104,33 +108,37 @@ namespace L20nCore
 					return id;
 				}
 
-				return m_CurrentContext.Or(m_DefaultContext).MapOr(id, (ctx) => {
-					// push all variables to the stack
-					for(int i = 0; i < keys.Length; ++i) {
-						if(keys[i] == null) {
-							Logger.WarningFormat("couldn't translate {0} because parameter-key #{1} is null" +
-							                     " while expecting an string", id, i);
-							break;
-						}
+				var ctx = m_CurrentContext != null ? m_CurrentContext : m_DefaultContext;
+				if (ctx == null) {
+					Logger.WarningFormat("couldn't translate {0} as no context has been set", id);
+					return id;
+				}
 
-						if(values[i] == null) {
-							Logger.WarningFormat("couldn't translate {0} because parameter-value #{1} is null",
-							                     id, i);
-							break;
-						}
-
-						ctx.PushVariable(keys[i], values[i]);
+				// push all variables to the stack
+				for(int i = 0; i < keys.Length; ++i) {
+					if(keys[i] == null) {
+						Logger.WarningFormat("couldn't translate {0} because parameter-key #{1} is null" +
+						                     " while expecting an string", id, i);
+						break;
 					}
 
-					var output = TranslateID(id);
-
-					// remove variables from stack again
-					for(int i = 0; i < keys.Length; ++i) {
-						ctx.DropVariable(keys[i]);
+					if(values[i] == null) {
+						Logger.WarningFormat("couldn't translate {0} because parameter-value #{1} is null",
+						                     id, i);
+						break;
 					}
 
-					return output;
-				});
+					ctx.PushVariable(keys[i], values[i]);
+				}
+
+				var output = TranslateID(id);
+
+				// remove variables from stack again
+				for(int i = 0; i < keys.Length; ++i) {
+					ctx.DropVariable(keys[i]);
+				}
+
+				return output;
 			}
 			
 			public void AddGlobal(string id, int value)
@@ -177,7 +185,7 @@ namespace L20nCore
 				}
 			}
 
-			private void ImportLocal(string id, Option<LocaleContext> context, LocaleContext parent)
+			private void ImportLocal(string id, out LocaleContext context, LocaleContext parent)
 			{
 				var localeFiles = Manifest.GetLocaleFiles(id);
 				if (localeFiles.Count == 0)
@@ -192,7 +200,7 @@ namespace L20nCore
 					builder.Import(localeFiles[i]);
 				}
 
-				context.Set(builder.Build(m_Globals, parent));
+				context = builder.Build(m_Globals, parent);
 			}
 
 			private void AddSystemGlobals()
@@ -217,24 +225,23 @@ namespace L20nCore
 				else
 					identifier = new Objects.IdentifierExpression(id);
 
-				var context = m_CurrentContext.Or(m_DefaultContext);
-				if (!context.IsSet) {
-					Internal.Logger.WarningFormat(
+				var context = m_CurrentContext != null ? m_CurrentContext : m_DefaultContext;
+				if (context == null) {
+					Logger.WarningFormat(
 						"{0} could not be translated as no language-context has been set", id);
 					return id;
 				}
 
-				var output = identifier.Eval(
-					context.Unwrap(), new Objects.Dummy())
-					.UnwrapAs<Objects.StringOutput>();
+				var output = identifier.Eval(context, m_DummyObject)
+					as Objects.StringOutput;
 
-				if (!output.IsSet) {
+				if (output == null) {
 					Internal.Logger.WarningFormat(
 						"something went wrong, {0} could not be translated", id);
 					return id;
 				}
 
-				return output.Unwrap().Value;
+				return output.Value;
 			}
 		}
 	}

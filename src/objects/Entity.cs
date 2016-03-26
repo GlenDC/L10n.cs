@@ -33,11 +33,11 @@ namespace L20nCore
 				get { return m_IsPrivate; }
 			}
 
-			private readonly Utils.Option<L20nObject> m_Index;
+			private readonly L20nObject m_Index;
 			private readonly L20nObject m_Value;
 			private readonly bool m_IsPrivate;
 
-			public Entity(Utils.Option<L20nObject> index, bool is_private, L20nObject value)
+			public Entity(L20nObject index, bool is_private, L20nObject value)
 			{
 				m_Index = index;
 				m_Value = value;
@@ -49,7 +49,7 @@ namespace L20nCore
 				var info = new External.InfoCollector();
 				value.Collect(info);
 
-				m_Index = new Utils.Option<Objects.L20nObject> ();
+				m_Index = null;
 				m_Value = info.Collect();
 				m_IsPrivate = false;
 			}
@@ -59,35 +59,41 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				if(argv.Length != 0 && argv[0].As<Dummy>().IsSet) {
+				if(argv.Length != 0 && (argv[0] as Dummy) != null) {
 					if(m_IsPrivate) {
 						Logger.Warning("entity is marked as private and cannot be accessed from C#");
-						return L20nObject.None;
+						return null;
 					}
 
 					if(argv.Length > 1) {
 						var arguments = new L20nObject[argv.Length-1];
 						for(int i = 0; i < arguments.Length; ++i)
-							arguments[i] = argv[1];
+							arguments[i] = argv[i+1];
 						return this.Eval(ctx, arguments);
 					} else {
 						return this.Eval(ctx);
 					}
 				}
 	
-				if (m_Index.IsSet && argv.Length == 0) {
-					return m_Index.Unwrap().Eval(ctx).Map((index) => {
-						Option<Identifier> maybe = index.As<Identifier>();
-						if(maybe.IsSet) {
-							return m_Value.Eval(ctx, maybe.Unwrap());
-						}
+				if (m_Index != null && argv.Length == 0) {
+					var index = m_Index.Eval(ctx);
+					if(index == null) {
+						Logger.Warning("Entity: index couldn't be evaluated");
+						return index;
+					}
 
-						return index.As<PropertyExpression>().MapOrWarning(
-							(property) => property.Eval(ctx, this),
-							"couldn't evaluate entity as index was expexted to be a <property_expression>");
-					}).Map((unwrapped) => unwrapped.Eval(ctx));
+					var identifier = index as Identifier;
+					if(identifier != null)
+						return m_Value.Eval(ctx, identifier);
+
+					var property = index as PropertyExpression;
+					if(property != null)
+						return property.Eval(ctx, this);
+
+					Logger.Warning("couldn't evaluate entity as index was expexted to be a <property_expression>");
+					return null;
 				}
 
 				return m_Value.Eval(ctx, argv);

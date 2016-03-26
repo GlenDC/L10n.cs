@@ -39,22 +39,24 @@ namespace L20nCore
 
 			public override L20nObject Optimize()
 			{
-				var first = m_First.Optimize().As<Literal>();
-				var second = m_Second.Optimize().As<Literal>();
+				var first = m_First.Optimize() as Literal;
+				var second = m_Second.Optimize() as Literal;
 
-				if(first.And(second).IsSet) {
-					return Operation(first.Unwrap().Value, second.Unwrap().Value);
-				}
+				if(first != null && second != null)
+					return Operation(first.Value, second.Value);
 
-				return this;;
+				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return Option<L20nObject>.MapAllAs<L20nObject, Literal>((parameters) => {
-					var result = Operation(parameters[0].Value, parameters[1].Value);
-					return new Option<L20nObject>(result);
-				}, m_First.Eval(ctx), m_Second.Eval(ctx));
+				var first = m_First.Eval(ctx) as Literal;
+				var second = m_Second.Eval(ctx) as Literal;
+				
+				if(first != null && second != null)
+					return Operation(first.Value, second.Value);
+
+				return null;
 			}
 
 			protected abstract L20nObject Operation(int a, int b);

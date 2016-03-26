@@ -38,37 +38,42 @@ namespace L20nCore
 				m_Expressions = expressions;
 			}
 
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				if (m_Expressions.Length == 0)
-					return new Option<L20nObject>(new StringOutput(m_Value));
-
 				string[] expressions = new string[m_Expressions.Length];
 				for (int i = 0; i < expressions.Length; ++i) {
 					var e = m_Expressions[i].Eval(ctx);
 
-					if(!e.IsSet) {
-						return e;
+					if(e == null) {
+						return null;
 					}
 
-					Option<Identifier> id;
-					while((id = e.UnwrapAs<Identifier>()).IsSet) {
-						e = ctx.GetEntity(id.Unwrap().Value)
-							.Map((entity) => entity.Eval(ctx));
+					Identifier id;
+					Entity entity;
+					while((id = e as Identifier) != null) {
+						entity = ctx.GetEntity(id.Value);
+						if(entity != null)
+							e = entity.Eval(ctx);
 					}
 
-					var stringOutput =
-						e.UnwrapAs<Primitive>().Map((o => o.ToString(ctx)));
+					var primitive = e as Primitive;
 
-					if(!stringOutput.IsSet) {
-						return L20nObject.None;
+					if(primitive == null) {
+						Logger.WarningFormat("<StringValue>: couldn't evaluate expression #{0}", i);
+						return null;
 					}
 
-					expressions[i] = stringOutput.Unwrap();
+					var stringOutput = primitive.ToString(ctx);
+					if(stringOutput == null) {
+						Logger.WarningFormat("<StringValue>: couldn't evaluate expression #{0} to <StringOutput>", i);
+						return null;
+					}
+
+					expressions[i] = stringOutput;
 				}
 
 				var output = String.Format(m_Value, expressions);
-				return new Option<L20nObject>(new StringOutput(output));
+				return new StringOutput(output);
 			}
 
 			public override L20nObject Optimize()
@@ -78,16 +83,15 @@ namespace L20nCore
 					return new StringOutput(m_Value);
 
 				var values = new string[m_Expressions.Length];
-				L20nObject expression;
 				Primitive primitive;
 				for(int i = 0; i < values.Length; ++i) {
-					expression = m_Expressions[i].Optimize();
-					primitive = expression.As<Primitive>().UnwrapOr(null);
+					primitive = m_Expressions[i].Optimize() as Primitive;
 					if(primitive == null) {
 						return this; // we can't optimize this
 					}
 
-					if(primitive.As<StringValue>().IsSet) {
+					// clearly this is a primitive that can't be optimized, so let's return
+					if((primitive as StringValue) != null) {
 						return this;
 					}
 
@@ -98,11 +102,10 @@ namespace L20nCore
 				return new StringOutput(output);
 			}
 
-			public override Option<string> ToString(LocaleContext ctx, params L20nObject[] argv)
+			public override string ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return Eval(ctx)
-					.UnwrapAs<Primitive>().Map(
-						(primitive) => primitive.ToString(ctx));
+				var str = Eval(ctx) as StringOutput;
+				return str != null ? str.Value : null;
 			}
 		}
 	}

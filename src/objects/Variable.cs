@@ -44,11 +44,15 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return ctx.GetVariable(m_Identifier)
-					.MapOrWarning((variable) => variable.Eval(ctx, argv),
-					              "couldn't find variable with key {0}", m_Identifier);
+				var variable = ctx.GetVariable(m_Identifier);
+				if (variable == null) {
+					Logger.WarningFormat("couldn't find variable with key {0}", m_Identifier);
+					return variable;
+				}
+
+				return variable.Eval (ctx, argv);
 			}
 		}
 	}

@@ -39,40 +39,39 @@ namespace L20nCore
 
 			public override L20nObject Optimize()
 			{
-				return CommonEval(m_First.Optimize(), m_Second.Optimize())
-					.UnwrapOr(this);
+				var result = CommonEval(m_First.Optimize(), m_Second.Optimize());
+				return result == null ? this : result;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return Option<L20nObject>.MapAll<L20nObject>((parameters) => {
-					return CommonEval(parameters[0], parameters[1]);
-				}, m_First.Eval(ctx), m_Second.Eval(ctx));
+				return CommonEval(m_First.Eval(ctx), m_Second.Eval(ctx));
 			}
 
-			private Option<L20nObject> CommonEval(L20nObject first, L20nObject second)
+			private L20nObject CommonEval(L20nObject first, L20nObject second)
 			{
 				// Are they literals?
-				var output = Option<Literal>.MapAll<L20nObject>((literals) => {
-					var result = Operation(literals[0].Value, literals[1].Value);
-					return new Option<L20nObject>(result);
-				}, first.As<Literal>(), second.As<Literal>());
-				
-				if(output.IsSet) return output;
+				var l1 = first as Literal;
+				var l2 = second as Literal;
+
+				if(l1 != null && l2 != null)
+					return Operation(l1.Value, l2.Value);
 				
 				// Are they booleans?
-				output = Option<BooleanValue>.MapAll<L20nObject>((booleans) => {
-					var result = Operation(booleans[0].Value, booleans[1].Value);
-					return new Option<L20nObject>(result);
-				}, first.As<BooleanValue>(), second.As<BooleanValue>());
+				var b1 = first as BooleanValue;
+				var b2 = second as BooleanValue;
 				
-				if(output.IsSet) return output;
+				if(b1 != null && b2 != null)
+					return Operation(b1.Value, b2.Value);
 				
-				// OK.... they better be strings!
-				return Option<StringOutput>.MapAll<L20nObject>((strings) => {
-					var result = Operation(strings[0].Value, strings[1].Value);
-					return new Option<L20nObject>(result);
-				}, first.As<StringOutput>(), second.As<StringOutput>());
+				// Are they strings!
+				var s1 = first as StringOutput;
+				var s2 = second as StringOutput;
+				
+				if(s1 != null && s2 != null)
+					return Operation(s1.Value, s2.Value);
+
+				return null;
 			}
 			
 			protected abstract BooleanValue Operation(int a, int b);

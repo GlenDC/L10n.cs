@@ -51,13 +51,13 @@ namespace L20nCore
 				return this;
 			}
 
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if(m_Parameters.Length != argv.Length) {
 					Logger.WarningFormat(
 						"<macro> expects {0} parameters, received {1}",
 						m_Parameters.Length, argv.Length);
-					return L20nObject.None;
+					return null;
 				}
 
 				// Push variables on 'stack'

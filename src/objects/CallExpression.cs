@@ -42,12 +42,15 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return ctx.GetMacro(m_Identifier)
-					.MapOrWarning(
-						(macro) => macro.Eval(ctx, m_Variables),
-						"couldn't find macro with name {0}", m_Identifier);
+				var macro = ctx.GetMacro(m_Identifier);
+				if (macro == null) {
+					Logger.WarningFormat("couldn't find macro with name {0}", m_Identifier);
+					return macro;
+				}
+
+				return macro.Eval (ctx, m_Variables);
 			}
 		}
 	}

@@ -36,18 +36,22 @@ namespace L20nCore
 
 			public override L20nObject Optimize()
 			{
-				return m_Expression.Optimize().As<BooleanValue>()
-					.MapOr<L20nObject>(this, (boolean) => new BooleanValue(!boolean.Value));
+				var expression = m_Expression.Optimize() as BooleanValue;
+				if (expression == null)
+					return this;
+
+				return new BooleanValue(!expression.Value);
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return m_Expression.Eval(ctx)
-					.UnwrapAs<BooleanValue>().MapOrWarning((expr) => {
-						var result = !(expr.Value);
-						var value = new BooleanValue(result);
-						return new Option<L20nObject>(value);
-					}, "negation of non-valid boolean evaluation isn't allowed");
+				var expression = m_Expression.Eval(ctx) as BooleanValue;
+				if (expression == null) {
+					Logger.Warning("negation of non-valid boolean evaluation isn't allowed");
+					return expression;
+				}
+
+				return new BooleanValue(!expression.Value);
 			}
 		}
 	}

@@ -33,12 +33,10 @@ namespace L20nCore
 			}
 
 			private readonly string m_Value;
-			private readonly Option<L20nObject> m_StaticOption;
 			
 			public Identifier(string value)
 			{
 				m_Value = value;
-				m_StaticOption = new Option<L20nObject>(this);
 			}
 
 			public override L20nObject Optimize()
@@ -46,9 +44,9 @@ namespace L20nCore
 				return this;
 			}
 			
-			public override Option<L20nObject> Eval(LocaleContext ctx, params L20nObject[] argv)
+			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return m_StaticOption;
+				return this;
 			}
 		}
 	}

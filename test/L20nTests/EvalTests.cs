@@ -115,7 +115,7 @@ namespace L20nCoreTests
 			where T: L20nCore.Objects.L20nObject
 		{
 			return (T) Expression.Parse(NC(buffer)).Eval()
-				.Eval(m_DummyContext).Unwrap();
+				.Eval(m_DummyContext);
 		}
 
 		private CharStream NC(string buffer)
