@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -31,12 +30,12 @@ namespace L20nCore
 			{
 				m_Dictionary = dictionary;
 			}
-			
+            
 			public V Get(K key)
 			{
-				return m_Dictionary[key];
+				return m_Dictionary [key];
 			}
-			
+            
 			public V Get(K key, V def)
 			{
 				V value;

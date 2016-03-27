@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using L20nCore.Exceptions;
 
@@ -34,21 +33,22 @@ namespace L20nCore
 				{
 					m_Expression = expression;
 
-					switch (op) {
-					case '+':
-						m_Operation = Operation.Positive;
-						break;
+					switch (op)
+					{
+						case '+':
+							m_Operation = Operation.Positive;
+							break;
 
-					case '-':
-						m_Operation = Operation.Negative;
-						break;
+						case '-':
+							m_Operation = Operation.Negative;
+							break;
 
-					case '!':
-						m_Operation = Operation.Negate;
-						break;
+						case '!':
+							m_Operation = Operation.Negate;
+							break;
 
-					default:
-						throw new ParseException(
+						default:
+							throw new ParseException(
 							String.Format("{0} is not a valid <unary> operation", op));
 					}
 				}
@@ -57,15 +57,16 @@ namespace L20nCore
 				{
 					var expression = m_Expression.Eval();
 
-					switch (m_Operation) {
-					case Operation.Positive:
-						return new Objects.PositiveExpression(expression).Optimize();
+					switch (m_Operation)
+					{
+						case Operation.Positive:
+							return new Objects.PositiveExpression(expression).Optimize();
 						
-					case Operation.Negative:
-						return new Objects.NegativeExpression(expression).Optimize();
+						case Operation.Negative:
+							return new Objects.NegativeExpression(expression).Optimize();
 						
-					case Operation.Negate:
-						return new Objects.NegateExpression(expression).Optimize();
+						case Operation.Negate:
+							return new Objects.NegateExpression(expression).Optimize();
 					}
 
 					throw new EvaluateException(
@@ -77,7 +78,7 @@ namespace L20nCore
 					var op = (m_Operation == Operation.Positive ? '+' :
 					           (m_Operation == Operation.Negative ? '-' : '!'));
 
-					return string.Format("{0}{1}", op, m_Expression.Display ());
+					return string.Format("{0}{1}", op, m_Expression.Display());
 				}
 
 				enum Operation

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.IO;
 using NUnit.Framework;
@@ -65,7 +64,6 @@ namespace L20nCoreTests
 			public int Followers { get; set; }
 
 			public User BestFriend;
-
 			private readonly string m_Name;
 			private readonly string m_Gender;
 
@@ -74,7 +72,8 @@ namespace L20nCoreTests
 				m_Name = name; 
 				Followers = followers;
 
-				switch(gender) {
+				switch (gender)
+				{
 					case Gender.Male:
 						m_Gender = "masculine";
 						break;
@@ -96,7 +95,7 @@ namespace L20nCoreTests
 				info.Add("name", m_Name);
 				info.Add("followers", () => Followers);
 				info.Add("gender", m_Gender);
-				if(BestFriend != null)
+				if (BestFriend != null)
 					info.Add("friend", BestFriend);
 			}
 		}
@@ -162,7 +161,7 @@ namespace L20nCoreTests
 				l20n.Translate("shared", "user", john));
 			Console.WriteLine(l20n.Translate("shared", "user", john));
 			Console.WriteLine(l20n.Translate("shared", "user", maria));
-			if(john.BestFriend != null)
+			if (john.BestFriend != null)
 				Console.WriteLine(l20n.Translate("best_friend", "user", john));
 			Console.WriteLine(l20n.Translate("personal_greeting", "user", "Bianca"));
 			Console.WriteLine(l20n.Translate("personal_lucky_greeting",
@@ -192,7 +191,7 @@ namespace L20nCoreTests
 			john.Followers = 31;
 			Console.WriteLine(l20n.Translate("shared", "user", john));
 			Console.WriteLine(l20n.Translate("shared", "user", maria));
-			if(john.BestFriend != null)
+			if (john.BestFriend != null)
 				Console.WriteLine(l20n.Translate("best_friend", "user", john));
 			Console.WriteLine(l20n.Translate("personal_greeting", "user", "Bianca"));
 			Console.WriteLine(l20n.Translate("personal_lucky_greeting",

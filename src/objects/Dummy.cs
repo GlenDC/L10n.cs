@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Internal;
@@ -27,7 +26,9 @@ namespace L20nCore
 	{
 		public sealed class Dummy : L20nObject
 		{	
-			public Dummy() {}
+			public Dummy()
+			{
+			}
 
 			public override L20nObject Optimize()
 			{

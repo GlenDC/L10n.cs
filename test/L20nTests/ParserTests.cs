@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.IO;
 using NUnit.Framework;
@@ -42,7 +41,7 @@ namespace L20nCoreTests
 			// so it will not give an exception
 			WhiteSpace.Parse(stream, true);
 			// This will fail as it's not optional
-			Assert.Throws<ParseException> (
+			Assert.Throws<ParseException>(
 				() => WhiteSpace.Parse(stream, false));
 		}
 
@@ -56,10 +55,10 @@ namespace L20nCoreTests
 			// Parsing a comment with a lot of stars
 			Comment.Parse(NC("/********* Bling Bling **********/"));
 			// This will fail as a comment was never found
-			Assert.Throws<ParseException> (
+			Assert.Throws<ParseException>(
 				() => Comment.Parse(NC("No Comment */")));
 			// This will fail as the comment was never terminated
-			Assert.Throws<ParseException> (
+			Assert.Throws<ParseException>(
 				() => Comment.Parse(NC("Unfinished Comment */")));
 
 			// PeekAndParse can be used to make sure that
@@ -69,7 +68,7 @@ namespace L20nCoreTests
 			Assert.IsFalse(Comment.PeekAndParse(NC("Hello")));
 			// It will still throw an assert however,
 			// if the start looks like a comment, but it turned out to be a trap
-			Assert.Throws<ParseException> (
+			Assert.Throws<ParseException>(
 				() => Comment.PeekAndParse(NC("/* What can go wrong")));
 
 			// passing in an EOF stream will give an <EOF> IOException
@@ -95,16 +94,18 @@ namespace L20nCoreTests
 			var quote = Quote.Parse(s);
 			// will fail now because we try to match a multi-line
 			// with a single-line quote
-			Assert.Throws<ParseException> (
-				() => Quote.Parse (s, quote));
+			Assert.Throws<ParseException>(
+				() => Quote.Parse(s, quote));
 			
 			// Single Quotes can't be matched with Double Quotes
-			s = NC("'\""); quote = Quote.Parse(s);
-			Assert.Throws<ParseException> (
-				() => Quote.Parse (s, quote));
+			s = NC("'\"");
+			quote = Quote.Parse(s);
+			Assert.Throws<ParseException>(
+				() => Quote.Parse(s, quote));
 			
 			// Matching pairs should give you a good night sleep
-			s = NC("''"); quote = Quote.Parse(s);
+			s = NC("''");
+			quote = Quote.Parse(s);
 			Assert.AreEqual(
 				quote.ToString(),
 				Quote.Parse(s, quote).ToString());
@@ -113,7 +114,7 @@ namespace L20nCoreTests
 			Assert.Throws<ParseException>(() => Quote.Parse(NC("")));
 		}
 
-		private delegate string StringToString(string str, bool allow_underscore);
+		private delegate string StringToString(string str,bool allow_underscore);
 
 		[Test()]
 		public void RawIdentifierTests()
@@ -172,13 +173,13 @@ namespace L20nCoreTests
 		public void HashValueTests()
 		{
 			// hash tables can be pretty easy
-			Primary.Parse (NC ("{hello:'world'}"));
+			Primary.Parse(NC("{hello:'world'}"));
 
 			// hash tables cannot be empty though
 			Assert.Throws<ParseException>(() => HashValue.Parse(NC("{}")));
 
 			// hash tables can also have a default
-			Primary.Parse (NC ("{*what:'ok', yes: 'no'}"));
+			Primary.Parse(NC("{*what:'ok', yes: 'no'}"));
 			
 			// hash tables cannot contain duplicate identifiers
 			Assert.Throws<ParseException>(() => Primary.Parse(NC("{a: 'a', a: 'b'}")));
@@ -186,7 +187,7 @@ namespace L20nCoreTests
 			Assert.Throws<ParseException>(() => Primary.Parse(NC("{*a: 'a', *b: 'b'}")));
 			
 			// hash tables can also be nested
-			Primary.Parse(NC (@"{
+			Primary.Parse(NC(@"{
 				short: {
 				  	*subjective: 'Loki',
 				    objective: 'Loki',
@@ -449,28 +450,32 @@ namespace L20nCoreTests
 				() => Entry.Parse(NC("<invalid['value'] 42>"), builder));
 		}
 
-		private T ExpressionParseTest<T>(string input) where T : L20nCore.Objects.L20nObject {
-			var stream = new CharStream (input);
-			T result = (T) Expression.Parse(stream).Eval();
+		private T ExpressionParseTest<T>(string input) where T : L20nCore.Objects.L20nObject
+		{
+			var stream = new CharStream(input);
+			T result = (T)Expression.Parse(stream).Eval();
 			TypeAssert<T>(result);
-			if (stream.InputLeft ())
+			if (stream.InputLeft())
 				throw new ParseException("stream is non-empty: " + stream.ReadUntilEnd());
 			return result;
 		}
 
-		private void ExpressionParseTest(string expected, string input) {
+		private void ExpressionParseTest(string expected, string input)
+		{
 			Assert.AreEqual(
 				expected,
 				ExpressionParseTest<L20nCore.Objects.StringOutput>(input).Value);
 		}
 		
-		private void ExpressionParseTest(int expected, string input) {
+		private void ExpressionParseTest(int expected, string input)
+		{
 			Assert.AreEqual(
 				expected,
 				ExpressionParseTest<L20nCore.Objects.Literal>(input).Value);
 		}
 		
-		private void ExpressionParseTest(bool expected, string input) {
+		private void ExpressionParseTest(bool expected, string input)
+		{
 			Assert.AreEqual(
 				expected,
 				ExpressionParseTest<L20nCore.Objects.BooleanValue>(input).Value);

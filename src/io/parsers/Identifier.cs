@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -29,7 +28,8 @@ namespace L20nCore
 				public static string Parse(CharStream stream, bool allow_underscore)
 				{
 					string identifier;
-					if(!Identifier.PeekAndParse(stream, out identifier, allow_underscore)) {
+					if (!Identifier.PeekAndParse(stream, out identifier, allow_underscore))
+					{
 						throw stream.CreateException(
 							"expected to read an <identifier>, but non-word character was found");
 					}
@@ -45,7 +45,8 @@ namespace L20nCore
 				public static bool PeekAndParse(CharStream stream, out string identifier, bool allow_underscore)
 				{
 					var reg = allow_underscore ? @"[_a-zA-Z]\w*" : @"[a-zA-Z]\w*";
-					if (!stream.EndOfStream() && stream.ReadReg(reg, out identifier)) {
+					if (!stream.EndOfStream() && stream.ReadReg(reg, out identifier))
+					{
 						return true;
 					}
 

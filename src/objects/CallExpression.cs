@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -45,7 +44,8 @@ namespace L20nCore
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var macro = ctx.GetMacro(m_Identifier);
-				if (macro == null) {
+				if (macro == null)
+				{
 					Logger.WarningFormat("couldn't find macro with name {0}", m_Identifier);
 					return macro;
 				}

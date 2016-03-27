@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -63,7 +62,8 @@ namespace L20nCore
 				// Collect the given value
 				value.Collect(info);
 				
-				if (m_Info.Count == 0) {
+				if (m_Info.Count == 0)
+				{
 					Internal.Logger.Warning(
 						"can't add an external variable that has no information exposed," +
 						" please add information by calling `Info.Add(...)`");
@@ -86,7 +86,8 @@ namespace L20nCore
 
 			private void AddObject(string name, L20nObject value)
 			{
-				if (m_Info.ContainsKey(name)) {
+				if (m_Info.ContainsKey(name))
+				{
 					Internal.Logger.WarningFormat(
 						"information with the name {0} will be overriden", name);
 				}

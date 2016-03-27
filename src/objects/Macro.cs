@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -53,7 +52,8 @@ namespace L20nCore
 
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				if(m_Parameters.Length != argv.Length) {
+				if (m_Parameters.Length != argv.Length)
+				{
 					Logger.WarningFormat(
 						"<macro> expects {0} parameters, received {1}",
 						m_Parameters.Length, argv.Length);
@@ -61,15 +61,17 @@ namespace L20nCore
 				}
 
 				// Push variables on 'stack'
-				for(int i = 0; i < m_Parameters.Length; ++i) {
-					ctx.PushVariable(m_Parameters[i], argv[i]);
+				for (int i = 0; i < m_Parameters.Length; ++i)
+				{
+					ctx.PushVariable(m_Parameters [i], argv [i]);
 				}
 
 				var output = m_Expression.Eval(ctx);
 
 				// Remove them from the 'stack'
-				for(int i = 0; i < m_Parameters.Length; ++i) {
-					ctx.DropVariable(m_Parameters[i]);
+				for (int i = 0; i < m_Parameters.Length; ++i)
+				{
+					ctx.DropVariable(m_Parameters [i]);
 				}
 
 				return output;

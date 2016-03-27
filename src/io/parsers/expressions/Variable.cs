@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -43,7 +42,8 @@ namespace L20nCore
 					public static bool PeekAndParse(
 						CharStream stream, out AST.INode variable)
 					{
-						if (!Variable.Peek(stream)) {
+						if (!Variable.Peek(stream))
+						{
 							variable = null;
 							return false;
 						}

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -32,7 +31,8 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						stream.SkipString("import(");
 						WhiteSpace.Parse(stream, true);
 						var path = PureStringValue.Parse(stream);
@@ -40,8 +40,8 @@ namespace L20nCore
 						stream.SkipCharacter(')');
 
 						LocalizbleObjectsList.Parse(path, builder);
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing an <import_statement> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));

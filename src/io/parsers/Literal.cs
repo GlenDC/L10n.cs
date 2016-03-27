@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -29,7 +28,8 @@ namespace L20nCore
 				public static AST.INode Parse(CharStream stream)
 				{
 					string raw;
-					if (!stream.ReadReg (@"[\-\+]?[0-9]+", out raw)) {
+					if (!stream.ReadReg(@"[\-\+]?[0-9]+", out raw))
+					{
 						throw stream.CreateException("a number literal whas expected");
 					}
 
@@ -44,7 +44,8 @@ namespace L20nCore
 				public static bool PeekAndParse(
 					CharStream stream, out AST.INode literal)
 				{
-					if (!Literal.Peek(stream)) {
+					if (!Literal.Peek(stream))
+					{
 						literal = null;
 						return false;
 					}

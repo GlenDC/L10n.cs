@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -30,7 +29,8 @@ namespace L20nCore
 				{
 					int pos = stream.Position;
 					int n = stream.SkipWhile(char.IsWhiteSpace);
-					if (!optional && n == 0) {
+					if (!optional && n == 0)
+					{
 						throw stream.CreateException(
 							"at least one whitespace character is required",
 							pos - stream.Position);

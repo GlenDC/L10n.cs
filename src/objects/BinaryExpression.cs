@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Utils;
@@ -30,7 +29,6 @@ namespace L20nCore
 		{	
 			private readonly L20nObject m_First;
 			private readonly L20nObject m_Second;
-
 			private readonly BooleanValue m_Output;
 			
 			public BinaryExpression(L20nObject first, L20nObject second)
@@ -57,8 +55,9 @@ namespace L20nCore
 				var l1 = first as Literal;
 				var l2 = second as Literal;
 
-				if (l1 != null && l2 != null) {
-					m_Output.Value = Operation (l1.Value, l2.Value);
+				if (l1 != null && l2 != null)
+				{
+					m_Output.Value = Operation(l1.Value, l2.Value);
 					return m_Output;
 				}
 				
@@ -66,8 +65,9 @@ namespace L20nCore
 				var b1 = first as BooleanValue;
 				var b2 = second as BooleanValue;
 				
-				if (b1 != null && b2 != null) {
-					m_Output.Value = Operation (b1.Value, b2.Value);
+				if (b1 != null && b2 != null)
+				{
+					m_Output.Value = Operation(b1.Value, b2.Value);
 					return m_Output;
 				}
 				
@@ -75,8 +75,9 @@ namespace L20nCore
 				var s1 = first as StringOutput;
 				var s2 = second as StringOutput;
 				
-				if (s1 != null && s2 != null) {
-					m_Output.Value = Operation (s1.Value, s2.Value);
+				if (s1 != null && s2 != null)
+				{
+					m_Output.Value = Operation(s1.Value, s2.Value);
 					return m_Output;
 				}
 
@@ -84,14 +85,18 @@ namespace L20nCore
 			}
 			
 			protected abstract bool Operation(int a, int b);
+
 			protected abstract bool Operation(bool a, bool b);
+
 			protected abstract bool Operation(string a, string b);
 		}
 		
 		public sealed class IsEqualExpression : BinaryExpression
 		{
 			public IsEqualExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+			}
 			
 			protected override bool Operation(int a, int b)
 			{
@@ -112,7 +117,9 @@ namespace L20nCore
 		public sealed class IsNotEqualExpression : BinaryExpression
 		{
 			public IsNotEqualExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+			}
 			
 			protected override bool Operation(int a, int b)
 			{

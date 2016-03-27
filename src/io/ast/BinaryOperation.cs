@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using L20nCore.Exceptions;
 
@@ -48,39 +47,40 @@ namespace L20nCore
 
 				private Objects.L20nObject CreateOperation(Objects.L20nObject first, Objects.L20nObject second)
 				{
-					switch (m_Operation) {
-					case Operation.LessThan:
-						return new Objects.LessThanExpression(first, second);
+					switch (m_Operation)
+					{
+						case Operation.LessThan:
+							return new Objects.LessThanExpression(first, second);
 						
-					case Operation.GreaterThan:
-						return new Objects.GreaterThanExpression(first, second);
+						case Operation.GreaterThan:
+							return new Objects.GreaterThanExpression(first, second);
 						
-					case Operation.LessThanOrEqual:
-						return new Objects.LessThanOrEqualExpression(first, second);
+						case Operation.LessThanOrEqual:
+							return new Objects.LessThanOrEqualExpression(first, second);
 						
-					case Operation.GreaterThanOrEqual:
-						return new Objects.GreaterThanOrEqualExpression(first, second);
+						case Operation.GreaterThanOrEqual:
+							return new Objects.GreaterThanOrEqualExpression(first, second);
 						
-					case Operation.Add:
-						return new Objects.AddExpression(first, second);
+						case Operation.Add:
+							return new Objects.AddExpression(first, second);
 						
-					case Operation.Subtract:
-						return new Objects.SubstractExpression(first, second);
+						case Operation.Subtract:
+							return new Objects.SubstractExpression(first, second);
 						
-					case Operation.Multiply:
-						return new Objects.MultiplyExpression(first, second);
+						case Operation.Multiply:
+							return new Objects.MultiplyExpression(first, second);
 						
-					case Operation.Divide:
-						return new Objects.DivideExpression(first, second);
+						case Operation.Divide:
+							return new Objects.DivideExpression(first, second);
 						
-					case Operation.Modulo:
-						return new Objects.ModuloExpression(first, second);
+						case Operation.Modulo:
+							return new Objects.ModuloExpression(first, second);
 						
-					case Operation.IsEqual:
-						return new Objects.IsEqualExpression(first, second);
+						case Operation.IsEqual:
+							return new Objects.IsEqualExpression(first, second);
 						
-					case Operation.IsNotEqual:
-						return new Objects.IsNotEqualExpression(first, second);
+						case Operation.IsNotEqual:
+							return new Objects.IsNotEqualExpression(first, second);
 					}
 
 					throw new EvaluateException(
@@ -90,18 +90,41 @@ namespace L20nCore
 				public string Display()
 				{
 					string op = null;
-					switch (m_Operation) {
-					case Operation.LessThan: op = "<"; break;
-					case Operation.GreaterThan: op = ">"; break;
-					case Operation.LessThanOrEqual: op = "<="; break;
-					case Operation.GreaterThanOrEqual: op = ">="; break;
-					case Operation.Add: op = "+"; break;
-					case Operation.Subtract: op = "-"; break;
-					case Operation.Multiply: op = "*"; break;
-					case Operation.Divide: op = "/"; break;
-					case Operation.Modulo: op = "%"; break;
-					case Operation.IsEqual: op = "=="; break;
-					case Operation.IsNotEqual: op = "!="; break;
+					switch (m_Operation)
+					{
+						case Operation.LessThan:
+							op = "<";
+							break;
+						case Operation.GreaterThan:
+							op = ">";
+							break;
+						case Operation.LessThanOrEqual:
+							op = "<=";
+							break;
+						case Operation.GreaterThanOrEqual:
+							op = ">=";
+							break;
+						case Operation.Add:
+							op = "+";
+							break;
+						case Operation.Subtract:
+							op = "-";
+							break;
+						case Operation.Multiply:
+							op = "*";
+							break;
+						case Operation.Divide:
+							op = "/";
+							break;
+						case Operation.Modulo:
+							op = "%";
+							break;
+						case Operation.IsEqual:
+							op = "==";
+							break;
+						case Operation.IsNotEqual:
+							op = "!=";
+							break;
 					}
 
 					return string.Format("({0}{1}{2})",

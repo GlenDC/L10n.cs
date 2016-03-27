@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Utils;
@@ -42,7 +41,7 @@ namespace L20nCore
 				var first = m_First.Optimize() as Literal;
 				var second = m_Second.Optimize() as Literal;
 
-				if(first != null && second != null)
+				if (first != null && second != null)
 					return Operation(first.Value, second.Value);
 
 				return this;
@@ -53,7 +52,7 @@ namespace L20nCore
 				var first = m_First.Eval(ctx) as Literal;
 				var second = m_Second.Eval(ctx) as Literal;
 				
-				if(first != null && second != null)
+				if (first != null && second != null)
 					return Operation(first.Value, second.Value);
 
 				return null;
@@ -205,7 +204,7 @@ namespace L20nCore
 			public GreaterThanOrEqualExpression(L20nObject a, L20nObject b)
 			: base(a, b)
 			{
-				m_Output = new BooleanValue ();
+				m_Output = new BooleanValue();
 			}
 
 			protected override L20nObject Operation(int a, int b)

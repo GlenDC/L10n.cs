@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Internal;
@@ -40,7 +39,7 @@ namespace L20nCore
 				m_IfFalse = if_false;
 			}
 
-			public override L20nObject Optimize ()
+			public override L20nObject Optimize()
 			{
 				var condition = m_Condition.Optimize() as BooleanValue;
 				if (condition == null)
@@ -53,7 +52,7 @@ namespace L20nCore
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var condition = m_Condition.Eval(ctx) as BooleanValue;
-				if(condition == null)
+				if (condition == null)
 					return condition;
 
 				return condition.Value ? m_IfTrue.Eval(ctx)

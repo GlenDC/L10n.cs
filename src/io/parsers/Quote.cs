@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.IO;
 
@@ -32,6 +31,7 @@ namespace L20nCore
 					Single,
 					Double,
 				}
+
 				public enum LineType
 				{
 					Single,
@@ -41,7 +41,8 @@ namespace L20nCore
 				public class Info : IComparable
 				{
 					public Type Type { get; private set; }
-					public LineType LineType {get; private set; }
+
+					public LineType LineType { get; private set; }
 
 					public Info(Type type, LineType lineType)
 					{
@@ -49,23 +50,29 @@ namespace L20nCore
 						LineType = lineType;
 					}
 
-					public int CompareTo(object obj) {
-						if (obj == null) return 1;
+					public int CompareTo(object obj)
+					{
+						if (obj == null)
+							return 1;
 						
 						Info otherInfo = obj as Info;
-						if (otherInfo != null) {
-							if(this.Type == otherInfo.Type) {
-								if(this.LineType == otherInfo.LineType) {
+						if (otherInfo != null)
+						{
+							if (this.Type == otherInfo.Type)
+							{
+								if (this.LineType == otherInfo.LineType)
+								{
 									return 0;
-								}
-								else {
+								} else
+								{
 									return (this.LineType == LineType.Single ? -1 : 1);
 								}
-							}
-							else {
+							} else
+							{
 								return (this.Type == Type.Single ? -1 : 1);
 							}
-						} else {
+						} else
+						{
 							throw new Exceptions.UnexpectedObjectException(
 								"Object is not a Quote.Info");
 						}
@@ -83,7 +90,8 @@ namespace L20nCore
 					string output;
 					int pos = stream.Position;
 
-					if (!stream.ReadReg("(\"\"\"|\'\'\'|\'|\")", out output)) {
+					if (!stream.ReadReg("(\"\"\"|\'\'\'|\'|\")", out output))
+					{
 						throw new Exceptions.ParseException(
 							String.Format(
 							"expected to read a <quote> (starting at {0}), but found invalid characters",
@@ -93,13 +101,16 @@ namespace L20nCore
 					
 					var lineType = output.Length == 1 ? LineType.Single : LineType.Multi;
 					Info info;
-					if (output [0] == '"') {
-						info = new Info (Type.Double, lineType);
-					} else {
-						info = new Info (Type.Single, lineType);
+					if (output [0] == '"')
+					{
+						info = new Info(Type.Double, lineType);
+					} else
+					{
+						info = new Info(Type.Single, lineType);
 					}
 
-					if (expected != null && expected.CompareTo(info) != 0) {
+					if (expected != null && expected.CompareTo(info) != 0)
+					{
 						throw new Exceptions.ParseException(
 							String.Format(
 							"expected to read {0} (starting at {1}), but found {2}",
@@ -113,14 +124,15 @@ namespace L20nCore
 
 				public static bool Peek(CharStream stream, Quote.Info quote = null)
 				{
-					if (quote != null) {
+					if (quote != null)
+					{
 						var raw = quote.ToString();
 						var output = stream.PeekNextRange(raw.Length);
 
 						return raw == output;
 					}
 
-					char next = stream.PeekNext ();
+					char next = stream.PeekNext();
 					return next == '\'' || next == '"';
 				}
 			}

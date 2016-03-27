@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -42,7 +41,7 @@ namespace L20nCore
 
 				public void SetExpression(INode expression)
 				{
-					if(m_Expression != null)
+					if (m_Expression != null)
 						throw new ParseException("can't set expression as it's already set");
 
 					m_Expression = expression;
@@ -62,7 +61,8 @@ namespace L20nCore
 				}
 				
 				public string Display()
-				{;
+				{
+					;
 					return String.Format("{0}({1}){{2}}",
 						m_Identifier,
 					    String.Join(",", m_Parameters.ToArray()),

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using L20nCore.Exceptions;
 
@@ -36,17 +35,18 @@ namespace L20nCore
 					m_First = first;
 					m_Second = second;
 					
-					switch (op) {
-					case "&&":
-						m_Operation = Operation.And;
-						break;
+					switch (op)
+					{
+						case "&&":
+							m_Operation = Operation.And;
+							break;
 						
-					case "||":
-						m_Operation = Operation.Or;
-						break;
+						case "||":
+							m_Operation = Operation.Or;
+							break;
 						
-					default:
-						throw new ParseException(
+						default:
+							throw new ParseException(
 							String.Format("{0} is not a valid <logic> operation", op));
 					}
 				}
@@ -56,12 +56,13 @@ namespace L20nCore
 					var first = m_First.Eval();
 					var second = m_Second.Eval();
 					
-					switch (m_Operation) {
-					case Operation.And:
-						return new Objects.AndExpression(first, second).Optimize();
+					switch (m_Operation)
+					{
+						case Operation.And:
+							return new Objects.AndExpression(first, second).Optimize();
 						
-					case Operation.Or:
-						return new Objects.OrExpression(first, second).Optimize();
+						case Operation.Or:
+							return new Objects.OrExpression(first, second).Optimize();
 					}
 					
 					throw new EvaluateException(

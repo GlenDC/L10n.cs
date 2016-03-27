@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -27,7 +26,6 @@ namespace L20nCore
 			public delegate void LogDelegate(string msg);
 
 			private static LogDelegate s_CustomWarning = null;
-
 			public static string CurrentLocale = null;
 
 			public static void SetWarningCallback(LogDelegate cb)
@@ -37,11 +35,13 @@ namespace L20nCore
 
 			public static void Warning(string message)
 			{
-				if (s_CustomWarning != null) {
+				if (s_CustomWarning != null)
+				{
 					s_CustomWarning(
 						String.Format("[L20n][{0}] {1}",
 					    	CurrentLocale, message));
-				} else {
+				} else
+				{
 					Console.WriteLine("[L20n][{0}][WARNING] {1}",
 						CurrentLocale, message);
 				}

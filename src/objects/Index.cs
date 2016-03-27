@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -30,7 +29,6 @@ namespace L20nCore
 		public sealed class Index : L20nObject
 		{
 			private readonly L20nObject[] m_Indeces;
-
 			private L20nObject[] m_EvaluatedIndeces;
 			
 			public Index(L20nObject[] indeces)
@@ -47,34 +45,38 @@ namespace L20nCore
 			
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				if (m_Indeces.Length == 1) {
-					var index = m_Indeces[0].Eval(ctx);
+				if (m_Indeces.Length == 1)
+				{
+					var index = m_Indeces [0].Eval(ctx);
 
 					var identifier = index as Identifier;
-					if(identifier != null)
+					if (identifier != null)
 						return index;
 
 					var stringOutput = index as StringOutput;
-					if(stringOutput != null)
+					if (stringOutput != null)
 						return new Identifier(stringOutput.Value);
 
 					Logger.Warning("something went wrong while evaluating the only index");
 					return null;
 				}
 
-				for (int i = 0; i < m_EvaluatedIndeces.Length; ++i) {
-					var index = m_Indeces[i].Eval(ctx);
+				for (int i = 0; i < m_EvaluatedIndeces.Length; ++i)
+				{
+					var index = m_Indeces [i].Eval(ctx);
 					var identifier = index as Identifier;
-					if(identifier == null) {
+					if (identifier == null)
+					{
 						var output = index as StringOutput;
-						if(output != null)
+						if (output != null)
 							identifier = new Identifier(output.Value);
 					}
 
-					if(identifier != null) {
-						m_EvaluatedIndeces[i] = identifier;
-					}
-					else {
+					if (identifier != null)
+					{
+						m_EvaluatedIndeces [i] = identifier;
+					} else
+					{
 						Internal.Logger.WarningFormat(
 							"something went wrong while evaluating index #{0}", i);
 						return null;

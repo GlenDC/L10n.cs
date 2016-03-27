@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using L20nCore.Exceptions;
 
@@ -33,20 +32,22 @@ namespace L20nCore
 					{
 						var startingPos = stream.Position;
 
-						try {
+						try
+						{
 							var first = Binary.Parse(stream);
 							string op;
-							if(stream.ReadReg(@"\s*(\|\||\&\&)", out op)) {
+							if (stream.ReadReg(@"\s*(\|\||\&\&)", out op))
+							{
 								WhiteSpace.Parse(stream, true);
 								var second = Logic.Parse(stream);
 								return new AST.LogicExpression(
 									first, second, op.Trim());
-							}
-							else {
+							} else
+							{
 								return first;
 							}
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							string msg = String.Format(
 								"something went wrong parsing an <logical_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));

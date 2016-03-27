@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -26,7 +25,6 @@ namespace L20nCore
 {
 	namespace IO
 	{
-
 		public class CharStream : IDisposable
 		{
 			public delegate bool CharPredicate(char c);
@@ -64,19 +62,19 @@ namespace L20nCore
 
 			public bool ReadNext(out char c)
 			{
-				if(EndOfStream())
+				if (EndOfStream())
 				{
 					c = '\0';
 					return false;
 				}
 
-				c = m_Buffer[m_Position++];
+				c = m_Buffer [m_Position++];
 				return true;
 			}
 
 			public bool ReadNextRange(int len, out string s)
 			{
-				if(EndOfStream() || (m_Position+len) > m_LastPosition)
+				if (EndOfStream() || (m_Position + len) > m_LastPosition)
 				{
 					s = null;
 					return false;
@@ -89,7 +87,7 @@ namespace L20nCore
 
 			public char PeekNext(int offset = 0)
 			{
-				if(EndOfStream())
+				if (EndOfStream())
 				{
 					return '\0';
 				}
@@ -98,16 +96,16 @@ namespace L20nCore
 				if (pos > m_LastPosition)
 					return '\0';
 
-				return m_Buffer[pos];
+				return m_Buffer [pos];
 			}
 
 			public string PeekNextRange(int length, int offset = 0)
 			{
 				int pos = m_Position + offset;
-				if(EndOfStream() || (pos+length) > (m_LastPosition+1))
+				if (EndOfStream() || (pos + length) > (m_LastPosition + 1))
 					return null;
 
-				return m_Buffer.Substring (pos, length);
+				return m_Buffer.Substring(pos, length);
 			}
 
 			public bool PeekReg(string reg)
@@ -124,7 +122,7 @@ namespace L20nCore
 					msg = "expected to read a char, but reached EOF instead";
 
 				char c;
-				if (!ReadNext (out c))
+				if (!ReadNext(out c))
 					throw new IOException(msg, CreateEOFException());
 				return c;
 			}
@@ -132,26 +130,28 @@ namespace L20nCore
 			public void SkipCharacter(char expected)
 			{
 				char c;
-				if (!ReadNext (out c))
+				if (!ReadNext(out c))
 					throw CreateEOFException();
 				if (c != expected)
-					throw CreateException(String.Format ("expected {0}, got {1}", expected, c));
+					throw CreateException(String.Format("expected {0}, got {1}", expected, c));
 			}
 
 			public void SkipAnyCharacter(char[] expected)
 			{
 				char c;
 
-				if (!ReadNext (out c))
+				if (!ReadNext(out c))
 					throw CreateEOFException();
 
-				for (int i = 0; i < expected.Length; ++i) {
-					if (expected [i] == c) {
+				for (int i = 0; i < expected.Length; ++i)
+				{
+					if (expected [i] == c)
+					{
 						return;
 					}
 				}
 
-				throw CreateException(String.Format ("expected {0}, got {1}", expected, c));
+				throw CreateException(String.Format("expected {0}, got {1}", expected, c));
 			}
 
 			public void SkipString(string expected)
@@ -160,14 +160,14 @@ namespace L20nCore
 				if (!this.ReadNextRange(expected.Length, out s))
 					throw CreateEOFException();
 				if (s != expected)
-					throw CreateException(String.Format ("expected {0}, got {1}", expected, s));
+					throw CreateException(String.Format("expected {0}, got {1}", expected, s));
 			}
-
 
 			public int SkipWhile(CharPredicate pred)
 			{
 				int skipped = 0;
-				while (!EndOfStream() && pred(m_Buffer[m_Position])) {
+				while (!EndOfStream() && pred(m_Buffer[m_Position]))
+				{
 					++m_Position;
 					++skipped;
 				}
@@ -177,7 +177,8 @@ namespace L20nCore
 
 			public bool SkipIfPossible(char expected)
 			{
-				if (PeekNext () == expected) {
+				if (PeekNext() == expected)
+				{
 					SkipCharacter(expected);
 					return true;
 				}
@@ -188,8 +189,10 @@ namespace L20nCore
 			public bool SkipAnyIfPossible(char[] expected, out char c)
 			{
 				c = PeekNext();
-				for (int i = 0; i < expected.Length; ++i) {
-					if(c == expected[i]) {
+				for (int i = 0; i < expected.Length; ++i)
+				{
+					if (c == expected [i])
+					{
 						++m_Position;
 						return true;
 					}
@@ -203,7 +206,8 @@ namespace L20nCore
 				var re = new Regex(reg);
 				var match = re.Match(m_Buffer, m_Position);
 
-				if (match.Success && match.Index == m_Position) {
+				if (match.Success && match.Index == m_Position)
+				{
 					c = match.Value;
 					m_Position += c.Length;
 					return true;
@@ -215,7 +219,7 @@ namespace L20nCore
 			
 			public string ReadUntilEnd()
 			{
-				string content = m_Buffer.Substring (m_Position);
+				string content = m_Buffer.Substring(m_Position);
 				m_Position = m_LastPosition + 1;
 				return content;
 			}
@@ -227,19 +231,21 @@ namespace L20nCore
 
 			public bool InputLeft()
 			{
-				if (EndOfStream ())
+				if (EndOfStream())
 					return false;
 
-				var re = new Regex (@"[^\s]+");
+				var re = new Regex(@"[^\s]+");
 				return re.IsMatch(m_Buffer, m_Position);
 			}
 
-			public string ComputeDetailedPosition(int pos) {
+			public string ComputeDetailedPosition(int pos)
+			{
 				var re = new Regex(@"(\r\n|\n|\r)");
-				var matches = re.Matches(m_Buffer.Substring (0, pos));
+				var matches = re.Matches(m_Buffer.Substring(0, pos));
 				int lineNumber = 1;
 				int linePosition = pos;
-				if (matches.Count > 0) {
+				if (matches.Count > 0)
+				{
 					lineNumber = matches.Count + 1;
 					var match = matches [matches.Count - 1];
 					linePosition -= match.Index + match.Length - 1;
@@ -251,14 +257,15 @@ namespace L20nCore
 			public ParseException CreateException(string msg, int offset = 0)
 			{
 				int pos = m_Position + offset;
-				if (pos >= m_LastPosition) {
+				if (pos >= m_LastPosition)
+				{
 					return new ParseException(
 						String.Format("parsing error: {0}", msg));
 				}
 
 				return new ParseException(
 					String.Format("'{0}' at {1} is unexpected: {2}",
-				              m_Buffer[pos], ComputeDetailedPosition(pos), msg));
+				              m_Buffer [pos], ComputeDetailedPosition(pos), msg));
 			}
 
 			public ParseException CreateEOFException()
@@ -267,7 +274,9 @@ namespace L20nCore
 					"end of stream was reached while more input was expected");
 			}
 
-			public void Dispose() {}
+			public void Dispose()
+			{
+			}
 		}
 	}
 }

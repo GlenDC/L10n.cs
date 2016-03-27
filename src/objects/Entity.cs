@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -61,33 +60,41 @@ namespace L20nCore
 			
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				if(argv.Length != 0 && (argv[0] as Dummy) != null) {
-					if(m_IsPrivate) {
+				if (argv.Length != 0 && (argv [0] as Dummy) != null)
+				{
+					if (m_IsPrivate)
+					{
 						Logger.Warning("entity is marked as private and cannot be accessed from C#");
 						return null;
 					}
 
-					if(argv.Length > 1) {
-						var arguments = new L20nObject[argv.Length-1];
-						for(int i = 0; i < arguments.Length; ++i)
-							arguments[i] = argv[i+1];
+					if (argv.Length > 1)
+					{
+						var arguments = new L20nObject[argv.Length - 1];
+						for (int i = 0; i < arguments.Length; ++i)
+							arguments [i] = argv [i + 1];
 						return this.Eval(ctx, arguments);
-					} else {
+					} else
+					{
 						return this.Eval(ctx);
 					}
 				}
 	
-				if (m_Index != null && argv.Length == 0) {
+				if (m_Index != null && argv.Length == 0)
+				{
 					var index = m_Index.Eval(ctx);
-					if(index == null) {
+					if (index == null)
+					{
 						Logger.Warning("Entity: index couldn't be evaluated");
 						return index;
 					}
 
 					var identifier = index as Identifier;
-					if(identifier != null) {
+					if (identifier != null)
+					{
 						var result = m_Value.Eval(ctx, identifier);
-						if(result == null) {
+						if (result == null)
+						{
 							Logger.Warning("<Entity>: <Identifier>-index got evaluated to null");
 							return null;
 						}
@@ -96,9 +103,11 @@ namespace L20nCore
 					}
 
 					var property = index as PropertyExpression;
-					if(property != null) {
+					if (property != null)
+					{
 						var result = property.Eval(ctx, this);
-						if(result == null) {
+						if (result == null)
+						{
 							Logger.Warning("<Entity>: <PropertyExpression>-index got evaluated to null");
 							return null;
 						}

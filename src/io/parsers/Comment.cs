@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Exceptions;
@@ -30,14 +29,18 @@ namespace L20nCore
 			{
 				public static void Parse(CharStream stream)
 				{
-					if (!stream.SkipIfPossible ('/') || !(stream.SkipIfPossible ('*'))) {
+					if (!stream.SkipIfPossible('/') || !(stream.SkipIfPossible('*')))
+					{
 						throw stream.CreateException(
 							"a comment has to be opened with '/*'");
 					}
 
-					char c; string content = "";
-					while (stream.ReadNext(out c)) {
-						if(c == '*' && stream.SkipIfPossible('/')) {
+					char c;
+					string content = "";
+					while (stream.ReadNext(out c))
+					{
+						if (c == '*' && stream.SkipIfPossible('/'))
+						{
 							return;
 						}
 						content += c;
@@ -50,7 +53,8 @@ namespace L20nCore
 
 				public static bool PeekAndParse(CharStream stream)
 				{
-					if (stream.PeekNext() != '/' || stream.PeekNext(1) != '*') {
+					if (stream.PeekNext() != '/' || stream.PeekNext(1) != '*')
+					{
 						return false;
 					}
 

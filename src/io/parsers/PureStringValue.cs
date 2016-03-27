@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -31,17 +30,20 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						var output = "";
 						var quote = Quote.Parse(stream);
 
 						char c;
 						
-						while((c = stream.PeekNext()) != '\0') {
-							if(c == '\\') {
+						while ((c = stream.PeekNext()) != '\0')
+						{
+							if (c == '\\')
+							{
 								output += stream.ForceReadNext();
-							}
-							else if(Quote.Peek(stream, quote)) {
+							} else if (Quote.Peek(stream, quote))
+							{
 								break; // un-escaped quote means we're ending the string
 							}
 
@@ -51,8 +53,8 @@ namespace L20nCore
 						Quote.Parse(stream, quote);
 						
 						return output;
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing an <string_value> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
@@ -67,7 +69,8 @@ namespace L20nCore
 				
 				public static bool PeekAndParse(CharStream stream, out string value)
 				{
-					if(StringValue.Peek(stream)) {
+					if (StringValue.Peek(stream))
+					{
 						value = PureStringValue.Parse(stream);
 						return true;
 					}

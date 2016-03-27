@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -33,7 +32,8 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 
-					try {
+					try
+					{
 						// private identifiers start with an underscore
 						// and can only be referenced from within an l20n file
 						bool isPrivate = (identifier.IndexOf('_') == 0);
@@ -54,17 +54,18 @@ namespace L20nCore
 						stream.SkipCharacter('>');
 						
 						var entityAST = new AST.Entity(identifier, isPrivate, index, value);
-						try {
-							var entity = (Objects.Entity) entityAST.Eval();
+						try
+						{
+							var entity = (Objects.Entity)entityAST.Eval();
 							builder.AddEntity(identifier, entity);
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							throw new Exceptions.EvaluateException(
 								String.Format("couldn't evaluate `{0}`", entityAST.Display()),
 								e);
 						}
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing an <entity> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));

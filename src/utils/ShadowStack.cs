@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -27,10 +26,10 @@ namespace L20nCore
 	namespace Utils
 	{
 		public sealed class ShadowStack<T>
-			where T: class
+            where T: class
 		{
 			private Dictionary<string, Stack<T>> m_StackDictionary;
-			
+            
 			public ShadowStack()
 			{
 				m_StackDictionary = new Dictionary<string, Stack<T>>();
@@ -41,7 +40,7 @@ namespace L20nCore
 				var stack = CreateOrGetStack(key);
 				stack.Push(value);
 			}
-			
+            
 			public T Peek(string key)
 			{
 				var stack = CreateOrGetStack(key);
@@ -51,7 +50,7 @@ namespace L20nCore
 			public T PeekSafe(string key)
 			{
 				var stack = CreateOrGetStack(key);
-				if(stack.Count > 0)
+				if (stack.Count > 0)
 					return stack.Peek();
 
 				return null;
@@ -62,20 +61,21 @@ namespace L20nCore
 				var stack = CreateOrGetStack(key);
 				return stack.Pop();
 			}
-			
+            
 			public T PopSafe(string key)
 			{
 				var stack = CreateOrGetStack(key);
-				if(stack.Count > 0)
+				if (stack.Count > 0)
 					return stack.Pop();
 
 				return null;
 			}
-			
+            
 			private Stack<T> CreateOrGetStack(string key)
 			{
 				Stack<T> stack;
-				if (!m_StackDictionary.TryGetValue(key, out stack)) {
+				if (!m_StackDictionary.TryGetValue(key, out stack))
+				{
 					stack = new Stack<T>();
 					m_StackDictionary.Add(key, stack);
 				}

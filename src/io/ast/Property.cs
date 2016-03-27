@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -44,7 +43,7 @@ namespace L20nCore
 				{
 					var identifiers = new Objects.L20nObject[m_Identifiers.Count];
 					for (int i = 0; i < identifiers.Length; ++i)
-						identifiers[i] = m_Identifiers[i].Eval();
+						identifiers [i] = m_Identifiers [i].Eval();
 					return new Objects.PropertyExpression(identifiers).Optimize();
 				}
 				
@@ -53,7 +52,7 @@ namespace L20nCore
 					var identifiers = new string[m_Identifiers.Count];
 					for (int i = 0; i < identifiers.Length; ++i)
 						identifiers [i] = m_Identifiers [i].Display();
-					return String.Join (".", identifiers);
+					return String.Join(".", identifiers);
 				}
 			}
 		}

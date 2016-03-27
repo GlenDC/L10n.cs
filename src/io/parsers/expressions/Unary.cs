@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using L20nCore.Exceptions;
 
@@ -33,18 +32,20 @@ namespace L20nCore
 					{
 						var startingPos = stream.Position;
 						
-						try {
+						try
+						{
 							char op;
-							if(stream.SkipAnyIfPossible(new char[3]{'+', '-', '!'}, out op)) {
+							if (stream.SkipAnyIfPossible(new char[3]{'+', '-', '!'}, out op))
+							{
 								WhiteSpace.Parse(stream, true);
 								var expression = Unary.Parse(stream);
 								return new AST.UnaryOperation(expression, op);
-							}
-							else {
+							} else
+							{
 								return Member.Parse(stream);
 							}
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							string msg = String.Format(
 								"something went wrong parsing an <unary_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));

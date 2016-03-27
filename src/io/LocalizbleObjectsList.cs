@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -26,9 +25,12 @@ namespace L20nCore
 		{
 			public static void Parse(string path, Internal.LocaleContext.Builder builder)
 			{
-				try {
-					using(CharStream stream = CharStream.CreateFromFile(path)) {
-						while(stream.InputLeft()) {
+				try
+				{
+					using (CharStream stream = CharStream.CreateFromFile(path))
+					{
+						while (stream.InputLeft())
+						{
 							// Skip WhiteSpace
 							IO.Parsers.WhiteSpace.Parse(stream, true);
 							
@@ -36,8 +38,8 @@ namespace L20nCore
 							Parsers.Entry.Parse(stream, builder);
 						}
 					}
-				}
-				catch(Exception exception) {
+				} catch (Exception exception)
+				{
 					throw new Exceptions.ParseException(
 						String.Format("couldn't parse <localizble_objects_list> from file: {0}", path),
 						exception);

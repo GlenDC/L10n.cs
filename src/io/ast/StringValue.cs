@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -28,7 +27,6 @@ namespace L20nCore
 			public sealed class StringValue : INode
 			{
 				private readonly Parsers.Quote.Info m_Quote;
-
 				private string m_Value;
 				private List<INode> m_Expressions;
 
@@ -59,15 +57,16 @@ namespace L20nCore
 				{
 					var expressions = new Objects.L20nObject[m_Expressions.Count];
 					for (int i = 0; i < expressions.Length; ++i)
-						expressions[i] = m_Expressions[i].Eval();
+						expressions [i] = m_Expressions [i].Eval();
 					return new Objects.StringValue(m_Value, expressions).Optimize();
 				}
 
 				public string Display()
 				{
 					var expressions = new string[m_Expressions.Count];
-					for (int i = 0; i < expressions.Length; ++i) {
-						expressions[i] = m_Expressions[i].Display();
+					for (int i = 0; i < expressions.Length; ++i)
+					{
+						expressions [i] = m_Expressions [i].Display();
 					}
 
 					var str = String.Format(m_Value, expressions);

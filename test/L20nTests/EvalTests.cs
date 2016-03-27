@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.IO;
 using NUnit.Framework;
@@ -114,7 +113,7 @@ namespace L20nCoreTests
 		private T ParseAndEvalAs<T>(string buffer)
 			where T: L20nCore.Objects.L20nObject
 		{
-			return (T) Expression.Parse(NC(buffer)).Eval()
+			return (T)Expression.Parse(NC(buffer)).Eval()
 				.Eval(m_DummyContext);
 		}
 

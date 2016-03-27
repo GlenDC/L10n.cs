@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -29,7 +28,7 @@ namespace L20nCore
 		public static class StreamReaderFactory
 		{
 			public delegate StreamReader DelegateType
-				(string path, System.Text.Encoding encoding, bool detectEncoding);
+				(string path,System.Text.Encoding encoding,bool detectEncoding);
 
 			private static Option<DelegateType> m_Delegate =
 				new Option<DelegateType>();

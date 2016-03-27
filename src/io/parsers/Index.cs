@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +30,8 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						// skip open char
 						stream.SkipCharacter('[');
 
@@ -39,7 +39,8 @@ namespace L20nCore
 						var index = new AST.Index(ParseExpression(stream));
 
 						// others are optional
-						while(stream.SkipIfPossible(',')) {
+						while (stream.SkipIfPossible(','))
+						{
 							index.AddIndex(ParseExpression(stream));
 						}
 
@@ -47,8 +48,8 @@ namespace L20nCore
 						stream.SkipCharacter(']');
 
 						return index;
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing an <index> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
@@ -70,7 +71,8 @@ namespace L20nCore
 				
 				public static bool PeekAndParse(CharStream stream, out AST.INode index)
 				{
-					if (stream.PeekNext() != '[') {
+					if (stream.PeekNext() != '[')
+					{
 						index = null;
 						return false;
 					}

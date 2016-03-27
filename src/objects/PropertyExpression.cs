@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -38,7 +37,8 @@ namespace L20nCore
 			
 			public PropertyExpression(L20nObject[] identifiers)
 			{
-				if (identifiers.Length < 2) {
+				if (identifiers.Length < 2)
+				{
 					throw new ParseException("a property needs at least 2 identifiers");
 				}
 	
@@ -47,13 +47,15 @@ namespace L20nCore
 			
 			public PropertyExpression(string[] identifiers)
 			{
-				if (identifiers.Length < 2) {
+				if (identifiers.Length < 2)
+				{
 					throw new EvaluateException("a property needs at least 2 identifiers");
 				}
 
 				m_Identifiers = new L20nObject[identifiers.Length];
-				for (int i = 0; i < identifiers.Length; ++i) {
-					m_Identifiers [i] = new Identifier (identifiers [i]);
+				for (int i = 0; i < identifiers.Length; ++i)
+				{
+					m_Identifiers [i] = new Identifier(identifiers [i]);
 				}
 			}
 
@@ -67,36 +69,43 @@ namespace L20nCore
 				Entity maybe;
 				int i = 0;
 
-				if (argv == null || argv.Length == 0 || (argv[0] as Entity) == null) {
-					maybe = GetEntity(ctx, m_Identifiers[i]);
+				if (argv == null || argv.Length == 0 || (argv [0] as Entity) == null)
+				{
+					maybe = GetEntity(ctx, m_Identifiers [i]);
 					i += 1;
-				} else {
-					maybe = argv[0] as Entity;
+				} else
+				{
+					maybe = argv [0] as Entity;
 				}
 
-				if (maybe == null) {
+				if (maybe == null)
+				{
 					Logger.Warning("<PropertyExpression>: couldn't evaluate first expression");
 					return maybe;
 				}
 
 				L20nObject obj = maybe;
 
-				if(argv.Length == 1 && (argv[0] as Dummy) != null) {
-					obj = obj.Eval(ctx, argv[0], m_Identifiers[i]);
+				if (argv.Length == 1 && (argv [0] as Dummy) != null)
+				{
+					obj = obj.Eval(ctx, argv [0], m_Identifiers [i]);
 					++i;
 				}
 
-				for(; i < m_Identifiers.Length; ++i) {
-					if(obj == null) {
+				for (; i < m_Identifiers.Length; ++i)
+				{
+					if (obj == null)
+					{
 						Logger.WarningFormat(
 							"<PropertyExpression>: couldn't evaluate expression #{0}", i);
 						return obj;
 					}
 
-					obj = obj.Eval(ctx, m_Identifiers[i]);
+					obj = obj.Eval(ctx, m_Identifiers [i]);
 				}
 
-				if (obj == null) {
+				if (obj == null)
+				{
 					Logger.Warning(
 						"<PropertyExpression>: couldn't evaluate the final expression");
 					return obj;
@@ -109,18 +118,18 @@ namespace L20nCore
 			{
 				// is it an identifier?
 				var identifier = key as Identifier;
-				if(identifier != null)
+				if (identifier != null)
 					return ctx.GetEntity(identifier.Value);
 
 				// is it a variable?
 				var variable = key as Variable;
-				if(variable != null)
+				if (variable != null)
 					return ctx.GetVariable(variable.Identifier) as Entity;
 
 				// is it a global?
 				var global = key as Global;
 				if (global != null)
-					return ctx.GetGlobal (global.Identifier) as Entity;
+					return ctx.GetGlobal(global.Identifier) as Entity;
 
 				return null;
 			}

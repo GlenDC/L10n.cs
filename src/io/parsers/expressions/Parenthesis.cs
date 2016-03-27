@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -32,17 +31,19 @@ namespace L20nCore
 					{
 						var startingPos = stream.Position;
 						
-						try {
-							if(stream.SkipIfPossible('(')) {
+						try
+						{
+							if (stream.SkipIfPossible('('))
+							{
 								var e = Expression.Parse(stream);
 								stream.SkipCharacter(')');
 								return e;
-							}
-							else { // than we /should/ have a primary expressions
+							} else
+							{ // than we /should/ have a primary expressions
 								return Primary.Parse(stream);
 							}
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							string msg = String.Format(
 								"something went wrong parsing an <parenthesis_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
@@ -52,7 +53,8 @@ namespace L20nCore
 
 					public static bool PeekAndParse(CharStream stream, out AST.INode expression)
 					{
-						if (stream.PeekNext () == '(' || Primary.Peek(stream)) {
+						if (stream.PeekNext() == '(' || Primary.Peek(stream))
+						{
 							expression = Parenthesis.Parse(stream);
 							return true;
 						}

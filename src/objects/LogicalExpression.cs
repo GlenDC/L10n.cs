@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Internal;
@@ -47,7 +46,9 @@ namespace L20nCore
 		public sealed class AndExpression : LogicalExpression
 		{
 			public AndExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+			}
 			
 			public override L20nObject Optimize()
 			{
@@ -55,12 +56,15 @@ namespace L20nCore
 				var second = m_Second.Optimize() as BooleanValue;
 
 				// first need to be set, otherwise there is no way to optimize an '&&' expression
-				if(first != null) {
+				if (first != null)
+				{
 					// if first is false, than we can simply return false, as it will always result in false
-					if(!first.Value) {
+					if (!first.Value)
+					{
 						return first;
-					// otherwise let's see if second is set, if so, we can simply cache the result
-					} else if(second != null) {
+						// otherwise let's see if second is set, if so, we can simply cache the result
+					} else if (second != null)
+					{
 						return second;           
 					}
 				}
@@ -71,7 +75,7 @@ namespace L20nCore
 			protected override L20nObject Operation(LocaleContext ctx)
 			{
 				var first = m_First.Eval(ctx) as BooleanValue;
-				if(first == null || !first.Value)
+				if (first == null || !first.Value)
 					return first;
 				return m_Second.Eval(ctx) as BooleanValue;
 			}
@@ -80,7 +84,9 @@ namespace L20nCore
 		public sealed class OrExpression : LogicalExpression
 		{
 			public OrExpression(L20nObject a, L20nObject b)
-			: base(a, b) {}
+			: base(a, b)
+			{
+			}
 			
 			public override L20nObject Optimize()
 			{
@@ -88,12 +94,15 @@ namespace L20nCore
 				var second = m_Second.Optimize() as BooleanValue;
 				
 				// first need to be set, otherwise there is no way to optimize an '||' expression
-				if(first != null) {
+				if (first != null)
+				{
 					// if first is true, than we can simply return true, as it will always result in true
-					if(first.Value) {
+					if (first.Value)
+					{
 						return first;
 						// otherwise let's see if second is set, if so, we can simply cache the result
-					} else if(second != null) {
+					} else if (second != null)
+					{
 						return second;
 					}
 				}

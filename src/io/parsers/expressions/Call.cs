@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -33,7 +32,8 @@ namespace L20nCore
 					{
 						var startingPos = stream.Position;
 						
-						try {
+						try
+						{
 							// skip opening tag
 							stream.SkipCharacter('(');
 
@@ -41,7 +41,8 @@ namespace L20nCore
 								member, ParseExpression(stream));
 
 							// but we can also have more
-							while(stream.SkipIfPossible(',')) {
+							while (stream.SkipIfPossible(','))
+							{
 								call.AddParameter(ParseExpression(stream));
 							}
 
@@ -49,8 +50,8 @@ namespace L20nCore
 							stream.SkipCharacter(')');
 
 							return call;
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							string msg = String.Format(
 								"something went wrong parsing an <call_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
@@ -70,7 +71,8 @@ namespace L20nCore
 						CharStream stream, AST.INode member,
 						out AST.INode expression)
 					{
-						if (stream.PeekNext () == '(') {
+						if (stream.PeekNext() == '(')
+						{
 							expression = Call.Parse(stream, member);
 							return true;
 						}

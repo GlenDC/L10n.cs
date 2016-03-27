@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -45,7 +44,7 @@ namespace L20nCore
 			public Option<string> TryGet(string id)
 			{
 				string output;
-				if(m_Cache.TryGetValue(id, out output))
+				if (m_Cache.TryGetValue(id, out output))
 					return new Option<string>(output);
 				return m_None;
 			}

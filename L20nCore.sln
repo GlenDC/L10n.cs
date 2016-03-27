@@ -153,6 +153,35 @@ Global
 		$24.NamingStyle = PascalCase
 		$24.IncludeInstanceMembers = True
 		$24.IncludeStaticEntities = True
+		$0.TextStylePolicy = $26
+		$26.TabsToSpaces = False
+		$26.inheritsSet = VisualStudio
+		$26.inheritsScope = text/plain
+		$26.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $27
+		$27.IndentSwitchBody = True
+		$27.AnonymousMethodBraceStyle = NextLine
+		$27.PropertyBraceStyle = NextLine
+		$27.PropertyGetBraceStyle = NextLine
+		$27.PropertySetBraceStyle = NextLine
+		$27.EventBraceStyle = NextLine
+		$27.EventAddBraceStyle = NextLine
+		$27.EventRemoveBraceStyle = NextLine
+		$27.StatementBraceStyle = NextLine
+		$27.ArrayInitializerBraceStyle = NextLine
+		$27.BeforeMethodDeclarationParentheses = False
+		$27.BeforeMethodCallParentheses = False
+		$27.BeforeConstructorDeclarationParentheses = False
+		$27.BeforeDelegateDeclarationParentheses = False
+		$27.NewParentheses = False
+		$27.inheritsSet = Mono
+		$27.inheritsScope = text/x-csharp
+		$27.scope = text/x-csharp
+		$0.TextStylePolicy = $28
+		$28.TabsToSpaces = False
+		$28.inheritsSet = VisualStudio
+		$28.inheritsScope = text/plain
+		$28.scope = text/plain
 		version = 1.0
 	EndGlobalSection
 EndGlobal

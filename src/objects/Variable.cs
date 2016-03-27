@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Internal;
@@ -39,7 +38,7 @@ namespace L20nCore
 				m_Identifier = identifier;
 			}
 
-			public override L20nObject Optimize ()
+			public override L20nObject Optimize()
 			{
 				return this;
 			}
@@ -47,12 +46,13 @@ namespace L20nCore
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var variable = ctx.GetVariable(m_Identifier);
-				if (variable == null) {
+				if (variable == null)
+				{
 					Logger.WarningFormat("couldn't find variable with key {0}", m_Identifier);
 					return variable;
 				}
 
-				return variable.Eval (ctx, argv);
+				return variable.Eval(ctx, argv);
 			}
 		}
 	}

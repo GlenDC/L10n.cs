@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -32,7 +31,8 @@ namespace L20nCore
 					{
 						var startingPos = stream.Position;
 
-						try {
+						try
+						{
 							AST.INode identifier;
 
 							if (Variable.PeekAndParse(stream, out identifier))
@@ -43,8 +43,8 @@ namespace L20nCore
 
 							return new AST.Identifier(
 								Identifier.Parse(stream, true));
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							string msg = String.Format(
 								"something went wrong parsing an <identifier> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
@@ -54,9 +54,9 @@ namespace L20nCore
 
 					public static bool Peek(CharStream stream)
 					{
-						return Identifier.Peek (stream)
-							|| Variable.Peek (stream)
-							|| Global.Peek (stream);
+						return Identifier.Peek(stream)
+							|| Variable.Peek(stream)
+							|| Global.Peek(stream);
 					}
 				}
 			}

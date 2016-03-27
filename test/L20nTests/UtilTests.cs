@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.IO;
 using NUnit.Framework;
@@ -45,7 +44,7 @@ namespace L20nCoreTests
 			Assert.AreEqual(42, c.Map((x) => new Option<int>(37 + x)).Unwrap());
 			
 			var d = new Option<int>();
-			Assert.IsFalse (d.Map((x) => new Option<int>(x)).IsSet);
+			Assert.IsFalse(d.Map((x) => new Option<int>(x)).IsSet);
 			Assert.AreEqual(42, d.MapOr(42, (x) => x));
 			Assert.AreEqual(42, d.MapOrElse((x) => x, () => c.MapOr(0, (x) => 37 + x)));
 

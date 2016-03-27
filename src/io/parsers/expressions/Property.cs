@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -33,17 +32,19 @@ namespace L20nCore
 					{
 						var startingPos = stream.Position;
 						
-						try {
+						try
+						{
 							var property = new AST.PropertyExpression(
 								IdentifierExpression.Parse(stream));
 
-							while(stream.SkipIfPossible('.')) {
+							while (stream.SkipIfPossible('.'))
+							{
 								property.Add(Identifier.Parse(stream, false));
 							}
 							
 							return property;
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							string msg = String.Format(
 								"something went wrong parsing an <property_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
@@ -54,7 +55,8 @@ namespace L20nCore
 					public static bool PeekAndParse(
 						CharStream stream, out AST.INode expression)
 					{
-						if (stream.PeekReg(@"[$@_a-zA-Z]\w*\.")) {
+						if (stream.PeekReg(@"[$@_a-zA-Z]\w*\."))
+						{
 							expression = Property.Parse(stream);
 							return true;
 						}

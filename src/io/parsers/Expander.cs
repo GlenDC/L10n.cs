@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +30,8 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						AST.INode expression;
 
 						// skip opening tags
@@ -46,8 +46,8 @@ namespace L20nCore
 						stream.SkipString("}}");
 
 						return expression;
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing an <expander> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
@@ -58,7 +58,8 @@ namespace L20nCore
 				public static bool PeekAndParse(
 					CharStream stream, out AST.INode expression)
 				{
-					if(stream.PeekNextRange(2) == "{{") {
+					if (stream.PeekNextRange(2) == "{{")
+					{
 						expression = Expander.Parse(stream);
 						return true;
 					}

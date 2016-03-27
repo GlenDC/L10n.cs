@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -47,7 +46,7 @@ namespace L20nCore
 					var name = ((Objects.Identifier)m_Name.Eval()).Value;
 					var parameters = new Objects.L20nObject[m_Parameters.Count];
 					for (int i = 0; i < parameters.Length; ++i)
-						parameters [i] = m_Parameters [i].Eval ();
+						parameters [i] = m_Parameters [i].Eval();
 					return new Objects.CallExpression(name, parameters).Optimize();
 				}
 				
@@ -55,7 +54,7 @@ namespace L20nCore
 				{
 					var parameters = new string[m_Parameters.Count];
 					for (int i = 0; i < parameters.Length; ++i)
-						parameters[i] = m_Parameters[i].Display ();
+						parameters [i] = m_Parameters [i].Display();
 
 					return String.Format("{0}({1})",
 						m_Name.Display(), String.Join(",", parameters));

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Exceptions;
@@ -29,6 +28,7 @@ namespace L20nCore
 		public abstract class L20nObject
 		{
 			public abstract L20nObject Optimize();
+
 			public abstract L20nObject Eval(LocaleContext ctx, params L20nObject[] argv);
 		}
 	}

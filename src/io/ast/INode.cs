@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -27,6 +26,7 @@ namespace L20nCore
 			public interface INode
 			{
 				Objects.L20nObject Eval();
+
 				string Display();
 			}
 		}

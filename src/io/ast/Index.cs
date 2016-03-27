@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -46,21 +45,21 @@ namespace L20nCore
 				{
 					var indeces = new Objects.L20nObject[m_Indeces.Count];
 					for (int i = 0; i < indeces.Length; ++i)
-						indeces[i] = m_Indeces[i].Eval();
+						indeces [i] = m_Indeces [i].Eval();
 					
 					return new Objects.Index(indeces).Optimize();
 				}
 				
 				public string Display()
 				{
-					if(m_Indeces.Count == 0)
+					if (m_Indeces.Count == 0)
 						return "";
 
 					var indeces = new string[m_Indeces.Count];
-					for(int i = 0; i < indeces.Length; ++i)
-						indeces[i] = m_Indeces[i].Display();
+					for (int i = 0; i < indeces.Length; ++i)
+						indeces [i] = m_Indeces [i].Display();
 					return String.Format("[{0}]",
-						String.Join (",", indeces));
+						String.Join(",", indeces));
 				}
 			}
 		}

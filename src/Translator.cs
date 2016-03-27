@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -78,39 +77,41 @@ namespace L20nCore
 
 		public string Translate(string id)
 		{
-			try {
+			try
+			{
 				return m_Database.Translate(id);
-			}
-			catch(Exception e) {
+			} catch (Exception e)
+			{
 				Internal.Logger.WarningFormat(
-					"A C# exception occured while translating {0}," +
+                    "A C# exception occured while translating {0}," +
 					" please report this as a bug @ https://github.com/GlenDC/L20nCore.cs." +
 					"\nInclude the <id> you tried to translate and all the L20n files involved; More Info: \n{1}",
-					id, e.ToString());
+                    id, e.ToString());
 				return id;
 			}
 		}
 
 		public string Translate(string id, string[] keys, Objects.L20nObject[] values)
 		{
-			try {
+			try
+			{
 				return m_Database.Translate(id, keys, values);
-			}
-			catch(Exception e) {
+			} catch (Exception e)
+			{
 				Internal.Logger.WarningFormat(
-					"A C# exception occured while translating {0}," +
+                    "A C# exception occured while translating {0}," +
 					" please report this as a bug @ https://github.com/GlenDC/L20nCore.cs." +
 					"\nInclude the <id> you tried to translate and all the L20n files involved; More Info: \n{1}",
-					id, e.ToString());
+                    id, e.ToString());
 				return id;
 			}
 		}
-		
+        
 		public string Translate(string id, string key, int value)
 		{
 			var keys = new string[] { key };
 			var values = new Objects.L20nObject[]
-				{ new Objects.Literal(value) };
+                { new Objects.Literal(value) };
 			return Translate(id, keys, values);
 		}
 
@@ -118,15 +119,15 @@ namespace L20nCore
 		{
 			var keys = new string[] {key};
 			var values = new Objects.L20nObject[]
-				{ new Objects.StringOutput(value) };
+                { new Objects.StringOutput(value) };
 			return Translate(id, keys, values);
 		}
-		
+        
 		public string Translate(string id, string key, External.IHashValue value)
 		{
 			var keys = new string[] {key};
 			var values = new Objects.L20nObject[]
-				{ new Objects.Entity(value) };
+                { new Objects.Entity(value) };
 			return Translate(id, keys, values);
 		}
 
@@ -134,7 +135,7 @@ namespace L20nCore
 		{
 			m_Database.AddGlobal(id, value);
 		}
-		
+        
 		public void AddGlobal(string id, string value)
 		{
 			m_Database.AddGlobal(id, value);
@@ -144,17 +145,17 @@ namespace L20nCore
 		{
 			m_Database.AddGlobal(id, value);
 		}
-		
+        
 		public void AddGlobal(string id, Objects.DelegatedLiteral.Delegate callback)
 		{
 			m_Database.AddGlobal(id, callback);
 		}
-		
+        
 		public void AddGlobal(string id, Objects.DelegatedString.Delegate callback)
 		{
 			m_Database.AddGlobal(id, callback);
 		}
-		
+        
 		public void AddGlobal(string id, Objects.L20nObject value)
 		{
 			m_Database.AddGlobal(id, value);

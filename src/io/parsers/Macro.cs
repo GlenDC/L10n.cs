@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -33,7 +32,8 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						var macroAST = new AST.Macro(identifier);
 						
 						stream.SkipCharacter('(');
@@ -41,11 +41,13 @@ namespace L20nCore
 
 						// variables are optional,
 						// but we do have them, we need at least one (duh)
-						if (Expressions.Variable.Peek(stream)) {
+						if (Expressions.Variable.Peek(stream))
+						{
 							macroAST.AddParameter(Macro.ParseVariable(stream));
 
 							// more than 1 is possible as well
-							while(stream.SkipIfPossible(',')) {
+							while (stream.SkipIfPossible(','))
+							{
 								WhiteSpace.Parse(stream, true);
 								macroAST.AddParameter(Macro.ParseVariable(stream));
 							}
@@ -66,17 +68,18 @@ namespace L20nCore
 						stream.SkipCharacter('>');
 
 						// return the fully parsed macro
-						try {
-							var macro = (Objects.Macro) macroAST.Eval();
+						try
+						{
+							var macro = (Objects.Macro)macroAST.Eval();
 							builder.AddMacro(identifier, macro);
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							throw new Exceptions.EvaluateException(
 								String.Format("couldn't evaluate `{0}`", macroAST.Display()),
 								e);
 						}
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing a <macro> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
@@ -88,7 +91,8 @@ namespace L20nCore
 					CharStream stream,
 					string identifier, Internal.LocaleContext.Builder builder)
 				{
-					if (stream.PeekNext () != '(') {
+					if (stream.PeekNext() != '(')
+					{
 						return false;
 					}
 

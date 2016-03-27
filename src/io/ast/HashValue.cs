@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -38,18 +37,21 @@ namespace L20nCore
 
 				public void AddItem(Item item)
 				{
-					try {
+					try
+					{
 						m_Items.Add(item.Identifier, item.Value);
-					}
-					catch(ArgumentException) {
+					} catch (ArgumentException)
+					{
 						throw new Exceptions.ImportException(
 							String.Format(
 							"<hash_item> with identifier {0} can't be added, as <identifier> isn't unique",
 							item.Identifier));
 					}
 					
-					if(item.IsDefault) {
-						if(m_Default != null) {
+					if (item.IsDefault)
+					{
+						if (m_Default != null)
+						{
 							throw new Exceptions.ImportException(
 								String.Format("<hash_item> already has a default with key {0}", m_Default));
 						}
@@ -61,7 +63,8 @@ namespace L20nCore
 				public Objects.L20nObject Eval()
 				{
 					var items = new Dictionary<string, Objects.L20nObject>(m_Items.Count);
-					foreach (KeyValuePair<string, INode> entry in m_Items) {
+					foreach (KeyValuePair<string, INode> entry in m_Items)
+					{
 						items.Add(entry.Key, entry.Value.Eval());
 					}
 
@@ -72,10 +75,11 @@ namespace L20nCore
 				{
 					string str = "{";
 
-					foreach (KeyValuePair<string, INode> entry in m_Items) {
-						str += String.Format ("{0}{1}:{2}",
+					foreach (KeyValuePair<string, INode> entry in m_Items)
+					{
+						str += String.Format("{0}{1}:{2}",
 						                      entry.Key == m_Default ? "*" : "",
-						                      entry.Key, entry.Value.Display ());
+						                      entry.Key, entry.Value.Display());
 					}
 
 					return str + "}";
@@ -84,7 +88,9 @@ namespace L20nCore
 				public class Item
 				{
 					public string Identifier { get; private set; }
+
 					public INode Value { get; private set; }
+
 					public bool IsDefault { get; private set; }
 					
 					public Item(string id, INode val, bool is_def)

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -33,23 +32,26 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						var condition = Expressions.Logic.Parse(stream);
 
 						// check if we have an IfElse case or simply a logical expression
 						string s;
-						if (stream.ReadReg(@"\s*\?\s*", out s)) {
+						if (stream.ReadReg(@"\s*\?\s*", out s))
+						{
 							var first = Expression.Parse(stream);
 							WhiteSpace.Parse(stream, true);
 							stream.SkipCharacter(':');
 							WhiteSpace.Parse(stream, true);
 							var second = Expression.Parse(stream);
 							return new AST.Conditional(condition, first, second);
-						} else { // it's simply a logical expression
+						} else
+						{ // it's simply a logical expression
 							return condition;
 						}
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing an <expression> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));

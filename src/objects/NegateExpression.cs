@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Internal;
@@ -49,7 +48,8 @@ namespace L20nCore
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var expression = m_Expression.Eval(ctx) as BooleanValue;
-				if (expression == null) {
+				if (expression == null)
+				{
 					Logger.Warning("negation of non-valid boolean evaluation isn't allowed");
 					return expression;
 				}

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -33,7 +32,6 @@ namespace L20nCore
 			private readonly Dictionary<string, Macro> m_Macros;
 			private readonly Dictionary<string, Entity> m_Entities;
 			private readonly ShadowStack<L20nObject> m_Variables;
-
 			private readonly LocaleContext m_Parent;
 
 			public LocaleContext(
@@ -52,10 +50,10 @@ namespace L20nCore
 			public L20nObject GetGlobal(string key)
 			{
 				var global = GetGlobalPrivate(key);
-				if(global != null)
+				if (global != null)
 					return global;
 
-				if(m_Parent != null)
+				if (m_Parent != null)
 					global = m_Parent.GetGlobalPrivate(key);
 
 				return global;
@@ -64,10 +62,10 @@ namespace L20nCore
 			public Macro GetMacro(string key)
 			{
 				var macro = GetMacroPrivate(key);
-				if(macro != null)
+				if (macro != null)
 					return macro;
 				
-				if(m_Parent != null)
+				if (m_Parent != null)
 					macro = m_Parent.GetMacroPrivate(key);
 				
 				return macro;
@@ -76,10 +74,10 @@ namespace L20nCore
 			public Entity GetEntity(string key)
 			{
 				var entity = GetEntityPrivate(key);
-				if(entity != null)
+				if (entity != null)
 					return entity;
 				
-				if(m_Parent != null)
+				if (m_Parent != null)
 					entity = m_Parent.GetEntityPrivate(key);
 				
 				return entity;
@@ -93,7 +91,8 @@ namespace L20nCore
 			private Macro GetMacroPrivate(string key)
 			{
 				Macro macro;
-				if (m_Macros.TryGetValue(key, out macro)) {
+				if (m_Macros.TryGetValue(key, out macro))
+				{
 					return macro;
 				}
 				
@@ -103,7 +102,8 @@ namespace L20nCore
 			private Entity GetEntityPrivate(string key)
 			{
 				Entity entity;
-				if (m_Entities.TryGetValue(key, out entity)) {
+				if (m_Entities.TryGetValue(key, out entity))
+				{
 					return entity;
 				}
 				
@@ -117,7 +117,8 @@ namespace L20nCore
 			
 			public void DropVariable(string key)
 			{
-				if (m_Variables.PopSafe(key) == null) {
+				if (m_Variables.PopSafe(key) == null)
+				{
 					Internal.Logger.WarningFormat(
 						"couldn't drop variable with key {0}", key);
 				}
@@ -141,10 +142,11 @@ namespace L20nCore
 
 				public void Import(String file_name)
 				{
-					try {
+					try
+					{
 						IO.LocalizbleObjectsList.Parse(file_name, this);
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong importing locale file: {0}",
 							file_name);
@@ -154,10 +156,11 @@ namespace L20nCore
 				
 				public void AddMacro(string key, Macro obj)
 				{
-					try {
+					try
+					{
 						m_Macros.Add(key, obj);
-					}
-					catch(ArgumentException) {
+					} catch (ArgumentException)
+					{
 						throw new Exceptions.ImportException(
 							String.Format(
 								"macro with key {0} can't be added, as key isn't unique",
@@ -167,10 +170,11 @@ namespace L20nCore
 				
 				public void AddEntity(string key, Entity obj)
 				{
-					try {
+					try
+					{
 						m_Entities.Add(key, obj);
-					}
-					catch(ArgumentException) {
+					} catch (ArgumentException)
+					{
 						throw new Exceptions.ImportException(
 							String.Format("entity with key {0} can't be added, as key isn't unique", key));
 					}

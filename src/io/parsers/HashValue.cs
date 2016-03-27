@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +30,8 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						// skip opening tag
 						stream.SkipCharacter('{');
 
@@ -42,8 +42,10 @@ namespace L20nCore
 						WhiteSpace.Parse(stream, true);
 
 						// parse all other (optional) hashItems
-						while (stream.SkipIfPossible(',')) {
-							if(!HashValue.ParseHashItem(stream, hashValue)) {
+						while (stream.SkipIfPossible(','))
+						{
+							if (!HashValue.ParseHashItem(stream, hashValue))
+							{
 								// if we have a  trailing comma, it will be break here
 								break;
 							}
@@ -53,8 +55,8 @@ namespace L20nCore
 						stream.SkipCharacter('}');
 
 						return hashValue;
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing a <hash_value> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
@@ -64,13 +66,14 @@ namespace L20nCore
 
 				public static bool Peek(CharStream stream)
 				{
-					return stream.PeekNext () == '{';
+					return stream.PeekNext() == '{';
 				}
 
 				public static bool PeekAndParse(
 					CharStream stream, out AST.INode value)
 				{
-					if (HashValue.Peek(stream)) {
+					if (HashValue.Peek(stream))
+					{
 						value = HashValue.Parse(stream);
 						return true;
 					}
@@ -82,20 +85,21 @@ namespace L20nCore
 				private static bool ParseHashItem(CharStream stream, AST.HashValue hash_value)
 				{
 					// optional whitespace
-					WhiteSpace.Parse (stream, true);
+					WhiteSpace.Parse(stream, true);
 					// parse actual hashItem
 					AST.HashValue.Item item;
 
 					// we might be dealing with a trailing comma
-					if (!HashItem.PeekAndParse (stream, out item)) {
+					if (!HashItem.PeekAndParse(stream, out item))
+					{
 						return false;
 					}
 
 					// add acutal item
-					hash_value.AddItem (item);
+					hash_value.AddItem(item);
 
 					// optional whitespace
-					WhiteSpace.Parse (stream, true);
+					WhiteSpace.Parse(stream, true);
 
 					return true;
 				}

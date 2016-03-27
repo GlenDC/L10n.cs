@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +30,8 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						// check if a hash item is supposed to be a default
 						bool isDefault = stream.SkipIfPossible('*');
 						
@@ -49,8 +49,8 @@ namespace L20nCore
 						var value = Value.Parse(stream);
 						
 						return new AST.HashValue.Item(identifier, value, isDefault);
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing a <hash_item> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
@@ -60,7 +60,8 @@ namespace L20nCore
 
 				public static bool PeekAndParse(CharStream stream, out AST.HashValue.Item item)
 				{
-					if (stream.PeekNext () == '*' || Identifier.Peek (stream)) {
+					if (stream.PeekNext() == '*' || Identifier.Peek(stream))
+					{
 						item = HashItem.Parse(stream);
 						return true;
 					}

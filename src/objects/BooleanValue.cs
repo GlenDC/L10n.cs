@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Utils;
@@ -36,7 +35,9 @@ namespace L20nCore
 			
 			private bool m_Value;
 
-			public BooleanValue(){}
+			public BooleanValue()
+			{
+			}
 			
 			public BooleanValue(bool value)
 			{

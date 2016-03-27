@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Internal;
@@ -47,7 +46,8 @@ namespace L20nCore
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var global = ctx.GetGlobal(m_Identifier);
-				if (global == null) {
+				if (global == null)
+				{
 					Logger.WarningFormat("couldn't find global with key {0}", m_Identifier);
 					return global;
 				}

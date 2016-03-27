@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Internal;
@@ -39,7 +38,8 @@ namespace L20nCore
 			public override L20nObject Optimize()
 			{
 				var literal = m_Expression.Optimize() as Literal;
-				if (literal != null) {
+				if (literal != null)
+				{
 					m_Output.Value = Operation(literal.Value);
 					return m_Output;
 				}
@@ -50,7 +50,8 @@ namespace L20nCore
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var literal = m_Expression.Eval(ctx) as Literal;
-				if(literal == null) {
+				if (literal == null)
+				{
 					Logger.Warning("couldn't operate on non-valid literal evaluation");
 					return literal;
 				}
@@ -64,7 +65,9 @@ namespace L20nCore
 		
 		public sealed class PositiveExpression : UnaryNumericExpression
 		{
-			public PositiveExpression(L20nObject e) : base(e) {}
+			public PositiveExpression(L20nObject e) : base(e)
+			{
+			}
 			
 			protected override int Operation(int a)
 			{
@@ -74,7 +77,9 @@ namespace L20nCore
 		
 		public sealed class NegativeExpression : UnaryNumericExpression
 		{
-			public NegativeExpression(L20nObject e) : base(e) {}
+			public NegativeExpression(L20nObject e) : base(e)
+			{
+			}
 			
 			protected override int Operation(int a)
 			{

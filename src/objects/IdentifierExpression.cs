@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Internal;
@@ -42,7 +41,8 @@ namespace L20nCore
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var entity = ctx.GetEntity(m_Identifier);
-				if (entity == null) {
+				if (entity == null)
+				{
 					Logger.WarningFormat("couldn't find an entity with key {0}", m_Identifier);
 					return entity;
 				}

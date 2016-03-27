@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -32,19 +31,21 @@ namespace L20nCore
 					{
 						var startingPos = stream.Position;
 						
-						try {
+						try
+						{
 							AST.INode expression;
 
 							// "for now" a property expression is always seperated by a dot (`.`)
 							// and has to have at least 1 property (e.g.: `x.y`),
 							// more than 1 is also acceptable (e.g.: `x.y.z`).
-							if(Property.PeekAndParse(stream, out expression)) {
+							if (Property.PeekAndParse(stream, out expression))
+							{
 								return expression;
-							}
-							else {
+							} else
+							{
 								var member = Parenthesis.Parse(stream);
 								
-								if(Call.PeekAndParse(stream, member, out expression))
+								if (Call.PeekAndParse(stream, member, out expression))
 									return expression;
 
 								// Attributes have been removed from the L20nCore.cs
@@ -53,8 +54,8 @@ namespace L20nCore
 								
 								return member;
 							}
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							string msg = String.Format(
 								"something went wrong parsing an <member_expression> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));

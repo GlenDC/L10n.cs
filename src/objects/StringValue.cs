@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -47,35 +46,40 @@ namespace L20nCore
 
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				for (int i = 0; i < m_EvaluatedExpressions.Length; ++i) {
-					var e = m_Expressions[i].Eval(ctx);
+				for (int i = 0; i < m_EvaluatedExpressions.Length; ++i)
+				{
+					var e = m_Expressions [i].Eval(ctx);
 
-					if(e == null) {
+					if (e == null)
+					{
 						return null;
 					}
 
 					Identifier id;
 					Entity entity;
-					while((id = e as Identifier) != null) {
+					while ((id = e as Identifier) != null)
+					{
 						entity = ctx.GetEntity(id.Value);
-						if(entity != null)
+						if (entity != null)
 							e = entity.Eval(ctx);
 					}
 
 					var primitive = e as Primitive;
 
-					if(primitive == null) {
+					if (primitive == null)
+					{
 						Logger.WarningFormat("<StringValue>: couldn't evaluate expression #{0}", i);
 						return null;
 					}
 
 					var stringOutput = primitive.ToString(ctx);
-					if(stringOutput == null) {
+					if (stringOutput == null)
+					{
 						Logger.WarningFormat("<StringValue>: couldn't evaluate expression #{0} to <StringOutput>", i);
 						return null;
 					}
 
-					m_EvaluatedExpressions[i] = stringOutput;
+					m_EvaluatedExpressions [i] = stringOutput;
 				}
 
 				m_Output.Value = String.Format(m_Value, m_EvaluatedExpressions);
@@ -85,23 +89,26 @@ namespace L20nCore
 			public override L20nObject Optimize()
 			{
 				// if we have no expressions, than we can already return with a result
-				if(m_Expressions.Length == 0)
+				if (m_Expressions.Length == 0)
 					return new StringOutput(m_Value);
 
 				var values = new string[m_Expressions.Length];
 				Primitive primitive;
-				for(int i = 0; i < values.Length; ++i) {
-					primitive = m_Expressions[i].Optimize() as Primitive;
-					if(primitive == null) {
+				for (int i = 0; i < values.Length; ++i)
+				{
+					primitive = m_Expressions [i].Optimize() as Primitive;
+					if (primitive == null)
+					{
 						return this; // we can't optimize this
 					}
 
 					// clearly this is a primitive that can't be optimized, so let's return
-					if((primitive as StringValue) != null) {
+					if ((primitive as StringValue) != null)
+					{
 						return this;
 					}
 
-					values[i] = primitive.ToString();
+					values [i] = primitive.ToString();
 				}
 
 				m_Output.Value = String.Format(m_Value, values);

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 using L20nCore.Internal;
@@ -35,7 +34,9 @@ namespace L20nCore
 			
 			private int m_Value;
 
-			public Literal() {}
+			public Literal()
+			{
+			}
 
 			public Literal(int value)
 			{

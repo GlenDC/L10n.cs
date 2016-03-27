@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -30,16 +29,18 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						AST.INode value;
-						if(!Value.PeekAndParse(stream, out value)) {
+						if (!Value.PeekAndParse(stream, out value))
+						{
 							throw new Exceptions.ParseException(
 								"couldn't find valid <value> type");
 						}
 
 						return value;
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing a <value> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
@@ -56,10 +57,10 @@ namespace L20nCore
 				public static bool PeekAndParse(
 					CharStream stream, out AST.INode value)
 				{
-					if (StringValue.PeekAndParse (stream, out value))
+					if (StringValue.PeekAndParse(stream, out value))
 						return true;
 					
-					if (HashValue.PeekAndParse (stream, out value))
+					if (HashValue.PeekAndParse(stream, out value))
 						return true;
 
 					return false;

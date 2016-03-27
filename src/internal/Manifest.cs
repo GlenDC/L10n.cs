@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -31,7 +30,6 @@ namespace L20nCore
 		public sealed class Manifest
 		{
 			private const string LOCALE_STRING_ID = "{{locale}}";
-
 			private List<string> m_Locales;
 			private string m_DefaultLocale;
 			private List<string> m_Resources;
@@ -46,10 +44,10 @@ namespace L20nCore
 				get { return m_DefaultLocale; }
 				private set
 				{
-					if(!m_Locales.Contains(value))
+					if (!m_Locales.Contains(value))
 					{
 						string msg = string.Format("{0} is not a valid default locale as " +
-						                           "it couldn't be found in the list of locales.", value);
+							"it couldn't be found in the list of locales.", value);
 						throw new ImportException(msg);
 					}
 
@@ -68,25 +66,26 @@ namespace L20nCore
 			{
 				Flush();
 
-				try {
-					using(var sr = IO.StreamReaderFactory.Create(manifest_path))
+				try
+				{
+					using (var sr = IO.StreamReaderFactory.Create(manifest_path))
 					{
 						var json = sr.ReadToEnd();
 						var root = JSON.Parse(json);
 
-						var locales = root["locales"];
-						if(locales == null || locales.Count == 0)
+						var locales = root ["locales"];
+						if (locales == null || locales.Count == 0)
 						{
 							string msg = string.Format("No locales were provided in: {0}", manifest_path);
 							throw new ImportException(msg);
 						}
-						foreach(var locale in locales.Children)
+						foreach (var locale in locales.Children)
 						{
 							m_Locales.Add(locale.Value);
 						}
 
-						var defaultLocale = root["default_locale"].Value;
-						if(defaultLocale == "")
+						var defaultLocale = root ["default_locale"].Value;
+						if (defaultLocale == "")
 						{
 							string msg = string.Format("No default locale was provided in: {0}", manifest_path);
 							throw new ImportException(msg);
@@ -94,18 +93,19 @@ namespace L20nCore
 
 						DefaultLocale = defaultLocale;
 
-						var resources = root["resources"];
-						if(resources == null || resources.Count == 0)
+						var resources = root ["resources"];
+						if (resources == null || resources.Count == 0)
 						{
 							string msg = string.Format("No resources were provided in: {0}", manifest_path);
 							throw new ImportException(msg);
 						}
-						foreach(var resource in resources.Children)
+						foreach (var resource in resources.Children)
 						{
 							AddResoure(resource.Value, manifest_path);
 						}
 					}
-				} catch(FileNotFoundException) {
+				} catch (FileNotFoundException)
+				{
 					string msg = string.Format("manifest file couldn't be found: {0}", manifest_path);
 					throw new ImportException(msg);
 				}
@@ -114,7 +114,8 @@ namespace L20nCore
 			public List<String> GetLocaleFiles(string locale)
 			{
 				var files = new List<String>();
-				foreach(var resource in m_Resources) {
+				foreach (var resource in m_Resources)
+				{
 					var file = resource.Replace(LOCALE_STRING_ID, locale);
 					files.Add(file);
 				}

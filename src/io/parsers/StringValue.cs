@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 using System.Collections.Generic;
 
@@ -31,26 +30,30 @@ namespace L20nCore
 				{
 					var startingPos = stream.Position;
 					
-					try {
+					try
+					{
 						var quote = Quote.Parse(stream);
 						var value = new AST.StringValue(quote);
 
 						AST.INode expression;
 						char c;
 			
-						while((c = stream.PeekNext()) != '\0') {
-							if(c == '\\') {
+						while ((c = stream.PeekNext()) != '\0')
+						{
+							if (c == '\\')
+							{
 								value.appendChar(stream.ForceReadNext());
 								value.appendChar(stream.ForceReadNext());
-							}
-							else {
-								if(Quote.Peek(stream, quote)) {
+							} else
+							{
+								if (Quote.Peek(stream, quote))
+								{
 									break; // un-escaped quote means we're ending the string
-								}
-								else if(Expander.PeekAndParse(stream, out expression)) {
+								} else if (Expander.PeekAndParse(stream, out expression))
+								{
 									value.appendExpression(expression);
-								}
-								else {
+								} else
+								{
 									value.appendChar(stream.ForceReadNext());
 								}
 							}
@@ -59,8 +62,8 @@ namespace L20nCore
 						Quote.Parse(stream, quote);
 						
 						return value;
-					}
-					catch(Exception e) {
+					} catch (Exception e)
+					{
 						string msg = String.Format(
 							"something went wrong parsing an <string_value> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
@@ -75,7 +78,8 @@ namespace L20nCore
 				
 				public static bool PeekAndParse(CharStream stream, out AST.INode value)
 				{
-					if(StringValue.Peek(stream)) {
+					if (StringValue.Peek(stream))
+					{
 						value = StringValue.Parse(stream);
 						return true;
 					}

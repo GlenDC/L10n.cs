@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 using System;
 
 namespace L20nCore
@@ -32,7 +31,8 @@ namespace L20nCore
 					{
 						var startingPos = stream.Position;
 						
-						try {
+						try
+						{
 							AST.INode primary;
 
 							if (Literal.PeekAndParse(stream, out primary))
@@ -42,8 +42,8 @@ namespace L20nCore
 								return primary;
 							
 							return IdentifierExpression.Parse(stream);
-						}
-						catch(Exception e) {
+						} catch (Exception e)
+						{
 							string msg = String.Format(
 								"something went wrong parsing a <primary> starting at {0}",
 								stream.ComputeDetailedPosition(startingPos));
