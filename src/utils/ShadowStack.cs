@@ -25,28 +25,48 @@ namespace L20nCore
 {
 	namespace Utils
 	{
+		/// <summary>
+		/// A utility class that functions as a language stack that allows shadowing.
+		/// This means that when we Push (Add) a value, we can add it on top of the already set value.
+		/// When we Pop (Remove) a value, the last set value will be removed and returned.
+		/// </summary>
 		public sealed class ShadowStack<T>
             where T: class
 		{
 			private Dictionary<string, Stack<T>> m_StackDictionary;
             
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Utils.ShadowStack`1"/> class.
+			/// </summary>
 			public ShadowStack()
 			{
 				m_StackDictionary = new Dictionary<string, Stack<T>>();
 			}
 
+			/// <summary>
+			/// Push the given <c>value</c> to the stack linked with <c>key</c>.
+			/// </summary>
 			public void Push(string key, T value)
 			{
 				var stack = CreateOrGetStack(key);
 				stack.Push(value);
 			}
             
+			/// <summary>
+			/// Returns a reference to the last set value on the stack linked with <c>key</c>.
+			/// Throws an exception in case the linked stack is empty.
+			/// </summary>
+			/// <param name="key">Key.</param>
 			public T Peek(string key)
 			{
 				var stack = CreateOrGetStack(key);
 				return stack.Peek();
 			}
 
+			/// <summary>
+			/// Returns a reference to the last set value on the stack linked with <c>key</c>.
+			/// <c>null</c> gets returned in case the linked stack is empty.
+			/// </summary>
 			public T PeekSafe(string key)
 			{
 				var stack = CreateOrGetStack(key);
@@ -56,12 +76,20 @@ namespace L20nCore
 				return null;
 			}
 
+			/// <summary>
+			/// Removes and returns the last set value from the stack linked with <c>key</c>.
+			/// Throws an exception in case the linked stack is empty.
+			/// </summary>
 			public T Pop(string key)
 			{
 				var stack = CreateOrGetStack(key);
 				return stack.Pop();
 			}
             
+			/// <summary>
+			/// Removes and returns the last set value from the stack linked with <c>key</c>.
+			/// <c>null</c> gets returned in case the linked stack is empty.
+			/// </summary>
 			public T PopSafe(string key)
 			{
 				var stack = CreateOrGetStack(key);

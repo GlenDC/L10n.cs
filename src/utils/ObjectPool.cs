@@ -23,46 +23,55 @@ namespace L20nCore
 	namespace Utils
 	{
 		/// <summary>
-		/// DictionaryRef stores a reference to a dictionary.
-		/// Its purpose is to provide a get interface between multiple
-		/// objects without the possibility of mutation
-		/// originating from those classes' calls.
+		/// A utility class that can be used to pool objects.
 		/// </summary>
-		public sealed class DictionaryRef<K, V>
+		public sealed class ObjectPool<T>
+			where T: new()
 		{
-			private readonly Dictionary<K, V> m_Dictionary;
-
+			readonly T[] m_FreeObjects;
+			int m_Size;
+			int m_Capacity;
+			
 			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.Utils.DictionaryRef"/> class.
 			/// </summary>
-			/// <param name="dictionary">reference to be stored and used</param>
-			public DictionaryRef(Dictionary<K, V> dictionary)
+			/// <param name="size">starting size of the pool</param>
+			public ObjectPool(int size)
 			{
-				m_Dictionary = dictionary;
+				m_FreeObjects = new T[size];
+				m_Capacity = size;
+				m_Size = 0;
 			}
-            
-			/// <summary>
-			/// Get the item linked with the specified key.
-			/// </summary>
-			/// <param name="key">key to look for</param>
-			public V Get(K key)
-			{
-				return m_Dictionary [key];
-			}
-            
-			/// <summary>
-			/// Get the item linked with the specified key.
-			/// If that item doesn't exist, return the default value instead.
-			/// </summary>
-			/// <param name="key">key to look for</param>
-			/// <param name="def">default value in case key is not registered</param>
-			public V Get(K key, V def)
-			{
-				V value;
-				if (!m_Dictionary.TryGetValue(key, out value))
-					value = def;
 
-				return value;
+			/// <summary>
+			/// Gets a free object in the pool, or create a new object otherwise.
+			/// </summary>
+			/// <returns>The object.</returns>
+			public T GetObject()
+			{
+				// if a free object is available, return it
+				if (m_Size > 0)
+				{
+					return m_FreeObjects[--m_Size];
+				}
+
+				// return it otherwise
+				return new T();
+			}
+
+			/// <summary>
+			/// Give the object back to the pool.
+			/// Make sure that the object has been cleaned up,
+			/// as that will not happen for you.
+			/// </summary>
+			public void ReturnObject(ref T obj)
+			{
+				if (m_Size < m_Capacity)
+				{
+					m_FreeObjects[m_Size++] = obj;
+				}
+
+				obj = default(T);
 			}
 		}
 	}

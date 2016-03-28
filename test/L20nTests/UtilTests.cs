@@ -25,6 +25,9 @@ using L20nCore.Exceptions;
 namespace L20nCoreTests
 {
 	[TestFixture()]
+	/// <summary>
+	/// Tests for some of the utility classes of this project.
+	/// </summary>
 	public class UtilTests
 	{	
 		[Test()]

@@ -25,6 +25,10 @@ using L20nCore.Exceptions;
 namespace L20nCoreTests
 {
 	[TestFixture()]
+	/// <summary>
+	/// High level unit tests to check if we can actually parse
+	/// and use a manifest file and its content.
+	/// </summary>
 	public class UserTests
 	{
 		// an example of a custom global external variable

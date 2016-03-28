@@ -45,12 +45,16 @@ namespace L20nCore
 
 			public Entity(External.IHashValue value)
 			{
-				var info = new External.InfoCollector();
+				var info = External.InfoCollector.Pool.GetObject();
+
 				value.Collect(info);
 
 				m_Index = null;
 				m_Value = info.Collect();
 				m_IsPrivate = false;
+
+				info.Clear();
+				External.InfoCollector.Pool.ReturnObject(ref info);
 			}
 
 			public override L20nObject Optimize()

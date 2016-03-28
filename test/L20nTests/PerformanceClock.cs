@@ -20,6 +20,12 @@ using System.Diagnostics;
 
 namespace L20nCoreTests
 {
+	/// <summary>
+	/// A simple clock class to measure how much time it takes.
+	/// </summary>
+	/// <remarks>
+	/// Doesn't seem very accurate.
+	/// </remarks>
 	public class PerformanceClock
 	{
 		private Stopwatch m_StopWatch;

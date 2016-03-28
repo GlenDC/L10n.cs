@@ -28,6 +28,11 @@ using System.Collections.Generic;
 namespace L20nCoreTests
 {
 	[TestFixture()]
+	/// <summary>
+	/// Tests for all the individual parsers.
+	/// The l20n parser is a parser of parsers, so if all the small pieces work,
+	/// there is a very high chance that the final result is OK.
+	/// </summary>
 	public class ParserTests
 	{
 		[Test()]

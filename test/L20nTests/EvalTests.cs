@@ -28,6 +28,9 @@ using System.Collections.Generic;
 namespace L20nCoreTests
 {
 	[TestFixture()]
+	/// <summary>
+	/// Tests to check if our expressions evaluate to an expected value.
+	/// </summary>
 	public class EvalTests
 	{
 		private L20nCore.Internal.LocaleContext m_DummyContext;

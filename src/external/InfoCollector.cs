@@ -25,39 +25,68 @@ namespace L20nCore
 {
 	namespace External
 	{
+		/// <summary>
+		/// Used to collect the contents of an object that implements
+		/// <see cref="L20nCore.External.IHashValue"/>. 
+		/// </summary>
 		public sealed class InfoCollector
 		{
 			private readonly Dictionary<string, L20nObject> m_Info;
+			
+			/// <summary>
+			/// A pool of available InfoCollectors to reduce the amount of objects needed for creation.
+			/// </summary>
+			public static ObjectPool<InfoCollector> Pool
+			{
+				get { return s_Pool; }
+			}
 	
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.External.InfoCollector"/> class.
+			/// </summary>
 			public InfoCollector()
 			{
 				m_Info = new Dictionary<string, L20nObject>();
 			}
 
+			/// <summary>
+			/// Add a <see cref="L20nCore.Objects.Literal"/> value with the given <c>name</c>.
+			/// </summary>
 			public void Add(string name, int value)
 			{
 				AddObject(name, new Literal(value));
 			}
-			
+
+			/// <summary>
+			/// Add a <see cref="L20nCore.Objects.StringOutput"/> value with the given <c>name</c>.
+			/// </summary>
 			public void Add(string name, string value)
 			{
 				AddObject(name, new StringOutput(value));
 			}
 
+			/// <summary>
+			/// Add a <see cref="L20nCore.Objects.DelegatedLiteral.Delegate"/> value with the given <c>name</c>.
+			/// </summary>
 			public void Add(string name, Objects.DelegatedLiteral.Delegate callback)
 			{
 				AddObject(name, new Objects.DelegatedLiteral(callback));
 			}
-			
+
+			/// <summary>
+			/// Add a <see cref="L20nCore.Objects.DelegatedString.Delegate"/> value with the given <c>name</c>.
+			/// </summary>
 			public void Add(string name, Objects.DelegatedString.Delegate callback)
 			{
 				AddObject(name, new Objects.DelegatedString(callback));
 			}
-			
+			/// <summary>
+			/// Add a <see cref="L20nCore.External.IHashValue"/> value with the given <c>name</c>.
+			/// </summary>
 			public void Add(string name, IHashValue value)
 			{
 				// Prepare the collector
-				var info = new InfoCollector();
+				var info = External.InfoCollector.Pool.GetObject();
 
 				// Collect the given value
 				value.Collect(info);
@@ -72,13 +101,23 @@ namespace L20nCore
 
 				// Add it as a child to the current object
 				AddObject(name, info.Collect());
+
+				info.Clear();
+				External.InfoCollector.Pool.ReturnObject(ref info);
 			}
 
+			/// <summary>
+			/// Collects all the added info and returns it as a <see cref="L20nCore.Objects.HashValue"/>.
+			/// THIS SHOULD NOT BE CALLED BY THE CLASS THAT IMPLEMENTS <see cref="L20nCore.External.IHashValue"/>! 
+			/// </summary>
 			public HashValue Collect()
 			{
 				return new HashValue(m_Info, null);
 			}
 
+			/// <summary>
+			/// Unreferences all the previously added content.
+			/// </summary>
 			public void Clear()
 			{
 				m_Info.Clear();
@@ -94,6 +133,9 @@ namespace L20nCore
 
 				m_Info.Add(name, value);
 			}
+
+			private static ObjectPool<InfoCollector> s_Pool =
+				new ObjectPool<InfoCollector>(32);
 		}
 	}
 }

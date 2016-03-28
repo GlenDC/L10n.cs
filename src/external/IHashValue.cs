@@ -23,11 +23,13 @@ namespace L20nCore
 	{
 		/// <summary>
 		/// A simple interface that allows you to use objects
-		/// as external variables.
+		/// as external variables using <see cref="L20nCore.External.InfoCollector"/>
+		/// to collect the content of your object.
 		/// </summary>
 		/// <remarks>
 		/// In case the stuff you write is flexible,
-		/// make sure that you provide your own checks to not use stuff that you don't provide.
+		/// make sure that you provide your own checks to not allow translators to use
+		/// stuff that you don't provide, as that will result in failed translations.
 		/// </remarks>
 		public interface IHashValue
 		{
