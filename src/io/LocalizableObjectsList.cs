@@ -21,9 +21,9 @@ namespace L20nCore
 {
 	namespace IO
 	{
-		public class LocalizbleObjectsList
+		public class LocalizableObjectsList
 		{
-			public static void Parse(string path, Internal.LocaleContext.Builder builder)
+			public static void ImportAndParse(string path, Internal.LocaleContext.Builder builder)
 			{
 				try
 				{

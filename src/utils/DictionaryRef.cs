@@ -30,8 +30,6 @@ namespace L20nCore
 		/// </summary>
 		public sealed class DictionaryRef<K, V>
 		{
-			private readonly Dictionary<K, V> m_Dictionary;
-
 			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.Utils.DictionaryRef"/> class.
 			/// </summary>
@@ -64,6 +62,8 @@ namespace L20nCore
 
 				return value;
 			}
+
+			private readonly Dictionary<K, V> m_Dictionary;
 		}
 	}
 }

@@ -61,7 +61,6 @@
     <Compile Include="src\io\parsers\expressions\Parenthesis.cs" />
     <Compile Include="src\io\parsers\HashItem.cs" />
     <Compile Include="src\io\parsers\ImportStatement.cs" />
-    <Compile Include="src\io\LocalizbleObjectsList.cs" />
     <Compile Include="src\exceptions\ParseException.cs" />
     <Compile Include="src\exceptions\EvaluateException.cs" />
     <Compile Include="src\exceptions\UnexpectedObjectException.cs" />
@@ -123,6 +122,7 @@
     <Compile Include="src\io\StreamReaderFactory.cs" />
     <Compile Include="src\external\IHashValue.cs" />
     <Compile Include="src\utils\ObjectPool.cs" />
+    <Compile Include="src\io\LocalizableObjectsList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

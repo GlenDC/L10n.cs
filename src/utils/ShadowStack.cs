@@ -32,9 +32,7 @@ namespace L20nCore
 		/// </summary>
 		public sealed class ShadowStack<T>
             where T: class
-		{
-			private Dictionary<string, Stack<T>> m_StackDictionary;
-            
+		{   
 			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.Utils.ShadowStack`1"/> class.
 			/// </summary>
@@ -98,6 +96,8 @@ namespace L20nCore
 
 				return null;
 			}
+
+			private Dictionary<string, Stack<T>> m_StackDictionary;
             
 			private Stack<T> CreateOrGetStack(string key)
 			{

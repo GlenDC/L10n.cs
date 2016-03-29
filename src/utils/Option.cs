@@ -46,8 +46,6 @@ namespace L20nCore
 			/// <value><c>true</c> if this option has avalue; otherwise, <c>false</c>.</value>
 			public bool IsSet { get; private set; }
 
-			private T m_Value;
-
 			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.Utils.Option"/> class,
 			///  with no value set.
@@ -310,6 +308,8 @@ namespace L20nCore
 			public delegate U MapDefaultDelegate<U>();
 
 			public delegate Option<U> MapDefaultOptionDelegate<U>();
+			
+			private T m_Value;
 		}
 	}
 }

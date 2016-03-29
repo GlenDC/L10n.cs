@@ -27,11 +27,7 @@ namespace L20nCore
 		/// </summary>
 		public sealed class ObjectPool<T>
 			where T: new()
-		{
-			readonly T[] m_FreeObjects;
-			int m_Size;
-			int m_Capacity;
-			
+		{	
 			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.Utils.DictionaryRef"/> class.
 			/// </summary>
@@ -46,13 +42,12 @@ namespace L20nCore
 			/// <summary>
 			/// Gets a free object in the pool, or create a new object otherwise.
 			/// </summary>
-			/// <returns>The object.</returns>
 			public T GetObject()
 			{
 				// if a free object is available, return it
 				if (m_Size > 0)
 				{
-					return m_FreeObjects[--m_Size];
+					return m_FreeObjects [--m_Size];
 				}
 
 				// return it otherwise
@@ -68,11 +63,15 @@ namespace L20nCore
 			{
 				if (m_Size < m_Capacity)
 				{
-					m_FreeObjects[m_Size++] = obj;
+					m_FreeObjects [m_Size++] = obj;
 				}
 
 				obj = default(T);
 			}
+
+			private readonly T[] m_FreeObjects;
+			private int m_Size;
+			private int m_Capacity;
 		}
 	}
 }

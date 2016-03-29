@@ -27,18 +27,23 @@ namespace L20nCore
 {
 	namespace Internal
 	{
+		/// <summary>
+		/// A class that is a C# mapping over the actual L20n Manifest file.
+		/// </summary>
 		public sealed class Manifest
 		{
-			private const string LOCALE_STRING_ID = "{{locale}}";
-			private List<string> m_Locales;
-			private string m_DefaultLocale;
-			private List<string> m_Resources;
-
+			/// <summary>
+			/// Get the locales listed in this manifest.
+			/// </summary>
 			public List<string> Locales
 			{
 				get { return m_Locales; }
 			}
 
+			/// <summary>
+			/// Get the locale marked as default in this manifest.
+			/// Throws a warning if it's not listed as a locale.
+			/// </summary>
 			public string DefaultLocale
 			{
 				get { return m_DefaultLocale; }
@@ -55,6 +60,9 @@ namespace L20nCore
 				}
 			}
 
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Internal.Manifest"/> class.
+			/// </summary>
 			public Manifest()
 			{
 				m_Locales = new List<string>();
@@ -62,6 +70,10 @@ namespace L20nCore
 				m_Resources = new List<string>();
 			}
 
+			/// <summary>
+			/// Replace the current information with
+			/// the manifest content found at the specified manifest_path.
+			/// </summary>
 			public void Import(string manifest_path)
 			{
 				Flush();
@@ -79,6 +91,7 @@ namespace L20nCore
 							string msg = string.Format("No locales were provided in: {0}", manifest_path);
 							throw new ImportException(msg);
 						}
+
 						foreach (var locale in locales.Children)
 						{
 							m_Locales.Add(locale.Value);
@@ -99,6 +112,7 @@ namespace L20nCore
 							string msg = string.Format("No resources were provided in: {0}", manifest_path);
 							throw new ImportException(msg);
 						}
+
 						foreach (var resource in resources.Children)
 						{
 							AddResoure(resource.Value, manifest_path);
@@ -111,6 +125,9 @@ namespace L20nCore
 				}
 			}
 
+			/// <summary>
+			/// Get all the locale files available for the given <c>locale</c>.
+			/// </summary>
 			public List<String> GetLocaleFiles(string locale)
 			{
 				var files = new List<String>();
@@ -142,6 +159,11 @@ namespace L20nCore
 				resource = manifest.Replace(Path.GetFileName(manifest), resource);
 				m_Resources.Add(resource);
 			}
+
+			private const string LOCALE_STRING_ID = "{{locale}}";
+			private List<string> m_Locales;
+			private string m_DefaultLocale;
+			private List<string> m_Resources;
 		}
 	}
 }

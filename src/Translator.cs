@@ -36,8 +36,6 @@ namespace L20nCore
 			get { return m_Database.IsInitialized; }
 		}
 
-		private Internal.Database m_Database;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="L20nCore.Translator"/> class.
 		/// </summary>
@@ -97,6 +95,7 @@ namespace L20nCore
 		/// <summary>
 		/// Translate the specified id within the currently set locale,
 		/// returns the id itself in case no entity could be matched with the given id.
+		/// Any <see cref="System.Exception"/> gets captured and turned into an unexpected warning.
 		/// </summary>
 		public string Translate(string id)
 		{
@@ -117,6 +116,7 @@ namespace L20nCore
 		/// <summary>
 		/// Translate the specified id using the given external variables within the currently set locale,
 		/// returns the id itself in case no entity could be matched with the given id.
+		/// Any <see cref="System.Exception"/> gets captured and turned into an unexpected warning.
 		/// </summary>
 		public string Translate(string id, string[] keys, Objects.L20nObject[] values)
 		{
@@ -137,6 +137,7 @@ namespace L20nCore
 		/// <summary>
 		/// Translate the specified id using the given external <c>Literal</c> value within the currently set locale,
 		/// returns the id itself in case no entity could be matched with the given id.
+		/// Any <see cref="System.Exception"/> gets captured and turned into an unexpected warning.
 		/// </summary>
 		public string Translate(string id, string key, int value)
 		{
@@ -149,6 +150,7 @@ namespace L20nCore
 		/// <summary>
 		/// Translate the specified id using the given external <c>String</c> value within the currently set locale,
 		/// returns the id itself in case no entity could be matched with the given id.
+		/// Any <see cref="System.Exception"/> gets captured and turned into an unexpected warning.
 		/// </summary>
 		public string Translate(string id, string key, string value)
 		{
@@ -161,6 +163,7 @@ namespace L20nCore
 		/// <summary>
 		/// Translate the specified id using the given external <c>HashTable</c> value within the currently set locale,
 		/// returns the id itself in case no entity could be matched with the given id.
+		/// Any <see cref="System.Exception"/> gets captured and turned into an unexpected warning.
 		/// </summary>
 		public string Translate(string id, string key, External.IHashValue value)
 		{
@@ -198,7 +201,7 @@ namespace L20nCore
 		}
 
 		/// <summary>
-		/// Add the given <see cref="L20nCore.Objects.DelegatedLiteral.Delegate"/> <c>callback</c>
+		/// Add the given <see cref="L20nCore.Objects.DelegatedLiteral+Delegate"/> <c>callback</c>
 		/// as the global with name equal to the value of params <c>id</c>.
 		/// </summary>
 		public void AddGlobal(string id, Objects.DelegatedLiteral.Delegate callback)
@@ -207,7 +210,7 @@ namespace L20nCore
 		}
         
 		/// <summary>
-		/// Add the given <see cref="L20nCore.Objects.DelegatedString.Delegate"/> <c>callback</c>
+		/// Add the given <see cref="L20nCore.Objects.DelegatedString+Delegate"/> <c>callback</c>
 		/// as the global with name equal to the value of params <c>id</c>.
 		/// </summary>
 		public void AddGlobal(string id, Objects.DelegatedString.Delegate callback)
@@ -232,5 +235,7 @@ namespace L20nCore
 		{
 			Internal.Logger.SetWarningCallback(callback);
 		}
+		
+		private Internal.Database m_Database;
 	}
 }

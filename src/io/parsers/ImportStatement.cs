@@ -39,7 +39,7 @@ namespace L20nCore
 						WhiteSpace.Parse(stream, true);
 						stream.SkipCharacter(')');
 
-						LocalizbleObjectsList.Parse(path, builder);
+						LocalizableObjectsList.ImportAndParse(path, builder);
 					} catch (Exception e)
 					{
 						string msg = String.Format(

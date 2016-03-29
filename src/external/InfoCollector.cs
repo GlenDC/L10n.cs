@@ -30,9 +30,7 @@ namespace L20nCore
 		/// <see cref="L20nCore.External.IHashValue"/>. 
 		/// </summary>
 		public sealed class InfoCollector
-		{
-			private readonly Dictionary<string, L20nObject> m_Info;
-			
+		{	
 			/// <summary>
 			/// A pool of available InfoCollectors to reduce the amount of objects needed for creation.
 			/// </summary>
@@ -66,7 +64,7 @@ namespace L20nCore
 			}
 
 			/// <summary>
-			/// Add a <see cref="L20nCore.Objects.DelegatedLiteral.Delegate"/> value with the given <c>name</c>.
+			/// Add a <see cref="L20nCore.Objects.DelegatedLiteral+Delegate"/> value with the given <c>name</c>.
 			/// </summary>
 			public void Add(string name, Objects.DelegatedLiteral.Delegate callback)
 			{
@@ -74,7 +72,7 @@ namespace L20nCore
 			}
 
 			/// <summary>
-			/// Add a <see cref="L20nCore.Objects.DelegatedString.Delegate"/> value with the given <c>name</c>.
+			/// Add a <see cref="L20nCore.Objects.DelegatedString+Delegate"/> value with the given <c>name</c>.
 			/// </summary>
 			public void Add(string name, Objects.DelegatedString.Delegate callback)
 			{
@@ -136,6 +134,8 @@ namespace L20nCore
 
 			private static ObjectPool<InfoCollector> s_Pool =
 				new ObjectPool<InfoCollector>(32);
+
+			private readonly Dictionary<string, L20nObject> m_Info;
 		}
 	}
 }
