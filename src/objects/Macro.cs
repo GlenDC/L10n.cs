@@ -63,7 +63,7 @@ namespace L20nCore
 				// Push variables on 'stack'
 				for (int i = 0; i < m_Parameters.Length; ++i)
 				{
-					ctx.PushVariable(m_Parameters [i], argv [i]);
+					ctx.PushVariable(m_Parameters [i], argv [i].Eval(ctx));
 				}
 
 				var output = m_Expression.Eval(ctx);

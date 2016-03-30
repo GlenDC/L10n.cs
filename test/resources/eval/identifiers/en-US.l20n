@@ -28,6 +28,13 @@
 <plural($n) { $n == 0 ? "zero" :
                 $n == 1 ? "one" : "many" }>
 
+<apples($amount) {
+    $amount == 0 ? "are no apples" :
+        $amount == 1 ? "is one apple" : "are {{$amount}} apples"
+}>
+
+<apples_sentence "There {{ apples($amount) }}.">
+
 <shared[plural($user.followers), $user.gender] {
   zero: "{{ $user.name }} liked your post.",
   one: {
