@@ -24,8 +24,16 @@ namespace L20nCore
 {
 	namespace Objects
 	{
+		/// <summary>
+		/// A primitive L20nObject is any L20nObject type that can be
+		/// directly translated to a <see cref="System.String"/>. 
+		/// </summary>
 		public abstract class Primitive : L20nObject
 		{
+			/// <summary>
+			/// Compute a string based on the <see cref="L20nCore.Objects.Primitive"/> object
+			/// and its content.
+			/// </summary>
 			public abstract string ToString(LocaleContext ctx, params L20nObject[] argv);
 		}
 	}

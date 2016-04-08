@@ -24,11 +24,17 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a StringValue, meaning that it is a string
+			/// with optional expressions. It wil be optimized to a StringOutput in case there are no expressions.
+			/// More Information: <see cref="L20nCore.IO.Parsers.StringValue"/> 
+			/// </summary>
 			public sealed class StringValue : INode
 			{
-				private readonly Parsers.Quote.Info m_Quote;
-				private string m_Value;
-				private List<INode> m_Expressions;
+				public char LastCharacter
+				{
+					get { return m_Value.Length == 0  ? '\0' : m_Value [m_Value.Length - 1]; }
+				}
 
 				public StringValue(Parsers.Quote.Info quote)
 				{
@@ -49,7 +55,10 @@ namespace L20nCore
 
 				public void appendExpression(INode expression)
 				{
-					appendString("{" + m_Expressions.Count + "}");
+					// we add this rediculous character (255), in order to avoid
+					// the situation where the user might want to have a similar
+					// pattern in their StringValue, for some bizar reason.
+					appendString(String.Format("{{ {1}{0}{1} }}", m_Expressions.Count, (char)255));
 					m_Expressions.Add(expression);
 				}
 
@@ -58,20 +67,23 @@ namespace L20nCore
 					var expressions = new Objects.L20nObject[m_Expressions.Count];
 					for (int i = 0; i < expressions.Length; ++i)
 						expressions [i] = m_Expressions [i].Eval();
-					return new Objects.StringValue(m_Value, expressions).Optimize();
+
+					return new Objects.StringValue(m_Value.Trim(), expressions).Optimize();
 				}
 
 				public string Display()
 				{
 					var expressions = new string[m_Expressions.Count];
 					for (int i = 0; i < expressions.Length; ++i)
-					{
 						expressions [i] = m_Expressions [i].Display();
-					}
 
 					var str = String.Format(m_Value, expressions);
 					return String.Format("{0}{1}{0}", m_Quote.ToString(), str);
 				}
+				
+				private readonly Parsers.Quote.Info m_Quote;
+				private string m_Value;
+				private List<INode> m_Expressions;
 			}
 		}
 	}

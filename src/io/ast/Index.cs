@@ -26,10 +26,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for an Index.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Index"/>
+			/// </summary>
 			public sealed class Index : INode
 			{
-				private List<INode> m_Indeces;
-				
 				public Index(INode index)
 				{
 					m_Indeces = new List<INode>(1);
@@ -58,9 +60,11 @@ namespace L20nCore
 					var indeces = new string[m_Indeces.Count];
 					for (int i = 0; i < indeces.Length; ++i)
 						indeces [i] = m_Indeces [i].Display();
-					return String.Format("[{0}]",
-						String.Join(",", indeces));
+
+					return String.Format("[{0}]", String.Join(",", indeces));
 				}
+
+				private readonly List<INode> m_Indeces;
 			}
 		}
 	}

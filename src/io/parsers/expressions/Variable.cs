@@ -25,7 +25,11 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class Variable
+				/// <summary>
+				/// The expression parser combinator used to parse a Variable,
+				/// which is an L20nObject externally given by the user-environment.
+				/// </summary>
+				public static class Variable
 				{
 					public static AST.INode Parse(CharStream stream)
 					{

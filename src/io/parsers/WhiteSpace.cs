@@ -23,7 +23,11 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class WhiteSpace
+			/// <summary>
+			/// The parser combinator used to parse all the whitespace.
+			/// The resulting output does not get stored.
+			/// </summary>
+			public static class WhiteSpace
 			{
 				public static int Parse(CharStream stream, bool optional)
 				{

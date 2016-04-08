@@ -23,7 +23,12 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class Value
+			/// <summary>
+			/// The parser combinator used to parse the value-part of an Entity entry.
+			/// The value can be either a StringValue, or HashValue,
+			/// which will be parsed by the parser combinator of on of those 2 specific values.
+			/// </summary>
+			public static class Value
 			{
 				public static AST.INode Parse(CharStream stream)
 				{

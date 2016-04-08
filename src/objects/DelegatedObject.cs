@@ -24,71 +24,132 @@ namespace L20nCore
 {
 	namespace Objects
 	{
+		/// <summary>
+		/// <see cref="L20nCore.Objects.DelegatedObject"/> represents a callback to be used
+	 	/// at translation time, returning an L20nObject, which can be null.
+		/// </summary>
 		public sealed class DelegatedObject<T> : L20nObject
 			where T: L20nObject
-		{
-			private readonly Delegate m_Callback;
-			
+		{	
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Objects.DelegatedObject`1"/> class.
+			/// </summary>
 			public DelegatedObject(Delegate callback)
 			{
 				m_Callback = callback;
 			}
 
+			/// <summary>
+			/// Can't optimize, returning <c>this</c> instance instead.
+			/// </summary>
 			public override L20nObject Optimize()
 			{
 				return this;
 			}
-			
+
+			/// <summary>
+			/// Returns the result of the callback,
+			/// returns null in case that result is <c>null</c> or if the stored callback is <c>null</c>.
+			/// </summary>
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
+				if (m_Callback == null)
+					return null;
+
 				return m_Callback();
 			}
 			
 			public delegate T Delegate();
+
+			private readonly Delegate m_Callback;
 		}
 
+		/// <summary>
+		/// <see cref="L20nCore.Objects.DelegatedLiteral"/> represents a callback to be used
+		/// at translation time, returning an integer, which will be rerturned as a Literal.
+		/// </summary>
 		public sealed class DelegatedLiteral : L20nObject
-		{
-			private readonly Delegate m_Callback;
-			
+		{	
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Objects.DelegatedLiteral"/> class.
+			/// </summary>
 			public DelegatedLiteral(Delegate callback)
 			{
 				m_Callback = callback;
+				m_Output = new Literal();
 			}
-			
+
+			/// <summary>
+			/// Can't optimize, returning <c>this</c> instance instead.
+			/// </summary>
 			public override L20nObject Optimize()
 			{
 				return this;
 			}
-			
+
+			/// <summary>
+			/// Returns the <see cref="L20nCore.Objects.Literal"/> value filled by the stored callback.
+			/// Returns <c>null</c> in case the given callback is <c>null</c>.
+			/// </summary>
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return new Literal(m_Callback());
+				if (m_Callback == null)
+					return null;
+
+				m_Output.Value = m_Callback();
+				return m_Output;
 			}
 			
 			public delegate int Delegate();
+
+			private readonly Delegate m_Callback;
+			// using this variable to reuse the same Literal Instance,
+			// to help stay responsible with the GC
+			private Literal m_Output;
 		}
 
+		/// <summary>
+		/// <see cref="L20nCore.Objects.DelegatedString"/> represents a callback to be used
+		/// at translation time, returning a string, which will be rerturned as a StringOutput.
+		/// </summary>
 		public sealed class DelegatedString : L20nObject
-		{
-			private readonly Delegate m_Callback;
-			
+		{	
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Objects.DelegatedString"/> class.
+			/// </summary>
 			public DelegatedString(Delegate callback)
 			{
 				m_Callback = callback;
+				m_Output = new StringOutput();
 			}
-			
+
+			/// <summary>
+			/// Can't optimize, returning <c>this</c> instance instead.
+			/// </summary>
 			public override L20nObject Optimize()
 			{
 				return this;
 			}
-			
+
+			/// <summary>
+			/// Returns the <see cref="L20nCore.Objects.StringOutput"/> value filled by the stored callback.
+			/// Returns <c>null</c> in case the given callback is <c>null</c>.
+			/// </summary>
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				return new StringOutput(m_Callback());
+				if (m_Callback == null)
+					return null;
+
+				m_Output.Value = m_Callback();
+				return m_Output;
 			}
 			
 			public delegate string Delegate();
+
+			private readonly Delegate m_Callback;
+			// using this variable to reuse the same StringOutput Instance,
+			// to help stay responsible with the GC
+			private StringOutput m_Output;
 		}
 	}
 }

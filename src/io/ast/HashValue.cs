@@ -24,11 +24,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a HashValue.
+			/// More Information: <see cref="L20nCore.IO.Parsers.HashValue"/>
+			/// </summary>
 			public sealed class HashValue : INode
 			{
-				private Dictionary<string, INode> m_Items;
-				private string m_Default;
-
 				public HashValue()
 				{
 					m_Items = new Dictionary<string, INode>();
@@ -77,13 +78,16 @@ namespace L20nCore
 
 					foreach (KeyValuePair<string, INode> entry in m_Items)
 					{
-						str += String.Format("{0}{1}:{2}",
+						str += String.Format("{0}{1}:{2},",
 						                      entry.Key == m_Default ? "*" : "",
 						                      entry.Key, entry.Value.Display());
 					}
 
 					return str + "}";
 				}
+
+				private readonly Dictionary<string, INode> m_Items;
+				private string m_Default;
 				
 				public class Item
 				{

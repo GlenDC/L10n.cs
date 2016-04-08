@@ -12,10 +12,10 @@
 
 /* ------------------------------------------------------------------------- */
 
-<screenWidth """
+<screenWidth "
   The label of the button below changes depending on the
   available screen width (currently: {{ @screen.width.px }}px).
-""">
+">
 
 <formFactor($n) {
   $n.width.px < 480 ? "portraitPhone" :
@@ -42,19 +42,19 @@
 }>
 
 <langNego[$mode] {
-  multi: """
+  multi: "
     In order to test language negotiation, go to your
     browser's {{ _options }} and change the Accept-Language
     header.  Try setting French (fr) or Polish (pl) as your
     first choice and observe the language fallback at work
     in the web console.
-  """,
-  single: """
+  ",
+  single: "
     In the single-locale mode, no locales have been registered.
     There is no language negotiation on the client side nor
     language fallback.  This may be useful for server-side or
     build-time language negotiation scenarios.
-  """
+  "
 }>
 
 /* ------------------------------------------------------------------------- */
@@ -65,9 +65,9 @@
       $h < 18 ? "afternoon" :
         "evening" }>
 
-<more """
+<more "
   For more information, visit <a>L20n.org</a>.
-""">
+">
 
 <kthxbye[timeOfDay(@hour)] {
   morning: "Enjoy your morning!",

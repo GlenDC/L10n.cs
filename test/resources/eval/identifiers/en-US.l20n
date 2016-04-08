@@ -55,7 +55,7 @@
     *default: "{{ $user.name }} their best friend is {{ $user.friend.name }}.",
 }>
 
-<tooBig "Attachment too big: {{ $sizeInKB / 1024 }} MB.">
+<tooBig "Attachment too big:U+000A\u0009{{ $sizeInKB / 1024 }} MB.">
 
 <timeDateGreeting "{{ greeting }}, it's {{ time }} on {{ date }}.">
 

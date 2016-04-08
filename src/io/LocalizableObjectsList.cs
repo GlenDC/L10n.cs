@@ -21,8 +21,18 @@ namespace L20nCore
 {
 	namespace IO
 	{
+		/// <summary>
+		/// The main L20n parser, that simply reads all entries of a given L20n Resource File,
+		/// and adds them to the given <see cref="L20nCore.Internal.LocaleContext+Builder"/>. 
+		/// </summary>
 		public class LocalizableObjectsList
 		{
+			/// <summary>
+			/// Reads the L20n resource at the given path, and adds all the entries found in that resource,
+			/// to the given <c>builder</c>.
+			/// Throws a <see cref="L20nCore.Exceptions.ParseException"/> in case something went wrong,
+			/// during the parsing of the given resource.
+			/// </summary>
 			public static void ImportAndParse(string path, Internal.LocaleContext.Builder builder)
 			{
 				try

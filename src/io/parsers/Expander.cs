@@ -24,7 +24,10 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class Expander
+			/// <summary>
+			/// The combinator parser used to parse an expression within a StringValue.
+			/// </summary>
+			public static class Expander
 			{
 				public static AST.INode Parse(CharStream stream)
 				{

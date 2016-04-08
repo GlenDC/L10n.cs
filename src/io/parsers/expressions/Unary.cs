@@ -26,7 +26,11 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class Unary
+				/// <summary>
+				/// The expression parser combinator used to parse unary expressions,
+				/// meaning that it will be an expression applied on only one element.
+				/// </summary>
+				public static class Unary
 				{
 					public static AST.INode Parse(CharStream stream)
 					{

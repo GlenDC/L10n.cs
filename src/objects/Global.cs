@@ -24,15 +24,24 @@ namespace L20nCore
 {
 	namespace Objects
 	{
+		/// <summary>
+		/// The <see cref="L20nCore.Objects.Global"/> class represents a reference
+		/// to a global L20nObject.
+		/// </summary>
 		public sealed class Global : L20nObject
 		{	
+			/// <summary>
+			/// Returns the reference, the name of the global L20nObject.
+			/// </summary>
 			public string Identifier
 			{
 				get { return m_Identifier; }
 			}
 
-			private readonly string m_Identifier;
-			
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Objects.Global"/> class,
+			/// with the given <c>value</c> used to look the L20nObject global.
+			/// </summary>
 			public Global(string identifier)
 			{
 				m_Identifier = identifier;
@@ -54,6 +63,8 @@ namespace L20nCore
 
 				return global.Eval(ctx, argv);
 			}
+			
+			private readonly string m_Identifier;
 		}
 	}
 }

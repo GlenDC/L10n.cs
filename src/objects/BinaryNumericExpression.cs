@@ -25,17 +25,26 @@ namespace L20nCore
 {
 	namespace Objects
 	{
+		/// <summary>
+		/// <see cref="L20nCore.Objects.BinaryNumericExpression"/> represents a binary expression applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// </summary>
 		public abstract class BinaryNumericExpression : L20nObject
 		{	
-			private readonly L20nObject m_First;
-			private readonly L20nObject m_Second;
-			
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Objects.BinaryNumericExpression"/> class.
+			/// </summary>
 			public BinaryNumericExpression(L20nObject first, L20nObject second)
 			{
 				m_First = first;
 				m_Second = second;
 			}
 
+			/// <summary>
+			/// Optimizes to the result of this binary expression in case both
+			/// wrapped objects can be optimized to <see cref="L20nCore.Objects.Literal"/> values.
+			/// Returns <c>this</c> instance otherwise.
+			/// </summary>
 			public override L20nObject Optimize()
 			{
 				var first = m_First.Optimize() as Literal;
@@ -46,7 +55,12 @@ namespace L20nCore
 
 				return this;
 			}
-			
+
+			/// <summary>
+			/// Evaluates to the result of this binary expression in case both
+			/// wrapped objects can be evaluated to <see cref="L20nCore.Objects.Literal"/> values.
+			/// Returns <c>null</c> in case something went wrong.
+			/// </summary>
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var first = m_First.Eval(ctx) as Literal;
@@ -59,8 +73,17 @@ namespace L20nCore
 			}
 
 			protected abstract L20nObject Operation(int a, int b);
+
+			private readonly L20nObject m_First;
+			private readonly L20nObject m_Second;
 		}
-		
+
+		/// <summary>
+		/// <see cref="L20nCore.Objects.SubstractExpression"/> represents the
+		/// arithmetic 'substract' expression and is applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// The result of this expression is a single <see cref="L20nCore.Objects.Literal"/> value.
+		/// </summary>
 		public sealed class SubstractExpression : BinaryNumericExpression
 		{
 			Literal m_Output;
@@ -77,7 +100,13 @@ namespace L20nCore
 				return m_Output;
 			}
 		}
-		
+
+		/// <summary>
+		/// <see cref="L20nCore.Objects.AddExpression"/> represents the
+		/// arithmetic 'add' expression and is applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// The result of this expression is a single <see cref="L20nCore.Objects.Literal"/> value.
+		/// </summary>
 		public sealed class AddExpression : BinaryNumericExpression
 		{
 			Literal m_Output;
@@ -94,7 +123,13 @@ namespace L20nCore
 				return m_Output;
 			}
 		}
-		
+
+		/// <summary>
+		/// <see cref="L20nCore.Objects.MultiplyExpression"/> represents the
+		/// arithmetic 'multiply' expression and is applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// The result of this expression is a single <see cref="L20nCore.Objects.Literal"/> value.
+		/// </summary>
 		public sealed class MultiplyExpression : BinaryNumericExpression
 		{
 			Literal m_Output;
@@ -111,7 +146,13 @@ namespace L20nCore
 				return m_Output;
 			}
 		}
-		
+
+		/// <summary>
+		/// <see cref="L20nCore.Objects.DivideExpression"/> represents the
+		/// arithmetic 'division' expression and is applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// The result of this expression is a single <see cref="L20nCore.Objects.Literal"/> value.
+		/// </summary>
 		public sealed class DivideExpression : BinaryNumericExpression
 		{
 			Literal m_Output;
@@ -128,7 +169,13 @@ namespace L20nCore
 				return m_Output;
 			}
 		}
-		
+
+		/// <summary>
+		/// <see cref="L20nCore.Objects.ModuloExpression"/> represents the
+		/// arithmetic 'modulo' expression and is applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// The result of this expression is a single <see cref="L20nCore.Objects.Literal"/> value.
+		/// </summary>
 		public sealed class ModuloExpression : BinaryNumericExpression
 		{
 			Literal m_Output;
@@ -145,7 +192,14 @@ namespace L20nCore
 				return m_Output;
 			}
 		}
-		
+
+		/// <summary>
+		/// <see cref="L20nCore.Objects.LessThanExpression"/> represents the
+		/// comparision 'less than' expression and is applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// The result of this expression is a single <see cref="L20nCore.Objects.BooleanValue"/> value,
+		/// indicating wether or not the first element is smaller than the second element.
+		/// </summary>
 		public sealed class LessThanExpression : BinaryNumericExpression
 		{
 			BooleanValue m_Output;
@@ -162,7 +216,14 @@ namespace L20nCore
 				return m_Output;
 			}
 		}
-		
+
+		/// <summary>
+		/// <see cref="L20nCore.Objects.LessThanOrEqualExpression"/> represents the
+		/// comparision 'less than or equal to' expression and is applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// The result of this expression is a single <see cref="L20nCore.Objects.BooleanValue"/> value,
+		/// indicating wether or not the first element is smaller or equal than/to the second element.
+		/// </summary>
 		public sealed class LessThanOrEqualExpression : BinaryNumericExpression
 		{
 			BooleanValue m_Output;
@@ -179,7 +240,14 @@ namespace L20nCore
 				return m_Output;
 			}
 		}
-		
+
+		/// <summary>
+		/// <see cref="L20nCore.Objects.GreaterThanExpression"/> represents the
+		/// comparision 'grear than' expression and is applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// The result of this expression is a single <see cref="L20nCore.Objects.BooleanValue"/> value,
+		/// indicating wether or not the first element is greater than the second element.
+		/// </summary>
 		public sealed class GreaterThanExpression : BinaryNumericExpression
 		{
 			BooleanValue m_Output;
@@ -196,7 +264,14 @@ namespace L20nCore
 				return m_Output;
 			}
 		}
-		
+
+		/// <summary>
+		/// <see cref="L20nCore.Objects.GreaterThanOrEqualExpression"/> represents the
+		/// comparision 'grear than or equal to' expression and is applied
+		/// on two literal values that are the result of their evaluated L20nObject-counterparts.
+		/// The result of this expression is a single <see cref="L20nCore.Objects.BooleanValue"/> value,
+		/// indicating wether or not the first element is greater or equal than/to the second element.
+		/// </summary>
 		public sealed class GreaterThanOrEqualExpression : BinaryNumericExpression
 		{
 			BooleanValue m_Output;

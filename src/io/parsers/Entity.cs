@@ -24,7 +24,10 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{
-			public class Entity
+			/// <summary>
+			/// The combinator parser used to parse an Entity with all its children.
+			/// </summary>
+			public static class Entity
 			{
 				public static void Parse(
 					CharStream stream, string identifier,
@@ -45,8 +48,18 @@ namespace L20nCore
 						// White Space is required
 						WhiteSpace.Parse(stream, false);
 
+						var valuePos = stream.Position;
+
 						// Now we need the actual value
 						var value = Value.Parse(stream);
+
+						if ((value as IO.AST.StringValue) != null && index != null)
+						{
+							string msg = String.Format(
+								"an index was given, but a stringValue was given, while a hashValue was expected",
+								stream.ComputeDetailedPosition(valuePos));
+							throw new Exceptions.ParseException(msg);
+						}
 
 						// White Space is optional
 						WhiteSpace.Parse(stream, true);

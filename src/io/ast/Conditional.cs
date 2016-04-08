@@ -24,12 +24,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a Conditional (branch) expression.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Expressions.Logic"/>
+			/// </summary>
 			public sealed class Conditional : INode
-			{
-				private readonly INode m_Condition;
-				private readonly INode m_IfTrue;
-				private readonly INode m_IfFalse;
-				
+			{	
 				public Conditional(INode condition, INode if_true, INode if_false)
 				{
 					m_Condition = condition;
@@ -52,6 +52,10 @@ namespace L20nCore
 					return String.Format("{0} ? {1} : {2}",
 						m_Condition.Display(), m_IfTrue.Display(), m_IfFalse.Display());
 				}
+
+				private readonly INode m_Condition;
+				private readonly INode m_IfTrue;
+				private readonly INode m_IfFalse;
 			}
 		}
 	}

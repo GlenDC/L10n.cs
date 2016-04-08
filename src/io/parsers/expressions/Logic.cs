@@ -26,7 +26,12 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class Logic
+				/// <summary>
+				/// A parser combinator to parse logic expressions, meaning that it will
+				/// parse the type of binary logic expression and the 2 objects on which
+				/// the expression will be applied, using their relevant parsers.
+				/// </summary>
+				public static class Logic
 				{
 					public static AST.INode Parse(CharStream stream)
 					{

@@ -24,7 +24,11 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{
-			public class HashItem
+			/// <summary>
+			/// The combinator parser used to parse an HashItem,
+			/// which makes up one element in a HashValue.
+			/// </summary>
+			public static class HashItem
 			{
 				public static AST.HashValue.Item Parse(CharStream stream)
 				{

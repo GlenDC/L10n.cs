@@ -24,7 +24,12 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class Index
+			/// <summary>
+			/// The combinator parser used to parse an Index,
+			/// the optional part of an Entity, used to retrieve alternative
+			/// default value based on one or multiple expressions.
+			/// </summary>
+			public static class Index
 			{
 				public static AST.INode Parse(CharStream stream)
 				{

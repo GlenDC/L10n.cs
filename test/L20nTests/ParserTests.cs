@@ -83,24 +83,14 @@ namespace L20nCoreTests
 		[Test()]
 		public void QuoteTests()
 		{
-			// Single quotes can be used for both single and multi-line purposes
 			Assert.AreEqual("'", Quote.Parse(NC("'")).ToString());
-			Assert.AreEqual("'''", Quote.Parse(NC("'''")).ToString());
-			// Same goes for double quotes
 			Assert.AreEqual("\"", Quote.Parse(NC("\"")).ToString());
-			Assert.AreEqual("\"\"\"", Quote.Parse(NC("\"\"\"")).ToString());
-			// If > 4 quotes are given, we still won't read more than 3 (multi-line)
-			Assert.AreEqual("'''", Quote.Parse(NC("''''")).ToString());
 			// If 2 quotes are given, we will just read 1 (single-line)
 			Assert.AreEqual("'", Quote.Parse(NC("''")).ToString());
 
 			// You can also require a certain quote, in case you require a matching pair
 			var s = NC("''''");
 			var quote = Quote.Parse(s);
-			// will fail now because we try to match a multi-line
-			// with a single-line quote
-			Assert.Throws<ParseException>(
-				() => Quote.Parse(s, quote));
 			
 			// Single Quotes can't be matched with Double Quotes
 			s = NC("'\"");
@@ -281,10 +271,10 @@ namespace L20nCoreTests
 		{
 			// String Values
 			ExpressionParseTest(
-				"5 + 2 = something - 1",
-				"'{{ 5 }} + {{ 2 }} = {{ '{{ 'something' }} - {{ 1 }}' }}'");
+				"5 + 2 =? something - 1",
+				"'{{ 5 }} + {{ 2 }} =? {{ '{{ 'something' }} - {{ 1 }}' }}'");
 			ExpressionParseTest<L20nCore.Objects.StringValue>
-				("'{{ 5 }} + {{ 2 }} = {{ x }}'");
+				("'{{ 5 }} + {{ 2 }} =? {{ x }}'");
 
 			// Conditional Values
 			ExpressionParseTest(5, "1 > 2 ? 2 : 5");
@@ -326,6 +316,18 @@ namespace L20nCoreTests
 				("'Hello, World!'");
 			ExpressionParseTest<L20nCore.Objects.HashValue>
 				("{age: '23', location: 'unknown'}");
+
+			// just some quick string value tests
+			ExpressionParseTest("Glen's bottle.", @"'Glen\'s bottle.'");
+			ExpressionParseTest(((char)Convert.ToInt32("F6222", 16)).ToString(), @"'\u0F6222'");
+			ExpressionParseTest(((char)Convert.ToInt32("F6222", 16)).ToString(), "'U+0F6222'");
+			ExpressionParseTest("{0} 1", "'{0} {{ 1 }}'");
+			ExpressionParseTest("{{ 0 }} 1", @"'\{\{ 0 \}\} {{ 1 }}'");
+			ExpressionParseTest("Whatever Forever!", "'   Whatever    Forever!  '");
+			ExpressionParseTest("Whatever Forever!", @"'   
+															Whatever   
+								Forever!  
+								'");
 			
 			// Parenthesis Expressions
 			ExpressionParseTest<L20nCore.Objects.Literal>
@@ -438,6 +440,8 @@ namespace L20nCoreTests
 			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<foo($no_expression_defined) {}>"), builder));
 			Assert.Throws<ParseException>(
+				() => Entry.Parse(NC("<foo($nope, $nope) { 'a parameter name needs to be unique' }>"), builder));
+			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<foo() {'closing curly brace missing'>"), builder));
 
 			// invalid entity examples
@@ -451,6 +455,8 @@ namespace L20nCoreTests
 				() => Entry.Parse(NC("<invalid('index') 'should be enclosed by [], not ()'>"), builder));
 			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<invalid ['index'] 'no space allowed before the first ['>"), builder));
+			Assert.Throws<ParseException>(
+				() => Entry.Parse(NC("<invalid['index'] 'no index allowed when giving a stringValue'>"), builder));
 			Assert.Throws<ParseException>(
 				() => Entry.Parse(NC("<invalid['value'] 42>"), builder));
 		}

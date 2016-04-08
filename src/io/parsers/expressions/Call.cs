@@ -26,7 +26,12 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class Call
+				/// <summary>
+				/// A parser combinator to parse call expressions, which retrieves
+				/// a macro value and passes the values for the relevant parameters,
+				/// in order to be able to evaluate that macro expression.
+				/// </summary>
+				public static class Call
 				{
 					public static AST.INode Parse(CharStream stream, AST.INode member)
 					{

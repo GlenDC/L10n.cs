@@ -23,7 +23,12 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class Identifier
+			/// <summary>
+			/// The combinator parser used to parse a string identifier,
+			/// which either becomes an Identifier or IdentifierExpression,
+			/// depending on the context.
+			/// </summary>
+			public static class Identifier
 			{
 				public static string Parse(CharStream stream, bool allow_underscore)
 				{

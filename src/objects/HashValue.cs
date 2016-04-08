@@ -26,11 +26,16 @@ namespace L20nCore
 {
 	namespace Objects
 	{
+		/// <summary>
+		/// The <see cref="L20nCore.Objects.HashValue"/> represents a hash table
+		/// containing <see cref="L20nCore.Objects.L20nObject"/> values matched with a hash.
+		/// A value can be looked based on a found given hash key or the default value in case that is specified.
+		/// </summary>
 		public sealed class HashValue : Primitive
 		{
-			private readonly Dictionary<string, L20nObject> m_Items;
-			private readonly string m_Default;
-
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Objects.HashValue"/> class.
+			/// </summary>
 			public HashValue(Dictionary<string, L20nObject> items, string def)
 			{
 				m_Items = new Dictionary<string, L20nObject>(items);
@@ -44,6 +49,11 @@ namespace L20nCore
 				}
 			}
 
+			/// <summary>
+			/// Optimizes to a simple <see cref="L20nCore.Objects.L20nObject"/> value in case
+			/// only one value is define within the given HashTable.
+			/// Returns this instance oterhwise.
+			/// </summary>
 			public override L20nObject Optimize()
 			{
 				if (m_Items.Count == 1)
@@ -53,7 +63,13 @@ namespace L20nCore
 
 				return this;
 			}
-			
+
+			/// <summary>
+			/// Returns the value that matches the hash key given as the first given parameter.
+			/// In case a default value is specified, and no hash key is given or the given hash key
+			/// matches no key registered in the hash table, that value will be returned instead.
+			/// In all other cases, including when something went wrong, <c>null</c> will be returned.
+			/// </summary>
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				if (m_Items.Count == 0)
@@ -96,7 +112,12 @@ namespace L20nCore
 
 				return obj;
 			}
-			
+
+			/// <summary>
+			/// Evaluates this instance and returns the resulting primitive to a string value if possible.
+			/// Returns <c>null</c> in case something went wrong during evaluation or if the evaluation result is
+			/// not a <see cref="L20nCore.Objects.Primitive"/> value type.
+			/// </summary>
 			public override string ToString(LocaleContext ctx, params L20nObject[] argv)
 			{
 				var primitive = Eval(ctx, argv) as Primitive;
@@ -105,6 +126,9 @@ namespace L20nCore
 
 				return null;
 			}
+
+			private readonly Dictionary<string, L20nObject> m_Items;
+			private readonly string m_Default;
 		}
 	}
 }

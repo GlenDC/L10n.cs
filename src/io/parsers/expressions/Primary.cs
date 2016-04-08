@@ -25,7 +25,12 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class Primary
+				/// <summary>
+				/// The parser combinator to parse any Primitive value,
+				/// meaning that it will use the relavant parser combinator to parse either
+				/// a literal, external value or identifier expression.
+				/// </summary>
+				public static class Primary
 				{
 					public static AST.INode Parse(CharStream stream)
 					{

@@ -25,7 +25,10 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class Parenthesis
+				/// <summary>
+				/// A parser combinator to parse any object that's in-between parenthesis.
+				/// </summary>
+				public static class Parenthesis
 				{
 					public static AST.INode Parse(CharStream stream)
 					{

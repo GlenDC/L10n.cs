@@ -24,8 +24,11 @@ namespace L20nCore
 	namespace IO
 	{
 		namespace Parsers
-		{	
-			public class Comment
+		{
+			/// <summary>
+			/// The combinator parser used to parse a comment and ignore the resulting output.
+			/// </summary>
+			public static class Comment
 			{
 				public static void Parse(CharStream stream)
 				{

@@ -23,10 +23,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a literal (integer) value.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Literal"/>
+			/// </summary>
 			public sealed class Literal : INode
 			{
-				private readonly int m_Value;
-
 				public Literal(string raw)
 				{
 					m_Value = int.Parse(raw);
@@ -41,6 +43,8 @@ namespace L20nCore
 				{
 					return m_Value.ToString();
 				}
+
+				private readonly int m_Value;
 			}
 		}
 	}

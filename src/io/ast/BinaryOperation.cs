@@ -24,12 +24,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a binary expression.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Expressions.Binary"/>
+			/// </summary>
 			public sealed class BinaryOperation : INode
 			{
-				readonly Operation m_Operation;
-				readonly INode m_First;
-				readonly INode m_Second;
-				
 				public BinaryOperation(INode first, INode second, Operation op)
 				{
 					m_First = first;
@@ -145,6 +145,10 @@ namespace L20nCore
 					Add = 9,					// +
 					Subtract = 10,				// -
 				}
+
+				private readonly Operation m_Operation;
+				private readonly INode m_First;
+				private readonly INode m_Second;
 			}
 		}
 	}

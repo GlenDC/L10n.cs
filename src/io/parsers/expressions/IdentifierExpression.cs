@@ -25,7 +25,13 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class IdentifierExpression
+				/// <summary>
+				/// A parser combinator to parse any kind of Identifier Expression,
+				/// which can be a External or Global variable or simply a naked IDentifier.
+				/// In case it is a Identifier, it might because a normal or expression one,
+				/// but that depends on the context in which it is used.
+				/// </summary>
+				public static class IdentifierExpression
 				{
 					public static AST.INode Parse(CharStream stream)
 					{

@@ -26,15 +26,28 @@ namespace L20nCore
 {
 	namespace Objects
 	{
+		/// <summary>
+		/// <see cref="L20nCore.Objects.PropertyExpression"/> represents a series of nested identifiers,
+		/// meaning that we're looking for a value within 1 or multiple HashTables, starting with the name
+		/// of the root <see cref="L20nCore.Objects.Entity"/>. 
+		/// </summary>
 		public sealed class PropertyExpression : L20nObject
 		{
+			/// <summary>
+			/// Returns the series of nested identifiers,
+			/// that is used by this <see cref="L20nCore.Objects.PropertyExpression"/>
+			/// to look up the value in the (series of) hashtable(s).
+			/// </summary>
 			public L20nObject[] Identifiers
 			{
 				get { return m_Identifiers; }
 			}
 
-			private readonly L20nObject[] m_Identifiers;
-			
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Objects.PropertyExpression"/> class.
+			/// An exception gets thrown in case less than 2 identifiers is given,
+			/// as that should never happen.
+			/// </summary>
 			public PropertyExpression(L20nObject[] identifiers)
 			{
 				if (identifiers.Length < 2)
@@ -44,7 +57,13 @@ namespace L20nCore
 	
 				m_Identifiers = identifiers;
 			}
-			
+
+			/// <summary>
+			/// Initializes a new instance of the <see cref="L20nCore.Objects.PropertyExpression"/> class.
+			/// An exception gets thrown in case less than 2 identifiers is given,
+			/// as that should never happen.
+			/// </summary>
+			/// <param name="identifiers">Identifiers.</param>
 			public PropertyExpression(string[] identifiers)
 			{
 				if (identifiers.Length < 2)
@@ -52,6 +71,7 @@ namespace L20nCore
 					throw new EvaluateException("a property needs at least 2 identifiers");
 				}
 
+				// create an Identifier for each given identifier string.
 				m_Identifiers = new L20nObject[identifiers.Length];
 				for (int i = 0; i < identifiers.Length; ++i)
 				{
@@ -59,16 +79,27 @@ namespace L20nCore
 				}
 			}
 
+			/// <summary>
+			/// Can't be optimized and will return this instance instead.
+			/// </summary>
 			public override L20nObject Optimize()
 			{
 				return this;
 			}
-			
+
+			/// <summary>
+			/// Evaluates to the final value, found based on the stored (and evaluated) property identifiers,
+			/// and optionally the given parameters.
+			/// Returns null inc ase something went wrong.
+			/// </summary>
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
 				Entity maybe;
 				int i = 0;
 
+				// The root entity is either given as a parameter
+				// or we need to get it using the first identifier.
+				// See this.GetEntity for more information.
 				if (argv == null || argv.Length == 0 || (argv [0] as Entity) == null)
 				{
 					maybe = GetEntity(ctx, m_Identifiers [i]);
@@ -78,6 +109,7 @@ namespace L20nCore
 					maybe = argv [0] as Entity;
 				}
 
+				// return null in case we have no root entity at all
 				if (maybe == null)
 				{
 					Logger.Warning("<PropertyExpression>: couldn't evaluate first expression");
@@ -86,12 +118,20 @@ namespace L20nCore
 
 				L20nObject obj = maybe;
 
+				// in case this property is pointing to a root entity,
+				// directly requested by the L20n-user, we need to
+				// evaluate it using the current identifier, such that
+				// we can return null in case the Entity is private
+				// and should thus not be requested.
 				if (argv.Length == 1 && (argv [0] as Dummy) != null)
 				{
 					obj = obj.Eval(ctx, argv [0], m_Identifiers [i]);
 					++i;
 				}
 
+				// go through each identifier and replace the current Entity,
+				// such that we can go deeper until we went through the
+				// entire identifier list.
 				for (; i < m_Identifiers.Length; ++i)
 				{
 					if (obj == null)
@@ -111,9 +151,16 @@ namespace L20nCore
 					return obj;
 				}
 
+				// if all is fine, we can now return the evaluation
+				// of the last found value.
 				return obj.Eval(ctx);
 			}
 
+			/// <summary>
+			/// A help function to get the root entity based on the first variable.
+			/// The given identifier is either an Identifier, Variable or Global,
+			/// which will define the action to be taken in order to get and return the Root Entity.
+			/// </summary>
 			private Entity GetEntity(LocaleContext ctx, L20nObject key)
 			{
 				// is it an identifier?
@@ -133,6 +180,8 @@ namespace L20nCore
 
 				return null;
 			}
+			
+			private readonly L20nObject[] m_Identifiers;
 		}
 	}
 }

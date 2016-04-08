@@ -25,7 +25,12 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class Global
+				/// <summary>
+				/// A parser combinator to parse global expressions.
+				/// These are objects that retrieve an object (part of a global list of objects)
+				/// by reference and evaluates that.
+				/// </summary>
+				public static class Global
 				{
 					public static AST.INode Parse(CharStream stream)
 					{

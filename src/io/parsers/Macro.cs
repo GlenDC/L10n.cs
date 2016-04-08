@@ -24,7 +24,11 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class Macro
+			/// <summary>
+			/// The combinator parser used to parse a Macro,
+			/// a function defined within a L20n Resource File.
+			/// </summary>
+			public static class Macro
 			{
 				public static void Parse(
 					CharStream stream,

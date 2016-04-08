@@ -24,10 +24,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a property expression.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Expressions.Property"/>.
+			/// </summary>
 			public sealed class PropertyExpression : INode
 			{
-				private List<INode> m_Identifiers;
-				
 				public PropertyExpression(INode root)
 				{
 					m_Identifiers = new List<INode>();
@@ -44,6 +46,7 @@ namespace L20nCore
 					var identifiers = new Objects.L20nObject[m_Identifiers.Count];
 					for (int i = 0; i < identifiers.Length; ++i)
 						identifiers [i] = m_Identifiers [i].Eval();
+
 					return new Objects.PropertyExpression(identifiers).Optimize();
 				}
 				
@@ -52,8 +55,11 @@ namespace L20nCore
 					var identifiers = new string[m_Identifiers.Count];
 					for (int i = 0; i < identifiers.Length; ++i)
 						identifiers [i] = m_Identifiers [i].Display();
+
 					return String.Join(".", identifiers);
 				}
+
+				private readonly List<INode> m_Identifiers;
 			}
 		}
 	}

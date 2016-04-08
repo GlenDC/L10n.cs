@@ -25,7 +25,13 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class Member
+				/// <summary>
+				/// A parser combinator to parse any expression that's either
+				/// a call-, property-, or parenthesis expression.
+				/// We call it a member expression because it's part (and therefore a member)
+				/// of a unary or binary expression.
+				/// </summary>
+				public static class Member
 				{
 					public static AST.INode Parse(CharStream stream)
 					{

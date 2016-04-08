@@ -24,7 +24,11 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{
-			public class HashValue
+			/// <summary>
+			/// The combinator parser used to parse an HashValue,
+			/// which is used as the value of an Entity.
+			/// </summary>
+			public static class HashValue
 			{
 				public static AST.INode Parse(CharStream stream)
 				{

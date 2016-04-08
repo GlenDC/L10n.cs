@@ -23,7 +23,11 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class Literal
+			/// <summary>
+			/// The combinator parser used to parse a Literal,
+			/// a primitive and consant integer value.
+			/// </summary>
+			public static class Literal
 			{
 				public static AST.INode Parse(CharStream stream)
 				{

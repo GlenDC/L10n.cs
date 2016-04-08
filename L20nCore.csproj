@@ -89,7 +89,9 @@
     <Compile Include="src\io\ast\INode.cs" />
     <Compile Include="src\io\ast\Literal.cs" />
     <Compile Include="src\io\ast\StringValue.cs" />
-    <Compile Include="src\io\ast\HashValue.cs" />
+    <Compile Include="src\io\ast\HashValue.cs">
+      <DependentUpon>Global.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\io\ast\Variable.cs" />
     <Compile Include="src\io\ast\Global.cs" />
     <Compile Include="src\io\ast\Property.cs" />

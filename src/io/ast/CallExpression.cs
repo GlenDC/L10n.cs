@@ -24,11 +24,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a call expression.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Expressions.Call"/>
+			/// </summary>
 			public sealed class CallExpression : INode
 			{
-				private readonly INode m_Name;
-				private List<INode> m_Parameters;
-				
 				public CallExpression(INode name, INode parameter)
 				{
 					m_Name = name;
@@ -47,6 +48,7 @@ namespace L20nCore
 					var parameters = new Objects.L20nObject[m_Parameters.Count];
 					for (int i = 0; i < parameters.Length; ++i)
 						parameters [i] = m_Parameters [i].Eval();
+
 					return new Objects.CallExpression(name, parameters).Optimize();
 				}
 				
@@ -59,6 +61,9 @@ namespace L20nCore
 					return String.Format("{0}({1})",
 						m_Name.Display(), String.Join(",", parameters));
 				}
+
+				private readonly INode m_Name;
+				private readonly List<INode> m_Parameters;
 			}
 		}
 	}

@@ -24,11 +24,13 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a unary expression,
+			/// applied on a single literal or boolean object, depending on the operation.
+			/// More Inforamtion: <see cref="L20nCore.IO.Parsers.Expressions.Unary"/> 
+			/// </summary>
 			public sealed class UnaryOperation : INode
 			{
-				INode m_Expression;
-				Operation m_Operation;
-
 				public UnaryOperation(INode expression, char op)
 				{
 					m_Expression = expression;
@@ -87,6 +89,9 @@ namespace L20nCore
 					Negative, // -
 					Negate,   // !
 				}
+
+				private readonly INode m_Expression;
+				private readonly Operation m_Operation;
 			}
 		}
 	}

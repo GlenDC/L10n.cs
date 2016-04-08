@@ -23,10 +23,16 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			// An expression is the same as a conditional expression,
-			// according to the L20n spec it can ONLY ever be a conditional expression
-			// so there is no need to make 2 seperate parsers for it
-			public class Expression
+			/// <summary>
+			/// The combinator parser used to parse any of the possible expreesions.
+			/// This bubbles down all the way to the most primitive expression if needed.
+			/// </summary>
+			/// <remarks>
+			/// An expression is the same as a conditional expression,
+			/// according to the L20n spec it can ONLY ever be a conditional expression
+			/// so there is no need to make 2 seperate parsers for it
+			/// </remarks>
+			public static class Expression
 			{
 				public static AST.INode Parse(CharStream stream)
 				{

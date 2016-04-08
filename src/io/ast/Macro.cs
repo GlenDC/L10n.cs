@@ -26,12 +26,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a Macro.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Macro"/>.
+			/// </summary>
 			public sealed class Macro : INode
 			{
-				private readonly string m_Identifier;
-				private List<string> m_Parameters;
-				private INode m_Expression;
-				
 				public Macro(string identifier)
 				{
 					m_Identifier = identifier;
@@ -49,6 +49,18 @@ namespace L20nCore
 
 				public void AddParameter(string variable)
 				{
+					// check for duplicate variables
+					for (int i = 0; i < m_Parameters.Count; ++i)
+					{
+						if (m_Parameters [i] == variable)
+						{
+							string msg = String.Format(
+								"can't add variable #{0} as this name is already in use at position #{1}",
+								m_Parameters.Count, i);
+							throw new ParseException(msg);
+						}
+
+					}
 					m_Parameters.Add(variable);
 				}
 				
@@ -68,6 +80,10 @@ namespace L20nCore
 					    String.Join(",", m_Parameters.ToArray()),
 					    m_Expression.Display());
 				}
+
+				private readonly string m_Identifier;
+				private readonly List<string> m_Parameters;
+				private INode m_Expression;
 			}
 		}
 	}

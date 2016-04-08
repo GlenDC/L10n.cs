@@ -24,12 +24,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a logical (binary) expression.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Expressions.Logic"/>
+			/// </summary>
 			public sealed class LogicExpression : INode
 			{
-				INode m_First;
-				INode m_Second;
-				Operation m_Operation;
-				
 				public LogicExpression(INode first, INode second, string op)
 				{
 					m_First = first;
@@ -81,6 +81,10 @@ namespace L20nCore
 					Or, // ||
 					And, // &&
 				}
+
+				private readonly INode m_First;
+				private readonly INode m_Second;
+				private readonly Operation m_Operation;
 			}
 		}
 	}

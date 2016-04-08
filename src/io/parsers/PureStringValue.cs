@@ -24,7 +24,11 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class PureStringValue
+			/// <summary>
+			/// The combinator parser used to parse a simple string surounded by quotes.
+			/// This is not the same as a StringValue and cannot contain expressions within expanders.
+			/// </summary>
+			public static class PureStringValue
 			{
 				public static string Parse(CharStream stream)
 				{

@@ -26,13 +26,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for an Entity value.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Entity"/>
+			/// </summary>
 			public sealed class Entity : INode
 			{
-				private readonly string m_Identifier;
-				private readonly INode m_Index;
-				private readonly INode m_Value;
-				private readonly bool m_IsPrivate;
-				
 				public Entity(string identifier, bool is_private, INode index, INode value)
 				{
 					m_Identifier = identifier;
@@ -57,6 +56,11 @@ namespace L20nCore
 					    m_Index != null ? ((Index)m_Index).Display() : "",
 					    m_Value.Display());
 				}
+
+				private readonly string m_Identifier;
+				private readonly INode m_Index;
+				private readonly INode m_Value;
+				private readonly bool m_IsPrivate;
 			}
 		}
 	}

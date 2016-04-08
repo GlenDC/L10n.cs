@@ -25,7 +25,12 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class ImportStatement
+			/// <summary>
+			/// The combinator parser used to parse an import statement,
+			/// which means that we will parse the L20n resource file that this
+			/// import statement is pointing to.
+			/// </summary>
+			public static class ImportStatement
 			{
 				public static void Parse(CharStream stream, Internal.LocaleContext.Builder builder)
 				{

@@ -17,7 +17,7 @@
 
 <personal_lucky_greeting "{{ personal_greeting }} O número da sorte de hoje é {{ $lucky_number }}!">
 
-<shared[$user.gender]
+<shared
     "{{ $user.name }} compartilhou sua mensagem com {{ followers($user.followers) }}.">
 
 /* in português the possessive adjective's gender doesn't depend on the subject */

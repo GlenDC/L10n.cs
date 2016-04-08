@@ -24,7 +24,11 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class StringValue
+			/// <summary>
+			/// The parser combinator used to parse a StringValue,
+			/// used as the value-part of an Entity entry.
+			/// </summary>
+			public static class StringValue
 			{
 				public static AST.INode Parse(CharStream stream)
 				{
@@ -32,18 +36,49 @@ namespace L20nCore
 					
 					try
 					{
+						// Parse the quote and store that in the AST of the stringValue
 						var quote = Quote.Parse(stream);
 						var value = new AST.StringValue(quote);
 
 						AST.INode expression;
 						char c;
 			
+						// as long as we have more characters left
+						// we'll keep reading, and break from within this loop body
+						// when we reached the same quote that started this entire parser logic.
 						while ((c = stream.PeekNext()) != '\0')
 						{
 							if (c == '\\')
 							{
-								value.appendChar(stream.ForceReadNext());
-								value.appendChar(stream.ForceReadNext());
+								// skip the escape character && read the next one
+								stream.ForceReadNext();
+								c = stream.PeekNext();
+								if (c == '\\' || c == '{' || c == '}' || c == '\'' || c == '"')
+								{
+									c = stream.ForceReadNext();
+									value.appendChar(c);
+								} else if (c == 'u')
+								{
+									// skip the starter character
+									stream.Skip();
+									// try to read unicode character
+									value.appendChar(ReadUnicodeCharacter(stream));
+								} else
+								{
+									var msg = String.Format(
+										"character \\{0} is not a valid escape character", c);
+									throw stream.CreateException(msg);
+								}
+							// unicode characters are also supported in the classical U+xxxxxx notation
+							} else if (c == 'U' && stream.PeekNext(1) == '+')
+							{
+								// skip the starter characters
+								stream.Skip(2);
+								// try to read unicode character
+								value.appendChar(ReadUnicodeCharacter(stream));
+							} else if (c == '\n' || c == '\r') // newlines get converted to a space
+							{
+								stream.Skip();
 							} else
 							{
 								if (Quote.Peek(stream, quote))
@@ -54,11 +89,14 @@ namespace L20nCore
 									value.appendExpression(expression);
 								} else
 								{
-									value.appendChar(stream.ForceReadNext());
+									c = stream.ForceReadNext();
+									if(!Char.IsWhiteSpace(c) || !Char.IsWhiteSpace(value.LastCharacter))
+										value.appendChar(c);
 								}
 							}
 						}
 
+						// Eventually we expect exactly the same string back
 						Quote.Parse(stream, quote);
 						
 						return value;
@@ -86,6 +124,18 @@ namespace L20nCore
 
 					value = null;
 					return false;
+				}
+
+				private static char ReadUnicodeCharacter(CharStream stream)
+				{
+					string unicodeValue;
+					if (stream.ReadReg("(0|1)?[0-9a-fA-F]{4,5}", out unicodeValue))
+					{
+						return (char)Convert.ToInt32(unicodeValue, 16);
+					} else
+					{
+						throw stream.CreateException("not a valid unicode character");
+					}
 				}
 			}
 		}

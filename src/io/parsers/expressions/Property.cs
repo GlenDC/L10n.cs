@@ -26,7 +26,13 @@ namespace L20nCore
 		{
 			namespace Expressions
 			{
-				public class Property
+				/// <summary>
+				/// A property expressions looks for a value within a hash-table,
+				/// which means it points to a certain Entity (the root) and than defines
+				/// all the different levels as identifiers, meaning that it can be
+				/// simply a value within the root or a value within the value or the root, and so on.
+				/// </summary>
+				public static class Property
 				{
 					public static AST.INode Parse(CharStream stream)
 					{

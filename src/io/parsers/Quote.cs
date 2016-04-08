@@ -24,53 +24,36 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{	
-			public class Quote
+			/// <summary>
+			/// The parser combinator used to parse a quote that starts and ends a StringValue.
+			/// We support four different types of quote, even though they are doing the exact same thing for now.
+			/// </summary>
+			public static class Quote
 			{
 				public enum Type
 				{
 					Single,
 					Double,
 				}
-
-				public enum LineType
-				{
-					Single,
-					Multi,
-				}
 				
 				public class Info : IComparable
 				{
 					public Type Type { get; private set; }
 
-					public LineType LineType { get; private set; }
-
-					public Info(Type type, LineType lineType)
+					public Info(Type type)
 					{
 						Type = type;
-						LineType = lineType;
 					}
 
 					public int CompareTo(object obj)
 					{
-						if (obj == null)
-							return 1;
-						
 						Info otherInfo = obj as Info;
 						if (otherInfo != null)
 						{
 							if (this.Type == otherInfo.Type)
-							{
-								if (this.LineType == otherInfo.LineType)
-								{
-									return 0;
-								} else
-								{
-									return (this.LineType == LineType.Single ? -1 : 1);
-								}
-							} else
-							{
-								return (this.Type == Type.Single ? -1 : 1);
-							}
+								return 0;
+							else
+								return this.Type == Type.Single ? -1 : 1;
 						} else
 						{
 							throw new Exceptions.UnexpectedObjectException(
@@ -80,8 +63,7 @@ namespace L20nCore
 
 					public override string ToString()
 					{
-						char c = (this.Type == Type.Single ? '\'' : '"');
-						return new String(c, (this.LineType == LineType.Single ? 1 : 3));
+						return this.Type == Type.Single ? "\'" : "\"";
 					}
 				}
 
@@ -90,23 +72,21 @@ namespace L20nCore
 					string output;
 					int pos = stream.Position;
 
-					if (!stream.ReadReg("(\"\"\"|\'\'\'|\'|\")", out output))
+					if (!stream.ReadReg("(\'|\")", out output))
 					{
 						throw new Exceptions.ParseException(
 							String.Format(
-							"expected to read a <quote> (starting at {0}), but found invalid characters",
+							"expected to read a <quote> (starting at {0}), but no characters were left",
 							stream.ComputeDetailedPosition(pos)));
 					}
 
-					
-					var lineType = output.Length == 1 ? LineType.Single : LineType.Multi;
 					Info info;
-					if (output [0] == '"')
+					if (output[0] == '"')
 					{
-						info = new Info(Type.Double, lineType);
-					} else
+						info = new Info(Type.Double);
+					} else 
 					{
-						info = new Info(Type.Single, lineType);
+						info = new Info(Type.Single);
 					}
 
 					if (expected != null && expected.CompareTo(info) != 0)
@@ -133,7 +113,7 @@ namespace L20nCore
 					}
 
 					char next = stream.PeekNext();
-					return next == '\'' || next == '"';
+					return next == '\'' || next == '\"';
 				}
 			}
 		}

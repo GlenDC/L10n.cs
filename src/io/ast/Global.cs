@@ -23,10 +23,12 @@ namespace L20nCore
 	{
 		namespace AST
 		{
+			/// <summary>
+			/// The AST representation for a Global value.
+			/// More Information: <see cref="L20nCore.IO.Parsers.Global"/>
+			/// </summary>
 			public sealed class Global : INode
-			{
-				private readonly string m_Value;
-				
+			{	
 				public Global(string value)
 				{
 					m_Value = value;
@@ -41,6 +43,8 @@ namespace L20nCore
 				{
 					return String.Format("@{0}", m_Value);
 				}
+				
+				private readonly string m_Value;
 			}
 		}
 	}

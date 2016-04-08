@@ -168,7 +168,7 @@ namespace L20nCoreTests
 				"There are no apples.",
 				l20n.Translate("apples_sentence", "amount", 0));
 			Assert.AreEqual(
-				"Attachment too big: 45 MB.",
+				"Attachment too big:\n\t45 MB.",
 				l20n.Translate("tooBig", "sizeInKB", 46080));
 			Assert.AreEqual(
 				"John shared your post to his 42 followers.",

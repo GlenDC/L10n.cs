@@ -25,7 +25,11 @@ namespace L20nCore
 	{
 		namespace Parsers
 		{
-			public class Entry
+			/// <summary>
+			/// The combinator parser used to parse any of the possible entries.
+			/// This can result in a comment (ignored), import statement, macro or entity.
+			/// </summary>
+			public static class Entry
 			{
 				public static void Parse(CharStream stream, Internal.LocaleContext.Builder builder)
 				{
