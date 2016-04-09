@@ -51,7 +51,7 @@ namespace L20nCore
 							if (c == '\\')
 							{
 								// skip the escape character && read the next one
-								stream.ForceReadNext();
+								stream.Skip();
 								c = stream.PeekNext();
 								if (c == '\\' || c == '{' || c == '}' || c == '\'' || c == '"')
 								{
