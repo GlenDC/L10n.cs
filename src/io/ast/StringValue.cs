@@ -36,6 +36,18 @@ namespace L20nCore
 					get { return m_Value.Length == 0  ? '\0' : m_Value [m_Value.Length - 1]; }
 				}
 
+				/// <summary>
+				/// Used to prevent any potential name clashes with escaped expressions in a StringValue
+				/// </summary>
+				public const char DummyExpressionCharacter = (char)7;
+				/// <summary>
+				/// Used to only add spaces for newline characters where spaces are required,
+				/// if no spaces are present, no spaces will be added. Which should only be
+				/// in languages like Chinese, or simply unneeded multiline strings
+				/// (which should be corrected by the translator)
+				/// </summary>
+				public const char DummyNewlineWhitespaceCharacter = (char)6;
+
 				public StringValue(Parsers.Quote.Info quote)
 				{
 					m_Quote = quote;
@@ -58,7 +70,7 @@ namespace L20nCore
 					// we add this rediculous character (255), in order to avoid
 					// the situation where the user might want to have a similar
 					// pattern in their StringValue, for some bizar reason.
-					appendString(String.Format("{{ {1}{0}{1} }}", m_Expressions.Count, (char)255));
+					appendString(String.Format("{{ {1}{0}{1} }}", m_Expressions.Count, DummyExpressionCharacter));
 					m_Expressions.Add(expression);
 				}
 
@@ -68,7 +80,12 @@ namespace L20nCore
 					for (int i = 0; i < expressions.Length; ++i)
 						expressions [i] = m_Expressions [i].Eval();
 
-					return new Objects.StringValue(m_Value.Trim(), expressions).Optimize();
+					var value = m_Value.Trim();
+					value = value.Replace(
+						DummyNewlineWhitespaceCharacter.ToString(),
+						value.Contains(" ") ? " " : "");
+
+					return new Objects.StringValue(value, expressions).Optimize();
 				}
 
 				public string Display()
@@ -77,7 +94,12 @@ namespace L20nCore
 					for (int i = 0; i < expressions.Length; ++i)
 						expressions [i] = m_Expressions [i].Display();
 
-					var str = String.Format(m_Value, expressions);
+					var value = m_Value.Trim();
+					value = value.Replace(
+						DummyNewlineWhitespaceCharacter.ToString(),
+						value.Contains(" ") ? " " : "");
+
+					var str = String.Format(value, expressions);
 					return String.Format("{0}{1}{0}", m_Quote.ToString(), str);
 				}
 				

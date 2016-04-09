@@ -324,9 +324,15 @@ namespace L20nCoreTests
 			ExpressionParseTest("{0} 1", "'{0} {{ 1 }}'");
 			ExpressionParseTest("{{ 0 }} 1", @"'\{\{ 0 \}\} {{ 1 }}'");
 			ExpressionParseTest("Whatever Forever!", "'   Whatever    Forever!  '");
-			ExpressionParseTest("Whatever Forever!", @"'   
-															Whatever   
-								Forever!  
+			ExpressionParseTest("Whatever Forever, Bro! Give me the 7!", @"'   
+															Whatever
+								Forever, Bro!
+
+					Give me the 7!  
+								'");
+			ExpressionParseTest("天长地久", @"'   
+															天长
+								地久
 								'");
 			
 			// Parenthesis Expressions

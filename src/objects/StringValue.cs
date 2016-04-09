@@ -171,7 +171,9 @@ namespace L20nCore
 			private string FormatString(string format, string[] argv)
 			{
 				for(int i = 0; i < argv.Length; ++i)
-					format = format.Replace(String.Format("{{ {1}{0}{1} }}", i, (char)255), argv[i]);
+					format = format.Replace(
+						String.Format("{{ {1}{0}{1} }}", i, IO.AST.StringValue.DummyExpressionCharacter),
+						argv[i]);
 				return format;
 			}
 		}

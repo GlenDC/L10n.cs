@@ -79,6 +79,11 @@ namespace L20nCore
 							} else if (c == '\n' || c == '\r') // newlines get converted to a space
 							{
 								stream.Skip();
+								var lc = value.LastCharacter;
+								// we add this dummy character, such that we wouldn't add a space in
+								// languages that don't use a space in general, such as chinese.
+								if (!Char.IsWhiteSpace(lc) && lc != AST.StringValue.DummyNewlineWhitespaceCharacter)
+									value.appendChar(AST.StringValue.DummyNewlineWhitespaceCharacter);
 							} else
 							{
 								if (Quote.Peek(stream, quote))
@@ -90,7 +95,10 @@ namespace L20nCore
 								} else
 								{
 									c = stream.ForceReadNext();
-									if(!Char.IsWhiteSpace(c) || !Char.IsWhiteSpace(value.LastCharacter))
+									var lc = value.LastCharacter;
+									if(!Char.IsWhiteSpace(c)
+									   	|| (lc != AST.StringValue.DummyNewlineWhitespaceCharacter
+									        && !Char.IsWhiteSpace(lc)))
 										value.appendChar(c);
 								}
 							}
