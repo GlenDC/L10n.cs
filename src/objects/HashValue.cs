@@ -89,12 +89,20 @@ namespace L20nCore
 					return m_Items [m_Default].Eval(ctx);
 				}
 
-				var id = argv [0].Eval(ctx) as Identifier;
+				var first = argv [0].Eval(ctx);
+
+				Identifier id = first as Identifier;
 				if (id == null)
 				{
-					Logger.Warning("HashValue: first variadic argument couldn't be evaluated as an <Identifier>");
-					return id;
-				}
+					var str = first as StringOutput;
+					if (str == null)
+					{
+						Logger.Warning("HashValue: first variadic argument couldn't be evaluated as an <Identifier>");
+						return id;
+					}
+
+					id = new Identifier(str.Value);
+				}	
 
 				L20nObject obj;
 				if (!m_Items.TryGetValue(id.Value, out obj))

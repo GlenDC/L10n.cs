@@ -41,6 +41,11 @@ namespace L20nCore
 					m_Identifiers.Add(new AST.Identifier(id));
 				}
 				
+				public void Add(INode expression)
+				{
+					m_Identifiers.Add(expression);
+				}
+				
 				public Objects.L20nObject Eval()
 				{
 					var identifiers = new Objects.L20nObject[m_Identifiers.Count];

@@ -215,6 +215,12 @@ namespace L20nCoreTests
 					new L20nCore.Objects.Literal(new Random().Next())
 			}));
 			Console.WriteLine(l20n.Translate("tooBig", "sizeInKB", 46080));
+			
+			// Switching to slovenian
+			
+			l20n.SetLocale("sl");
+
+			Console.WriteLine(l20n.Translate("remaining"));
 		}
 
 		[Test()]

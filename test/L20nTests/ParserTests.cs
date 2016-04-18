@@ -240,6 +240,8 @@ namespace L20nCoreTests
 			TypeAssert<L20nCore.IO.AST.StringValue>(
 				Primary.Parse(NC("'Hello {{ $person.name }}'")));
 			TypeAssert<L20nCore.IO.AST.StringValue>(
+				Primary.Parse(NC("'@hour {{ _hours[plural(@hour)] }}'")));
+			TypeAssert<L20nCore.IO.AST.StringValue>(
 				Primary.Parse(NC("'It is {{ @time.hour }} o\' clock.'")));
 
 			// hash values
@@ -352,6 +354,8 @@ namespace L20nCoreTests
 				("hello.world");
 			ExpressionParseTest<L20nCore.Objects.PropertyExpression>
 				("one.two.three");
+			ExpressionParseTest<L20nCore.Objects.PropertyExpression>
+				("one[two].three[four].five");
 			
 			// Call Expressions
 			ExpressionParseTest<L20nCore.Objects.CallExpression>

@@ -71,3 +71,8 @@
   landscapePhone: "Data Settings",
   portraitPhone: "Data"
 }>
+
+<remaining "
+    {{ @hour }} hour(s),
+    {{ @minute }} minute(s),
+    {{ @second }} second(s).">

@@ -29,7 +29,7 @@ namespace L20nCore
 				/// <summary>
 				/// A property expressions looks for a value within a hash-table,
 				/// which means it points to a certain Entity (the root) and than defines
-				/// all the different levels as identifiers, meaning that it can be
+				/// all the different levels as identifiers and/or expressions, meaning that it can reference
 				/// simply a value within the root or a value within the value or the root, and so on.
 				/// </summary>
 				public static class Property
@@ -43,9 +43,20 @@ namespace L20nCore
 							var property = new AST.PropertyExpression(
 								IdentifierExpression.Parse(stream));
 
-							while (stream.SkipIfPossible('.'))
+							char c;
+							// can be either a simple identifier ('.') or expression ('[')
+							while (stream.SkipAnyIfPossible(new char[] {'.', '['}, out c))
 							{
-								property.Add(Identifier.Parse(stream, false));
+								if (c == '.')
+								{
+									property.Add(Identifier.Parse(stream, false));
+								} else
+								{
+									WhiteSpace.Parse(stream, true);
+									property.Add(Expression.Parse(stream));
+									WhiteSpace.Parse(stream, true);
+									stream.SkipCharacter(']');
+								}
 							}
 							
 							return property;
@@ -61,7 +72,7 @@ namespace L20nCore
 					public static bool PeekAndParse(
 						CharStream stream, out AST.INode expression)
 					{
-						if (stream.PeekReg(@"[$@_a-zA-Z]\w*\."))
+						if (stream.PeekReg(@"(\$|\@|\_|)?[a-zA-Z]+(\.|\[)"))
 						{
 							expression = Property.Parse(stream);
 							return true;
