@@ -42,6 +42,9 @@ namespace L20nCore
 
 						AST.INode expression;
 						char c;
+
+						// Trim starting space
+						WhiteSpace.Parse(stream, true);
 			
 						// as long as we have more characters left
 						// we'll keep reading, and break from within this loop body

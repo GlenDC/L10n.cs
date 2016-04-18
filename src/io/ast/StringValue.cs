@@ -84,6 +84,7 @@ namespace L20nCore
 					value = value.Replace(
 						DummyNewlineWhitespaceCharacter.ToString(),
 						value.Contains(" ") ? " " : "");
+					value = value.TrimEnd();
 
 					return new Objects.StringValue(value, expressions).Optimize();
 				}
