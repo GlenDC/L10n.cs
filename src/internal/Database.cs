@@ -207,6 +207,15 @@ namespace L20nCore
 			}
 
 			/// <summary>
+			/// Add the given <see cref="L20nCore.Objects.BooleanValue"/> <c>value</c> as the global
+			/// with name equal to the value of params <c>id</c>.
+			/// </summary>
+			public void AddGlobal(string id, bool value)
+			{
+				AddGlobal(id, new Objects.BooleanValue(value));
+			}
+
+			/// <summary>
 			/// Add the given <see cref="L20nCore.External.IHashValue"/> <c>value</c> as the global
 			/// with name equal to the value of params <c>id</c>.
 			/// </summary>
@@ -232,6 +241,15 @@ namespace L20nCore
 			{
 				AddGlobal(id, new Objects.DelegatedString(callback));
 			}
+			
+			/// <summary>
+			/// Add the given <see cref="L20nCore.Objects.DelegatedBoolean+Delegate"/> <c>callback</c>
+			/// as the global with name equal to the value of params <c>id</c>.
+			/// </summary>
+			public void AddGlobal(string id, Objects.DelegatedBoolean.Delegate callback)
+			{
+				AddGlobal(id, new Objects.DelegatedBoolean(callback));
+			}
 
 			/// <summary>
 			/// Add the given <see cref="L20nCore.Objects.L20nObject"/> <c>value</c>
@@ -242,7 +260,7 @@ namespace L20nCore
 				if (value == null)
 				{
 					Logger.WarningFormat(
-						"global user-variable {0} couldn't be unwrapped", id);
+						"global user-variable {0} cannot be a null-value", id);
 					return;
 				}
 
@@ -330,7 +348,7 @@ namespace L20nCore
 				// from the outputted StringOuput object.
 				return output.Value;
 			}
-			
+
 			private LocaleContext m_DefaultContext;
 			private LocaleContext m_CurrentContext;
 			private Objects.Dummy m_DummyObject;

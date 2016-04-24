@@ -27,10 +27,10 @@ namespace L20nCore
 	{
 		/// <summary>
 		/// Used to collect the contents of an object that implements
-		/// <see cref="L20nCore.External.IHashValue"/>. 
+		/// <see cref="L20nCore.External.IHashValue"/>.
 		/// </summary>
 		public sealed class InfoCollector
-		{	
+		{
 			/// <summary>
 			/// A pool of available InfoCollectors to reduce the amount of objects needed for creation.
 			/// </summary>
@@ -38,7 +38,7 @@ namespace L20nCore
 			{
 				get { return s_Pool; }
 			}
-	
+
 			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.External.InfoCollector"/> class.
 			/// </summary>
@@ -64,6 +64,14 @@ namespace L20nCore
 			}
 
 			/// <summary>
+			/// Add a <see cref="L20nCore.Objects.BooleanValue"/> value with the given <c>name</c>.
+			/// </summary>
+			public void Add(string name, bool value)
+			{
+				AddObject(name, new BooleanValue(value));
+			}
+
+			/// <summary>
 			/// Add a <see cref="L20nCore.Objects.DelegatedLiteral+Delegate"/> value with the given <c>name</c>.
 			/// </summary>
 			public void Add(string name, Objects.DelegatedLiteral.Delegate callback)
@@ -78,6 +86,15 @@ namespace L20nCore
 			{
 				AddObject(name, new Objects.DelegatedString(callback));
 			}
+			
+			/// <summary>
+			/// Add a <see cref="L20nCore.Objects.DelegatedBoolean+Delegate"/> value with the given <c>name</c>.
+			/// </summary>
+			public void Add(string name, Objects.DelegatedBoolean.Delegate callback)
+			{
+				AddObject(name, new Objects.DelegatedBoolean(callback));
+			}
+
 			/// <summary>
 			/// Add a <see cref="L20nCore.External.IHashValue"/> value with the given <c>name</c>.
 			/// </summary>
@@ -88,7 +105,7 @@ namespace L20nCore
 
 				// Collect the given value
 				value.Collect(info);
-				
+
 				if (m_Info.Count == 0)
 				{
 					Internal.Logger.Warning(
@@ -106,7 +123,7 @@ namespace L20nCore
 
 			/// <summary>
 			/// Collects all the added info and returns it as a <see cref="L20nCore.Objects.HashValue"/>.
-			/// THIS SHOULD NOT BE CALLED BY THE CLASS THAT IMPLEMENTS <see cref="L20nCore.External.IHashValue"/>! 
+			/// THIS SHOULD NOT BE CALLED BY THE CLASS THAT IMPLEMENTS <see cref="L20nCore.External.IHashValue"/>!
 			/// </summary>
 			public HashValue Collect()
 			{

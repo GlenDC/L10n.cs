@@ -30,11 +30,10 @@ namespace L20nCore
 			/// </summary>
 			public sealed class CallExpression : INode
 			{
-				public CallExpression(INode name, INode parameter)
+				public CallExpression(INode name)
 				{
 					m_Name = name;
-					m_Parameters = new List<INode>(1);
-					AddParameter(parameter);
+					m_Parameters = new List<INode>();
 				}
 				
 				public void AddParameter(INode parameter)

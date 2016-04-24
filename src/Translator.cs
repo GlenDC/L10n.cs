@@ -133,7 +133,7 @@ namespace L20nCore
 				return id;
 			}
 		}
-        
+
 		/// <summary>
 		/// Translate the specified id using the given external <c>Literal</c> value within the currently set locale,
 		/// returns the id itself in case no entity could be matched with the given id.
@@ -181,12 +181,21 @@ namespace L20nCore
 		{
 			m_Database.AddGlobal(id, value);
 		}
-        
+
 		/// <summary>
 		/// Add the given <see cref="L20nCore.Objects.StringOutput"/> <c>value</c> as the global
 		/// with name equal to the value of params <c>id</c>.
 		/// </summary>
 		public void AddGlobal(string id, string value)
+		{
+			m_Database.AddGlobal(id, value);
+		}
+
+		/// <summary>
+		/// Add the given <see cref="L20nCore.Objects.BooleanValue"/> <c>value</c> as the global
+		/// with name equal to the value of params <c>id</c>.
+		/// </summary>
+		public void AddGlobal(string id, bool value)
 		{
 			m_Database.AddGlobal(id, value);
 		}
@@ -208,7 +217,7 @@ namespace L20nCore
 		{
 			m_Database.AddGlobal(id, callback);
 		}
-        
+
 		/// <summary>
 		/// Add the given <see cref="L20nCore.Objects.DelegatedString+Delegate"/> <c>callback</c>
 		/// as the global with name equal to the value of params <c>id</c>.
@@ -217,7 +226,16 @@ namespace L20nCore
 		{
 			m_Database.AddGlobal(id, callback);
 		}
-        
+		
+		/// <summary>
+		/// Add the given <see cref="L20nCore.Objects.DelegatedBoolean+Delegate"/> <c>callback</c>
+		/// as the global with name equal to the value of params <c>id</c>.
+		/// </summary>
+		public void AddGlobal(string id, Objects.DelegatedBoolean.Delegate callback)
+		{
+			m_Database.AddGlobal(id, callback);
+		}
+
 		/// <summary>
 		/// Add the given <see cref="L20nCore.Objects.L20nObject"/> <c>value</c>
 		/// as the global with name equal to the value of params <c>id</c>.
@@ -235,7 +253,7 @@ namespace L20nCore
 		{
 			Internal.Logger.SetWarningCallback(callback);
 		}
-		
+
 		private Internal.Database m_Database;
 	}
 }

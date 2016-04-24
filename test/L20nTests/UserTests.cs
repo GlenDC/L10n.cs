@@ -110,6 +110,7 @@ namespace L20nCoreTests
 			var l20n = new Translator();
 
 			l20n.AddGlobal("screen", new ScreenInfo());
+			l20n.AddGlobal("isPortrait", () => false);
 
 			// a custom global for this test
 			var john = new User("John", User.Gender.Male, 42);
@@ -144,6 +145,10 @@ namespace L20nCoreTests
 			Assert.AreEqual(
 				"Data Connectivity Settings",
 				l20n.Translate("dataSettings"));
+			
+			Assert.AreEqual(
+				"Landscape mode active!",
+				l20n.Translate("orientationActive"));
 
 			Console.WriteLine(l20n.Translate("timeDateGreeting"));
 

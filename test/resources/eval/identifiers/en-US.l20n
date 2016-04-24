@@ -76,3 +76,6 @@
     {{ @hour }} hour(s),
     {{ @minute }} minute(s),
     {{ @second }} second(s).">
+
+<getModeName() { @isPortrait ? "Portrait" : "Landscape" }>
+<orientationActive "{{ getModeName() }} mode active!">

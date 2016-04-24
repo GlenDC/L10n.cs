@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,23 +36,29 @@ namespace L20nCore
 					public static AST.INode Parse(CharStream stream, AST.INode member)
 					{
 						var startingPos = stream.Position;
-						
+
 						try
 						{
 							// skip opening tag
 							stream.SkipCharacter('(');
+							WhiteSpace.Parse(stream, true);
 
-							var call = new AST.CallExpression(
-								member, ParseExpression(stream));
+							var call = new AST.CallExpression(member);
 
-							// but we can also have more
-							while (stream.SkipIfPossible(','))
+							// parse arguments if possible
+							if (!stream.SkipIfPossible(')'))
 							{
 								call.AddParameter(ParseExpression(stream));
-							}
 
-							// skip closing tag
-							stream.SkipCharacter(')');
+								// but we can also have moreß
+								while (stream.SkipIfPossible(','))
+								{
+									call.AddParameter(ParseExpression(stream));
+								}
+
+								// skip closing tag
+								stream.SkipCharacter(')');
+							}
 
 							return call;
 						} catch (Exception e)
