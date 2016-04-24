@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,28 +36,28 @@ namespace L20nCore
 					public static AST.INode Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
-						
+
 						try
 						{
 							AST.INode expression;
 
-							// "for now" a property expression is always seperated by a dot (`.`)
-							// and has to have at least 1 property (e.g.: `x.y`),
-							// more than 1 is also acceptable (e.g.: `x.y.z`).
+							// a property expression is always seperated by a dot (`.`) or embraced by square brackets
+							// and has to have at least 1 property (e.g.: `x.y` or `x[y]`),
+							// more than 1 is also acceptable (e.g.: `x.y.z` or `x[y][z]` or `x[y].z` or `x.y[z]`).
 							if (Property.PeekAndParse(stream, out expression))
 							{
 								return expression;
 							} else
 							{
 								var member = Parenthesis.Parse(stream);
-								
+
 								if (Call.PeekAndParse(stream, member, out expression))
 									return expression;
 
 								// Attributes have been removed from the L20nCore.cs
 								// spec as they don't seem to add any value
 								// over a regular HashValue
-								
+
 								return member;
 							}
 						} catch (Exception e)

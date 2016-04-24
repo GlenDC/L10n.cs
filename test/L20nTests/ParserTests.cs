@@ -336,6 +336,10 @@ namespace L20nCoreTests
 															天长
 								地久
 								'");
+
+			// string expander tests
+			ExpressionParseTest<L20nCore.Objects.StringValue>
+				("\"{{ third_person[@user.gender] }} said: '{{ temperature_desc(@temperature) }}'\"");
 			
 			// Parenthesis Expressions
 			ExpressionParseTest<L20nCore.Objects.Literal>
@@ -356,6 +360,8 @@ namespace L20nCoreTests
 				("one.two.three");
 			ExpressionParseTest<L20nCore.Objects.PropertyExpression>
 				("one[two].three[four].five");
+			ExpressionParseTest<L20nCore.Objects.PropertyExpression>
+				("one[@two.three]");
 			
 			// Call Expressions
 			ExpressionParseTest<L20nCore.Objects.CallExpression>

@@ -111,6 +111,8 @@ namespace L20nCoreTests
 
 			l20n.AddGlobal("screen", new ScreenInfo());
 			l20n.AddGlobal("isPortrait", () => false);
+			l20n.AddGlobal("user", new User("Anonymous", User.Gender.Hidden, 0));
+			l20n.AddGlobal("temperature", () => 25);
 
 			// a custom global for this test
 			var john = new User("John", User.Gender.Male, 42);
@@ -149,6 +151,10 @@ namespace L20nCoreTests
 			Assert.AreEqual(
 				"Landscape mode active!",
 				l20n.Translate("orientationActive"));
+			
+			Assert.AreEqual(
+				"It said: \"The weather is awesome!\"",
+				l20n.Translate("user_talked_about_temperature"));
 
 			Console.WriteLine(l20n.Translate("timeDateGreeting"));
 

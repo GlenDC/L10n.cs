@@ -72,7 +72,7 @@ namespace L20nCore
 					public static bool PeekAndParse(
 						CharStream stream, out AST.INode expression)
 					{
-						if (stream.PeekReg(@"(\$|\@|\_|)?[a-zA-Z]+(\.|\[)"))
+						if (stream.PeekReg(@"(\$|\@|\_|)?\w+(\.|\[)"))
 						{
 							expression = Property.Parse(stream);
 							return true;

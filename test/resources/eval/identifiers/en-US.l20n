@@ -79,3 +79,20 @@
 
 <getModeName() { @isPortrait ? "Portrait" : "Landscape" }>
 <orientationActive "{{ getModeName() }} mode active!">
+
+<temperature_desc($temp) {
+    $temp < -0 ? "It's so cold!" :
+    $temp < 10 ? "It's a bit chilly." :
+    $temp < 30 ? "The weather is awesome!" :
+    "We'll die soon!"
+}>
+
+<third_person {
+    *default: "It",
+    masculine: "He",
+    feminine: "She",
+}>
+
+<user_talked_about_temperature
+    "{{ third_person[@user.gender] }} said:
+    \"{{ temperature_desc(@temperature) }}\"">

@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ namespace L20nCore
 	namespace IO
 	{
 		namespace Parsers
-		{	
+		{
 			/// <summary>
 			/// The combinator parser used to parse an expression within a StringValue.
 			/// </summary>
@@ -32,11 +32,10 @@ namespace L20nCore
 				public static AST.INode Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
-					
+					AST.INode expression = null;
+
 					try
 					{
-						AST.INode expression;
-
 						// skip opening tags
 						stream.SkipString("{{");
 						WhiteSpace.Parse(stream, true);
@@ -52,12 +51,14 @@ namespace L20nCore
 					} catch (Exception e)
 					{
 						string msg = String.Format(
-							"something went wrong parsing an <expander> starting at {0}",
-							stream.ComputeDetailedPosition(startingPos));
+							"something went wrong parsing an <expander> starting at {0}, expression was: {1} ({2})",
+							stream.ComputeDetailedPosition(startingPos),
+							expression != null ? expression.Display() : "<null>",
+							expression != null ? expression.GetType().ToString() : "null");
 						throw new Exceptions.ParseException(msg, e);
 					}
 				}
-				
+
 				public static bool PeekAndParse(
 					CharStream stream, out AST.INode expression)
 				{
@@ -66,7 +67,7 @@ namespace L20nCore
 						expression = Expander.Parse(stream);
 						return true;
 					}
-					
+
 					expression = null;
 					return false;
 				}
