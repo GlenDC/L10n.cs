@@ -27,42 +27,47 @@ namespace L20nCore
 			namespace Expressions
 			{
 				/// <summary>
-				/// A property expressions looks for a value within a hash-table,
-				/// which means it points to a certain Entity (the root) and than defines
-				/// all the different levels as identifiers and/or expressions, meaning that it can reference
-				/// simply a value within the root or a value within the value or the root, and so on.
+				/// An attribute expressions looks for an attribute,
+				/// which means it points to some metadata within an Entity.
 				/// </summary>
-				public static class Property
+				public static class Attribute
 				{
-					public static AST.INode Parse(CharStream stream, AST.PropertyExpression property = null)
+					public static AST.INode Parse(CharStream stream)
 					{
 						var startingPos = stream.Position;
 						
 						try
 						{
-							if (property == null)
+							var root = new AST.Identifier(Identifier.Parse(stream, true));
+							stream.SkipString("::");
+
+							// we either have an expression or a simple identifier
+							AST.INode identifier;
+							if (stream.SkipIfPossible('['))
 							{
-								property = new AST.PropertyExpression(
-									IdentifierExpression.Parse(stream));
+								identifier = Expression.Parse(stream);
+								stream.SkipCharacter(']');
+							} else
+							{
+								identifier = new AST.Identifier(Identifier.Parse(stream, false));
 							}
 
-							char c;
-							// can be either a simple identifier ('.') or expression ('[')
-							while (stream.SkipAnyIfPossible(new char[] {'.', '['}, out c))
+							// We can also have optionally a property expression,
+							// starting with a simple identifier or straight away with an expression
+							AST.PropertyExpression propertyExpression = null;
+							if (stream.SkipIfPossible('.'))
 							{
-								if (c == '.')
-								{
-									property.Add(Identifier.Parse(stream, false));
-								} else
-								{
-									WhiteSpace.Parse(stream, true);
-									property.Add(Expression.Parse(stream));
-									WhiteSpace.Parse(stream, true);
-									stream.SkipCharacter(']');
-								}
+								propertyExpression = Property.Parse(stream) as AST.PropertyExpression;
 							}
-							
-							return property;
+							else if (stream.SkipIfPossible('['))
+							{
+								var expression = Expression.Parse(stream);
+								propertyExpression = new AST.PropertyExpression(expression);
+								stream.SkipCharacter(']');
+								Property.Parse(stream, propertyExpression);
+							}
+
+							return new AST.AttributeExpression(root, identifier, propertyExpression);
 						} catch (Exception e)
 						{
 							string msg = String.Format(
@@ -75,9 +80,9 @@ namespace L20nCore
 					public static bool PeekAndParse(
 						CharStream stream, out AST.INode expression)
 					{
-						if (stream.PeekReg(@"(\$|\@|\_|)?\w+(\.|\[)"))
+						if (stream.PeekReg(@"\w+::"))
 						{
-							expression = Property.Parse(stream);
+							expression = Attribute.Parse(stream);
 							return true;
 						}
 						

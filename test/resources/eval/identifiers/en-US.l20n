@@ -96,3 +96,39 @@
 <user_talked_about_temperature
     "{{ third_person[@user.gender] }} said:
     \"{{ temperature_desc(@temperature) }}\"">
+
+<_fox 'Fox' gender: 'feminine' info: { age: '12', code: '123'}>
+<_bear 'Bear' gender: 'masculine' info: { *age: '20', code: '42'}>
+<_lion 'Lion' gender: 'feminine' info[deep]: { deep: { *age: '19', secret: 'nope' }, code: '42'}>
+<_dog 'Dog' gender: 'masculine' info: { age: '9' }>
+<_wolf 'Wolf' gender: 'feminine' info: '42'>
+
+<about_fox[_fox::gender] {
+    *masculine: "He's a {{ _fox }} and is {{ _fox::[info].age }} years old.",
+    feminine: "She's a {{ _fox }} and is {{ _fox::[info].age }} years old.",
+}>
+
+<about_bear[_bear::gender] {
+    *masculine: "He's a {{ _bear }} and is {{ _bear::info }} years old.",
+    feminine: "She's a {{ _bear }} and is {{ _bear::info }} years old.",
+}>
+
+<about_lion[_lion::gender] {
+    *masculine: "He's a {{ _lion }} and is {{ _lion::info.deep.age }} years old.",
+    feminine: "She's a {{ _lion }} and is {{ _lion::info.deep.age }} years old.",
+}>
+
+<about_lion_alt[_lion::gender] {
+    *masculine: "He's a {{ _lion }} and is {{ _lion::info }} years old.",
+    feminine: "She's a {{ _lion }} and is {{ _lion::info }} years old.",
+}>
+
+<about_dog[_dog::gender] {
+    *masculine: "He's a {{ _dog }} and is {{ _dog::info.age }} years old.",
+    feminine: "She's a {{ _dog }} and is {{ _dog::info.age }} years old.",
+}>
+
+<about_wolf[_wolf::gender] {
+    *masculine: "He's a {{ _wolf }} and is {{ _wolf::info.age }} years old.",
+    feminine: "She's a {{ _wolf }} and is {{ _wolf::info.age }} years old.",
+}>

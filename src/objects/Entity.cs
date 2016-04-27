@@ -45,17 +45,18 @@ namespace L20nCore
 			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.Objects.Entity"/> class.
 			/// </summary>
-			public Entity(L20nObject index, bool is_private, L20nObject value)
+			public Entity(L20nObject index, bool is_private, L20nObject value, L20nObject attributes)
 			{
 				m_Index = index;
 				m_Value = value;
+				m_Attributes = attributes;
 				m_IsPrivate = is_private;
 			}
 
 			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.Objects.Entity"/> class,
 			/// where the value is a <see cref="L20nCore.Objects.HashValue"/> created based on the given external value.
-			/// The index will be <c>null</c> and this instace will be public.
+			/// The index/attributes will be <c>null</c> and this instace will be public.
 			/// </summary>
 			public Entity(External.IHashValue value)
 			{
@@ -65,6 +66,7 @@ namespace L20nCore
 
 				m_Index = null;
 				m_Value = info.Collect();
+				m_Attributes = null;
 				m_IsPrivate = false;
 
 				info.Clear();
@@ -162,9 +164,15 @@ namespace L20nCore
 				// passing on the given external parameters (e.g. an index)
 				return m_Value.Eval(ctx, argv);
 			}
+
+			public L20nObject GetAttribute(LocaleContext ctx, Identifier identifier)
+			{
+				return m_Attributes.Eval(ctx, identifier);
+			}
 			
 			private readonly L20nObject m_Index;
 			private readonly L20nObject m_Value;
+			private readonly L20nObject m_Attributes;
 			private readonly bool m_IsPrivate;
 		}
 	}

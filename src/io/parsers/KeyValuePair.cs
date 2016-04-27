@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- *
+ * 
  * Copyright (c) 2016 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,32 +25,35 @@ namespace L20nCore
 		namespace Parsers
 		{
 			/// <summary>
-			/// The combinator parser used to parse an Entity with all its children.
+			/// The combinator parser used to parse an attribute,
+			/// which can be used as extra information within an Entity.
 			/// </summary>
-			public static class Entity
+			public static class KeyValuePair
 			{
-				public static void Parse(
-					CharStream stream, string identifier,
-					Internal.LocaleContext.Builder builder)
+				public static AST.Attributes.Item Parse(CharStream stream)
 				{
 					var startingPos = stream.Position;
-
+					
 					try
-					{
-						// private identifiers start with an underscore
-						// and can only be referenced from within an l20n file
-						bool isPrivate = (identifier.IndexOf('_') == 0);
+					{	
+						WhiteSpace.Parse(stream, false);
 
-						// an optional index is possible
-						AST.INode index = null;
+						// parse the raw identifier (key)
+						var identifier = Identifier.Parse(stream, false);
+
+						// parse the index if possible
+						AST.INode index;
 						Index.PeekAndParse(stream, out index);
 
-						// White Space is required
-						WhiteSpace.Parse(stream, false);
+						WhiteSpace.Parse(stream, true);
+						// required seperator
+						stream.SkipCharacter(':');
+
+						WhiteSpace.Parse(stream, true);
 
 						var valuePos = stream.Position;
 
-						// Now we need the actual value
+						// the actual value (StringValue or HashTable)
 						var value = Value.Parse(stream);
 
 						if ((value as IO.AST.HashValue) == null && index != null)
@@ -60,34 +63,32 @@ namespace L20nCore
 								stream.ComputeDetailedPosition(valuePos));
 							throw new Exceptions.ParseException(msg);
 						}
-
-						// an optional attributes collection is possible
-						AST.Attributes attributes;
-						Attributes.PeekAndParse(stream, out attributes);
-
-						// White Space is optional
-						WhiteSpace.Parse(stream, true);
-
-						stream.SkipCharacter('>');
 						
-						var entityAST = new AST.Entity(identifier, isPrivate, index, value, attributes);
-						try
-						{
-							var entity = (Objects.Entity)entityAST.Eval();
-							builder.AddEntity(identifier, entity);
-						} catch (Exception e)
-						{
-							throw new Exceptions.EvaluateException(
-								String.Format("couldn't evaluate `{0}`", entityAST.Display()),
-								e);
-						}
+						return new AST.Attributes.Item(identifier, index, value);
 					} catch (Exception e)
 					{
 						string msg = String.Format(
-							"something went wrong parsing an <entity> starting at {0}",
+							"something went wrong parsing a <key_value_pair> starting at {0}",
 							stream.ComputeDetailedPosition(startingPos));
 						throw new Exceptions.ParseException(msg, e);
 					}
+				}
+
+				public static bool Peek(CharStream stream)
+				{
+					return stream.PeekReg(@"\s+[a-zA-Z]");
+				}
+				
+				public static bool PeekAndParse(CharStream stream, out AST.Attributes.Item item)
+				{
+					if (KeyValuePair.Peek(stream))
+					{
+						item = KeyValuePair.Parse(stream);
+						return true;
+					}
+					
+					item = null;
+					return false;
 				}
 			}
 		}

@@ -58,7 +58,9 @@ namespace L20nCore
 			{
 				if (m_Items.Count == 1)
 				{
-					return m_Items.Values.GetEnumerator().Current;
+					var enumerator = m_Items.Values.GetEnumerator();
+					enumerator.MoveNext();
+					return enumerator.Current;
 				}
 
 				return this;

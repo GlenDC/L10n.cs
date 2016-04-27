@@ -47,6 +47,11 @@ namespace L20nCore
 							if (Property.PeekAndParse(stream, out expression))
 							{
 								return expression;
+							} else if (Attribute.PeekAndParse(stream, out expression))
+							// an attribute expression is always seperated by '::' and optionally with square brackets
+							// around the actual attribute identifier, that allows the use of an expression
+							{
+								return expression;
 							} else
 							{
 								var member = Parenthesis.Parse(stream);

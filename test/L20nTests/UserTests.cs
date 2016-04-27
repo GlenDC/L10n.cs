@@ -153,6 +153,25 @@ namespace L20nCoreTests
 				l20n.Translate("orientationActive"));
 			
 			Assert.AreEqual(
+				"She's a Fox and is 12 years old.",
+				l20n.Translate("about_fox"));
+			Assert.AreEqual(
+				"He's a Dog and is 9 years old.",
+				l20n.Translate("about_dog"));
+			Assert.AreEqual(
+				"She's a Wolf and is 42 years old.",
+				l20n.Translate("about_wolf"));
+			Assert.AreEqual(
+				"He's a Bear and is 20 years old.",
+				l20n.Translate("about_bear"));
+			Assert.AreEqual(
+				"She's a Lion and is 19 years old.",
+				l20n.Translate("about_lion"));
+			Assert.AreEqual(
+				l20n.Translate("about_lion_alt"),
+				l20n.Translate("about_lion"));
+			
+			Assert.AreEqual(
 				"It said: \"The weather is awesome!\"",
 				l20n.Translate("user_talked_about_temperature"));
 

@@ -165,6 +165,26 @@ namespace L20nCoreTests
 		}
 
 		[Test()]
+		public void KeyValuePairTests()
+		{
+			// examples of valid KeyValuePairs
+			KeyValuePair.Parse(NC(" gender: 'unknown'"));
+			KeyValuePair.Parse(NC(" foo: {bar: 'bar', baz: 'baz'}"));
+			KeyValuePair.Parse(NC(" foo[bar]: {bar: 'bar', baz: 'baz'}"));
+			KeyValuePair.Parse(NC(" foo: {bar: 'bar', *baz: 'baz'}"));
+
+			// index isn't allowed, when dealing with a StringValue
+			Assert.Throws<ParseException>(() => KeyValuePair.Parse(NC("gender[default]: 'unknown'")));
+		}
+
+		[Test()]
+		public void AttributesTests()
+		{
+			Attributes.Parse(NC(" foo: 'foo' bar: 'bar'"));
+			Attributes.Parse(NC(" foo: 'foo' bar: {b: 'b', *a: 'a', r: 'r'}"));
+		}
+
+		[Test()]
 		public void HashValueTests()
 		{
 			// hash tables can be pretty easy
@@ -269,6 +289,25 @@ namespace L20nCoreTests
 		}
 
 		[Test()]
+		public void EntityTests()
+		{
+			EntityTest("<a 'b'>");
+			EntityTest("<a {*b: 'b', c: 'c', d: 'd'}>");
+			EntityTest("<a[b] {b: 'b', c: 'c', d: 'd'}>");
+			EntityTest("<a 'b' c: 'c' d: 'd'>");
+			EntityTest("<a[b] {b: 'b', c: 'c', d: 'd'} e: 'e' f[g]: { h: 'h', i: 'i' } j: 'j'>");
+			EntityTest("<a {*b: 'b', c: 'c', d: 'd'} e: 'e' f[g]: { h: 'h', i: 'i' } j: 'j'>");
+
+			// can't have an index with a StringValue defined
+			Assert.Throws<ParseException>(() => EntityTest("<a[b] 'c'>"));
+
+			// invalid character examples
+			Assert.Throws<ParseException>(() => EntityTest("<a 'b' c: 'c', j: 'j'>"));
+			Assert.Throws<ParseException>(() => EntityTest("<a 'b' c: 'c' *j: 'j'>"));
+			Assert.Throws<ParseException>(() => EntityTest("<a 'b' c: 'c'j: 'j'>"));
+		}
+
+		[Test()]
 		public void OptimizeTests()
 		{
 			// String Values
@@ -362,6 +401,20 @@ namespace L20nCoreTests
 				("one[two].three[four].five");
 			ExpressionParseTest<L20nCore.Objects.PropertyExpression>
 				("one[@two.three]");
+			
+			// Attribute Expressions
+			ExpressionParseTest<L20nCore.Objects.AttributeExpression>
+				("hello::world");
+			ExpressionParseTest<L20nCore.Objects.AttributeExpression>
+				("one::[two]");
+			ExpressionParseTest<L20nCore.Objects.AttributeExpression>
+				("one::[x::z < y::z ? two : three]");
+
+			// Mixed Expressions
+			ExpressionParseTest<L20nCore.Objects.AttributeExpression>
+				("one::two.three");
+			ExpressionParseTest<L20nCore.Objects.AttributeExpression>
+				("one::two[x::z < y::z ? three : four].five.six[seven + eight].nine");
 			
 			// Call Expressions
 			ExpressionParseTest<L20nCore.Objects.CallExpression>
@@ -477,14 +530,20 @@ namespace L20nCoreTests
 				() => Entry.Parse(NC("<invalid['value'] 42>"), builder));
 		}
 
+		private void EntityTest(string input)
+		{
+			var builder = new L20nCore.Internal.LocaleContext.Builder();
+			Entry.Parse(NC(input), builder);
+		}
+
 		private T ExpressionParseTest<T>(string input) where T : L20nCore.Objects.L20nObject
 		{
 			var stream = new CharStream(input);
-			T result = (T)Expression.Parse(stream).Eval();
-			TypeAssert<T>(result);
+			var value = Expression.Parse(stream).Eval();
+			TypeAssert<T>(value);
 			if (stream.InputLeft())
 				throw new ParseException("stream is non-empty: " + stream.ReadUntilEnd());
-			return result;
+			return (T)value;
 		}
 
 		private void ExpressionParseTest(string expected, string input)

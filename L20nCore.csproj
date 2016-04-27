@@ -94,7 +94,6 @@
     </Compile>
     <Compile Include="src\io\ast\Variable.cs" />
     <Compile Include="src\io\ast\Global.cs" />
-    <Compile Include="src\io\ast\Property.cs" />
     <Compile Include="src\io\ast\CallExpression.cs" />
     <Compile Include="src\io\ast\Conditional.cs" />
     <Compile Include="src\io\ast\UnaryOperation.cs" />
@@ -125,6 +124,15 @@
     <Compile Include="src\external\IHashValue.cs" />
     <Compile Include="src\utils\ObjectPool.cs" />
     <Compile Include="src\io\LocalizableObjectsList.cs" />
+    <Compile Include="src\io\parsers\KeyValuePair.cs" />
+    <Compile Include="src\io\ast\Attributes.cs" />
+    <Compile Include="src\objects\Attributes.cs" />
+    <Compile Include="src\io\parsers\Attributes.cs" />
+    <Compile Include="src\objects\KeyValuePair.cs" />
+    <Compile Include="src\io\parsers\expressions\Attribute.cs" />
+    <Compile Include="src\io\ast\PropertyExpression.cs" />
+    <Compile Include="src\io\ast\AttributeExpression.cs" />
+    <Compile Include="src\objects\AttributeExpression.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

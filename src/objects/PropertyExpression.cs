@@ -50,11 +50,6 @@ namespace L20nCore
 			/// </summary>
 			public PropertyExpression(L20nObject[] identifiers)
 			{
-				if (identifiers.Length < 2)
-				{
-					throw new ParseException("a property needs at least 2 identifiers");
-				}
-	
 				m_Identifiers = identifiers;
 			}
 
@@ -94,19 +89,19 @@ namespace L20nCore
 			/// </summary>
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				Entity maybe;
+				L20nObject maybe;
 				int i = 0;
 
 				// The root entity is either given as a parameter
 				// or we need to get it using the first identifier.
 				// See this.GetEntity for more information.
-				if (argv == null || argv.Length == 0 || (argv [0] as Entity) == null)
+				if (argv == null || argv.Length == 0 || argv [0] as Dummy != null)
 				{
 					maybe = GetEntity(ctx, m_Identifiers [i]);
 					i += 1;
 				} else
 				{
-					maybe = argv [0] as Entity;
+					maybe = argv [0];
 				}
 
 				// return null in case we have no root entity at all
@@ -123,7 +118,7 @@ namespace L20nCore
 				// evaluate it using the current identifier, such that
 				// we can return null in case the Entity is private
 				// and should thus not be requested.
-				if (argv.Length == 1 && (argv [0] as Dummy) != null)
+				if (argv.Length == 1 && i < m_Identifiers.Length && (argv [0] as Dummy) != null)
 				{
 					obj = obj.Eval(ctx, argv [0], m_Identifiers [i]);
 					++i;

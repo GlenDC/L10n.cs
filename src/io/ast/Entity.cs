@@ -32,11 +32,12 @@ namespace L20nCore
 			/// </summary>
 			public sealed class Entity : INode
 			{
-				public Entity(string identifier, bool is_private, INode index, INode value)
+				public Entity(string identifier, bool is_private, INode index, INode value, INode attributes)
 				{
 					m_Identifier = identifier;
 					m_Index = index;
 					m_Value = value;
+					m_Attributes = attributes;
 					m_IsPrivate = is_private;
 				}
 				
@@ -45,21 +46,25 @@ namespace L20nCore
 					Objects.L20nObject index =
 						m_Index != null ? m_Index.Eval() : null;
 					var value = m_Value.Eval();
+					Objects.L20nObject attributes =
+						m_Attributes != null ? m_Attributes.Eval() : null;
 
-					return new Objects.Entity(index, m_IsPrivate, value).Optimize();
+					return new Objects.Entity(index, m_IsPrivate, value, attributes).Optimize();
 				}
 				
 				public string Display()
 				{
-					return String.Format("<{0}{1} {2}>",
+					return String.Format("<{0}{1} {2}{3}>",
 						m_Identifier,
 					    m_Index != null ? ((Index)m_Index).Display() : "",
-					    m_Value.Display());
+					    m_Value.Display(),
+					    m_Attributes != null ? m_Attributes.Display() : "");
 				}
 
 				private readonly string m_Identifier;
 				private readonly INode m_Index;
 				private readonly INode m_Value;
+				private readonly INode m_Attributes;
 				private readonly bool m_IsPrivate;
 			}
 		}
