@@ -21,6 +21,7 @@ using NUnit.Framework;
 
 using L20nCore;
 using L20nCore.Exceptions;
+using System.Collections.Generic;
 
 namespace L20nCoreTests
 {
@@ -209,8 +210,8 @@ namespace L20nCoreTests
 				Console.WriteLine(l20n.Translate("best_friend", "user", john));
 			Console.WriteLine(l20n.Translate("personal_greeting", "user", "Bianca"));
 			Console.WriteLine(l20n.Translate("personal_lucky_greeting",
-				new string[] {"user", "lucky_number"},
-				new L20nCore.Objects.L20nObject[] {
+				new List<string> {"user", "lucky_number"},
+				new List<L20nCore.Objects.L20nObject> {
 					new L20nCore.Objects.StringOutput("Bianca"),
 				new L20nCore.Objects.Literal(new Random().Next())}));
 
@@ -239,8 +240,8 @@ namespace L20nCoreTests
 				Console.WriteLine(l20n.Translate("best_friend", "user", john));
 			Console.WriteLine(l20n.Translate("personal_greeting", "user", "Bianca"));
 			Console.WriteLine(l20n.Translate("personal_lucky_greeting",
-				new string[] {"user", "lucky_number"},
-				new L20nCore.Objects.L20nObject[] {
+				new List<string> {"user", "lucky_number"},
+				new List<L20nCore.Objects.L20nObject> {
 					new L20nCore.Objects.StringOutput("Bianca"),
 					new L20nCore.Objects.Literal(new Random().Next())
 			}));

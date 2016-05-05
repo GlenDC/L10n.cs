@@ -118,7 +118,7 @@ namespace L20nCore
 		/// returns the id itself in case no entity could be matched with the given id.
 		/// Any <see cref="System.Exception"/> gets captured and turned into an unexpected warning.
 		/// </summary>
-		public string Translate(string id, string[] keys, Objects.L20nObject[] values)
+		public string Translate(string id, List<string> keys, List<Objects.L20nObject> values)
 		{
 			try
 			{
@@ -141,8 +141,8 @@ namespace L20nCore
 		/// </summary>
 		public string Translate(string id, string key, int value)
 		{
-			var keys = new string[] { key };
-			var values = new Objects.L20nObject[]
+			var keys = new List<string> { key };
+			var values = new List<Objects.L20nObject>
                 { new Objects.Literal(value) };
 			return Translate(id, keys, values);
 		}
@@ -154,8 +154,8 @@ namespace L20nCore
 		/// </summary>
 		public string Translate(string id, string key, string value)
 		{
-			var keys = new string[] {key};
-			var values = new Objects.L20nObject[]
+			var keys = new List<string> {key};
+			var values = new List<Objects.L20nObject>
                 { new Objects.StringOutput(value) };
 			return Translate(id, keys, values);
 		}
@@ -167,8 +167,8 @@ namespace L20nCore
 		/// </summary>
 		public string Translate(string id, string key, External.IHashValue value)
 		{
-			var keys = new string[] {key};
-			var values = new Objects.L20nObject[]
+			var keys = new List<string> {key};
+			var values = new List<Objects.L20nObject>
                 { new Objects.Entity(value) };
 			return Translate(id, keys, values);
 		}

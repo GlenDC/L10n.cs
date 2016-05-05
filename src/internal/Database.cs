@@ -128,22 +128,22 @@ namespace L20nCore
 			/// Translate the specified id using the given external variables within the currently set locale,
 			/// returns the id itself in case no entity could be matched with the given id.
 			/// </summary>
-			public string Translate(string id, string[] keys, Objects.L20nObject[] values)
+			public string Translate(string id, List<string> keys, List<Objects.L20nObject> values)
 			{
 				// we expect at least external value here,
 				// and the amount of keys need to be equal to the amount of values
 				// for obvious reasons.
-				if (keys.Length == 0)
+				if (keys.Count == 0)
 				{
 					Internal.Logger.WarningFormat(
 						"couldn't translate {0} as no keys were given", id);
 					return id;
 				}
-				if (keys.Length != values.Length)
+				if (keys.Count != values.Count)
 				{
 					Internal.Logger.WarningFormat(
 						"couldn't translate {0} as the amount of keys and values isn't equal," +
-						" expected {1}, got {2}", id, keys.Length, values.Length);
+						" expected {1}, got {2}", id, keys.Count, values.Count);
 					return id;
 				}
 
@@ -156,7 +156,7 @@ namespace L20nCore
 				}
 
 				// push all variables to the stack
-				for (int i = 0; i < keys.Length; ++i)
+				for (int i = 0; i < keys.Count; ++i)
 				{
 					if (keys [i] == null)
 					{
@@ -179,7 +179,7 @@ namespace L20nCore
 				var output = TranslateID(id);
 
 				// remove variables from stack again
-				for (int i = 0; i < keys.Length; ++i)
+				for (int i = 0; i < keys.Count; ++i)
 				{
 					ctx.DropVariable(keys [i]);
 				}
