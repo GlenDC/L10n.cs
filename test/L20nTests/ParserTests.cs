@@ -334,6 +334,10 @@ namespace L20nCoreTests
 			ExpressionParseTest(5, "--5");
 			ExpressionParseTest(42, "-+-+-+-+-+-+-+-+-+-+-+-+42");
 			ExpressionParseTest(true, "!!!!!!!!!!!!!!!(1 > 3)");
+
+			// hash table values should never optimize
+			ExpressionParseTest<L20nCore.Objects.HashValue>
+				("{ foo: 'bar'}");
 		}
 
 		[Test()]

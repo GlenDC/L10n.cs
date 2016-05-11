@@ -50,19 +50,15 @@ namespace L20nCore
 			}
 
 			/// <summary>
-			/// Optimizes to a simple <see cref="L20nCore.Objects.L20nObject"/> value in case
-			/// only one value is define within the given HashTable.
-			/// Returns this instance oterhwise.
+			/// A HashValue should NEVER optimize to a stringvalue,
+			/// as this might break L20n DSL Logic as defined by the Translator.
 			/// </summary>
+			/// <remarks>
+			/// In v1.0.0 single-value table optimization used to be a feature, but now it is removed
+			/// for the reason mentioned within the summary of this method.
+			/// </remarks>
 			public override L20nObject Optimize()
 			{
-				if (m_Items.Count == 1)
-				{
-					var enumerator = m_Items.Values.GetEnumerator();
-					enumerator.MoveNext();
-					return enumerator.Current;
-				}
-
 				return this;
 			}
 
