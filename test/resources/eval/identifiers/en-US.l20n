@@ -147,3 +147,13 @@
     "I like {{ $item.count }}
     {{ $item.name[plural($item.count)] }}."
 >
+
+<_deep_world {
+    one: {
+        two: {
+            three: "world"
+        }
+    }
+}>
+
+<deep_hello "Hello, {{ _deep_world.one.two.three }}!">

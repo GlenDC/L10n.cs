@@ -237,6 +237,9 @@ namespace L20nCoreTests
 					new L20nCore.Objects.StringOutput("Bianca"),
 				new L20nCore.Objects.Literal(new Random().Next())}));
 
+			// test for one-value tables
+			Assert.AreEqual ("Hello, world!", l20n.Translate ("deep_hello"));
+
 			// some tests to see if we can use a string as an identifier, even
 			// if the string is coming from an external variable, should work to allow
 			// even more dynamic sentences.
