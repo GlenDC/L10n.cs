@@ -35,7 +35,7 @@ namespace L20nCore
 			/// Initializes a new instance of the <see cref="L20nCore.Objects.Identifier"/> class,
 			/// with the given <c>value</c> used to look up the L20nObject instance.
 			/// </summary>
-			public AttributeExpression(Identifier root, L20nObject identifier, L20nObject propertyExpression)
+			public AttributeExpression(L20nObject root, L20nObject identifier, L20nObject propertyExpression)
 			{
 				m_Root = root;
 				m_Identifier = identifier;
@@ -59,14 +59,14 @@ namespace L20nCore
 			/// </summary>
 			public override L20nObject Eval(LocaleContext ctx, params L20nObject[] argv)
 			{
-				var entity = ctx.GetEntity(m_Root.Value);
+				var entity = GetEntity(ctx);
 				if (entity == null)
 				{
-					Logger.WarningFormat("AttributeExpression: couldn't find an entity with key {0}", m_Root.Value);
+					Logger.Warning("AttributeExpression: couldn't find the entity");
 					return entity;
 				}
 
-				var identifier = m_Identifier.Eval(ctx) as Identifier;
+				var identifier = GetIdentifier(ctx);
 				if (identifier == null)
 				{
 					Logger.Warning("AttributeExpression: couldn't evaluate identifier");
@@ -88,10 +88,60 @@ namespace L20nCore
 
 				return attribute.Eval(ctx);
 			}
+
+			/// <summary>
+			/// A helper function to retrieve the identifier,
+			/// which can either be an identifier already or a string value,
+			/// which has to be transformed to an identifier at runtime.
+			/// </summary>
+			private Identifier GetIdentifier(LocaleContext ctx)
+			{
+				var obj = m_Identifier.Eval(ctx);
+
+				// check if it's a string value
+				var stringOutput = obj as StringOutput;
+				if (stringOutput != null)
+				{
+					return new Identifier(stringOutput.Value);
+				}
+
+				// otherwise simply return the object `as` an `Identifier`
+				return obj as Identifier;
+			}
+			
+			/// <summary>
+			/// A help function to get the entity based on the first variable.
+			/// The given identifier is either an Identifier, Variable or Global,
+			/// which will define the action to be taken in order to get and return the Root Entity.
+			/// </summary>
+			private Entity GetEntity(LocaleContext ctx)
+			{
+				// is it an identifier?
+				var identifier = m_Root as Identifier;
+				if (identifier != null)
+					return ctx.GetEntity(identifier.Value);
+				
+				// is it a string?
+				var str = m_Root.Eval(ctx) as StringOutput;
+				if (str != null)
+					return ctx.GetEntity(str.Value);
+				
+				// is it a variable?
+				var variable = m_Root as Variable;
+				if (variable != null)
+					return ctx.GetVariable(variable.Identifier) as Entity;
+				
+				// is it a global?
+				var global = m_Root as Global;
+				if (global != null)
+					return ctx.GetGlobal(global.Identifier) as Entity;
+				
+				return null;
+			}
 			
 			private readonly L20nObject m_PropertyExpression;
 			private readonly L20nObject m_Identifier;
-			private readonly Identifier m_Root;
+			private readonly L20nObject m_Root;
 		}
 	}
 }

@@ -132,3 +132,18 @@
     *masculine: "He's a {{ _wolf }} and is {{ _wolf::info.age }} years old.",
     feminine: "She's a {{ _wolf }} and is {{ _wolf::info.age }} years old.",
 }>
+
+<item_turtle {
+    one: "turtle",
+    *many: "turtles",
+}>
+
+<item_plane {
+    one: "plane",
+    *many: "planes",
+}>
+
+<statement_fp_like_item
+    "I like {{ $item.count }}
+    {{ $item.name[plural($item.count)] }}."
+>

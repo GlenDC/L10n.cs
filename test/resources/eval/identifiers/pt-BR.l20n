@@ -26,3 +26,42 @@
     feminine: "{{ $user.name }} sua melhor amiga é {{ $user.friend.name }}.",
     *default: "{{ $user.name }} seu melhor amigo é {{ $user.friend.name }}.",
 }>
+
+<item_turtle {
+    one: "tartaruga",
+    *many: "tartarugas",
+} descr: "small" gender: "feminine">
+
+<item_plane {
+    one: "avião",
+    *many: "aviões",
+} descr: "big" gender: "masculine">
+
+<_descriptions {
+    small: {
+        one: {
+            feminine: "pequena",
+            *masculine: "pequeno",
+        },
+        *many: {
+            feminine: "pequenas",
+            *masculine: "pequenos",
+        },
+    },
+    big: {
+        one: "grande",
+        *many: "grandes",
+    },
+}>
+
+<statement_fp_like_item
+    "Gosto de {{ $item.count }}
+    {{ $item.name[plural($item.count)] }}
+    {{ _descriptions[$item.name::descr][plural($item.count)][$item.name::gender] }}."
+>
+
+<statement_fp_like_item_alt
+    "Gosto de {{ $count }}
+    {{ $item[plural($count)] }}
+    {{ _descriptions[$item::descr][plural($count)][$item::gender] }}."
+>

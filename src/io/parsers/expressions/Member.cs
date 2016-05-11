@@ -41,15 +41,15 @@ namespace L20nCore
 						{
 							AST.INode expression;
 
+							if (Attribute.PeekAndParse(stream, out expression))
+							// an attribute expression is always seperated by '::' and optionally with square brackets
+							// around the actual attribute identifier, that allows the use of an expression
+							{
+								return expression;
+							} else if (Property.PeekAndParse(stream, out expression))
 							// a property expression is always seperated by a dot (`.`) or embraced by square brackets
 							// and has to have at least 1 property (e.g.: `x.y` or `x[y]`),
 							// more than 1 is also acceptable (e.g.: `x.y.z` or `x[y][z]` or `x[y].z` or `x.y[z]`).
-							if (Property.PeekAndParse(stream, out expression))
-							{
-								return expression;
-							} else if (Attribute.PeekAndParse(stream, out expression))
-							// an attribute expression is always seperated by '::' and optionally with square brackets
-							// around the actual attribute identifier, that allows the use of an expression
 							{
 								return expression;
 							} else
@@ -58,11 +58,7 @@ namespace L20nCore
 
 								if (Call.PeekAndParse(stream, member, out expression))
 									return expression;
-
-								// Attributes have been removed from the L20nCore.cs
-								// spec as they don't seem to add any value
-								// over a regular HashValue
-
+	
 								return member;
 							}
 						} catch (Exception e)

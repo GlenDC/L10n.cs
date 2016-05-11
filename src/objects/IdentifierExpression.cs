@@ -59,7 +59,6 @@ namespace L20nCore
 				var entity = ctx.GetEntity(m_Identifier);
 				if (entity == null)
 				{
-					Logger.WarningFormat("couldn't find an entity with key {0}", m_Identifier);
 					return entity;
 				}
 

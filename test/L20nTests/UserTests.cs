@@ -1,6 +1,6 @@
 /**
  * This source file is part of the Commercial L20n Unity Plugin.
- * 
+ *
  * Copyright (c) 2016 Glen De Cauwsemaecker (contact@glendc.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,7 +55,7 @@ namespace L20nCoreTests
 			Assert.Throws<ImportException>(
 				() => l20n.ImportManifest("../../../resources/manifest-without-resources.json"));
 		}
-		
+
 		// an example of a hash external variable
 		private sealed class User : L20nCore.External.IHashValue
 		{
@@ -74,7 +74,7 @@ namespace L20nCoreTests
 
 			public User(string name, Gender gender, int followers = 0)
 			{
-				m_Name = name; 
+				m_Name = name;
 				Followers = followers;
 
 				switch (gender)
@@ -105,6 +105,28 @@ namespace L20nCoreTests
 			}
 		}
 
+		// A simple Item test class
+		private sealed class Item : L20nCore.External.IHashValue
+		{
+			public const string Turtle = "item_turtle";
+			public const string Plane = "item_plane";
+
+			public Item (string name, int count)
+			{
+				m_Name = name;
+				m_Count = count;
+			}
+
+			public void Collect (L20nCore.External.InfoCollector info)
+			{
+				info.Add ("name", m_Name);
+				info.Add ("count", m_Count);
+			}
+
+			private string m_Name;
+			private int m_Count;
+		}
+
 		[Test()]
 		public void SimpleManifest()
 		{
@@ -129,7 +151,7 @@ namespace L20nCoreTests
 			    System.DateTime.Now.Minute,
 			    System.DateTime.Now.Second);
 			Assert.AreEqual(time, l20n.Translate("time"));
-			
+
 			var date = String.Format("{0}/{1}/{2}",
 			                         System.DateTime.Now.Day,
 			                         System.DateTime.Now.Month,
@@ -138,7 +160,7 @@ namespace L20nCoreTests
 
 			string greeting = System.DateTime.Now.Hour < 12 ? "Good Morning"
 				: (System.DateTime.Now.Hour < 18 ? "Good Afternoon" : "Good Evening");
-			
+
 			Assert.AreEqual(greeting, l20n.Translate("greeting"));
 			Assert.AreEqual("unknown", l20n.Translate("unknown"));
 			Assert.AreEqual(
@@ -148,11 +170,11 @@ namespace L20nCoreTests
 			Assert.AreEqual(
 				"Data Connectivity Settings",
 				l20n.Translate("dataSettings"));
-			
+
 			Assert.AreEqual(
 				"Landscape mode active!",
 				l20n.Translate("orientationActive"));
-			
+
 			Assert.AreEqual(
 				"She's a Fox and is 12 years old.",
 				l20n.Translate("about_fox"));
@@ -171,7 +193,7 @@ namespace L20nCoreTests
 			Assert.AreEqual(
 				l20n.Translate("about_lion_alt"),
 				l20n.Translate("about_lion"));
-			
+
 			Assert.AreEqual(
 				"It said: \"The weather is awesome!\"",
 				l20n.Translate("user_talked_about_temperature"));
@@ -215,22 +237,35 @@ namespace L20nCoreTests
 					new L20nCore.Objects.StringOutput("Bianca"),
 				new L20nCore.Objects.Literal(new Random().Next())}));
 
+			// some tests to see if we can use a string as an identifier, even
+			// if the string is coming from an external variable, should work to allow
+			// even more dynamic sentences.
+			Assert.AreEqual (
+				"I like 42 turtles.",
+				l20n.Translate ("statement_fp_like_item", "item", new Item (Item.Turtle, 42)));
+			Assert.AreEqual (
+				"I like 1 turtle.",
+				l20n.Translate ("statement_fp_like_item", "item", new Item (Item.Turtle, 1)));
+			Assert.AreEqual (
+				"I like 2 planes.",
+				l20n.Translate ("statement_fp_like_item", "item", new Item (Item.Plane, 2)));
+
 			// Switching to portuguese
 
 			l20n.SetLocale("pt-BR");
-			
+
 			Assert.AreEqual("Olá, Mundo!", l20n.Translate("hello"));
-			
+
 			greeting = System.DateTime.Now.Hour < 12 ? "Bom dia"
 				: (System.DateTime.Now.Hour < 18 ? "Boa tarde" : "Boa noite");
-			
+
 			Assert.AreEqual(greeting, l20n.Translate("greeting"));
 			Assert.AreEqual("Boa noite", l20n.Translate("greeting.evening"));
 			Assert.AreEqual("Boa noite", l20n.Translate("greeting.evening.late"));
 			Assert.AreEqual(
 				l20n.Translate("greeting.evening.normal"),
 				l20n.Translate("greeting.evening.late"));
-			
+
 			Console.WriteLine(l20n.Translate("timeDateGreeting"));
 
 			john.Followers = 31;
@@ -246,9 +281,37 @@ namespace L20nCoreTests
 					new L20nCore.Objects.Literal(new Random().Next())
 			}));
 			Console.WriteLine(l20n.Translate("tooBig", "sizeInKB", 46080));
-			
+
+			// some tests to see if we can use a string as an identifier, even
+			// if the string is coming from an external variable, should work to allow
+			// even more dynamic sentences.
+			// These are testing strings used as identifiers in attribute expressions.
+			Assert.AreEqual (
+				"Gosto de 42 tartarugas pequenas.",
+				l20n.Translate ("statement_fp_like_item", "item", new Item (Item.Turtle, 42)));
+			Assert.AreEqual (
+				"Gosto de 1 tartaruga pequena.",
+				l20n.Translate ("statement_fp_like_item", "item", new Item (Item.Turtle, 1)));
+			Assert.AreEqual (
+				"Gosto de 2 aviões grandes.",
+				l20n.Translate ("statement_fp_like_item", "item", new Item (Item.Plane, 2)));
+			Assert.AreEqual (
+				"Gosto de 1 avião grande.",
+				l20n.Translate ("statement_fp_like_item_alt",
+				new List<string> {"item", "count"},
+				new List<L20nCore.Objects.L20nObject> {
+					new L20nCore.Objects.StringOutput(Item.Plane),
+					new L20nCore.Objects.Literal(1)}));
+			Assert.AreEqual (
+				l20n.Translate ("statement_fp_like_item", "item", new Item (Item.Turtle, 503)),
+				l20n.Translate ("statement_fp_like_item_alt",
+				new List<string> {"item", "count"},
+				new List<L20nCore.Objects.L20nObject> {
+					new L20nCore.Objects.StringOutput(Item.Turtle),
+					new L20nCore.Objects.Literal(503)}));
+
 			// Switching to slovenian
-			
+
 			l20n.SetLocale("sl");
 
 			Console.WriteLine(l20n.Translate("remaining"));
@@ -266,7 +329,7 @@ namespace L20nCoreTests
 			pc.Clock("start import database");
 			l20n.ImportManifest("../../../resources/manifest.json");
 			pc.Clock("database imported (incl. default)");
-			
+
 			l20n.Translate("l20n");
 			l20n.Translate("hello");
 			l20n.Translate("kthxbye");
@@ -275,13 +338,13 @@ namespace L20nCoreTests
 
 			l20n.SetLocale("fr");
 			pc.Clock("fr locale imported");
-			
+
 			l20n.Translate("l20n");
 			l20n.Translate("hello");
 			l20n.Translate("kthxbye");
 			l20n.Translate("kthxbye.night");
 			pc.Clock("translated some simple ids");
-			
+
 			pc.Stop();
 		}
 	}

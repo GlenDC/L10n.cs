@@ -38,7 +38,10 @@ namespace L20nCore
 						
 						try
 						{
-							var root = new AST.Identifier(Identifier.Parse(stream, true));
+							AST.INode root;
+							if(!Property.PeekAndParse(stream, out root)) {
+								root = IdentifierExpression.Parse(stream);
+							}
 							stream.SkipString("::");
 
 							// we either have an expression or a simple identifier
@@ -80,7 +83,7 @@ namespace L20nCore
 					public static bool PeekAndParse(
 						CharStream stream, out AST.INode expression)
 					{
-						if (stream.PeekReg(@"\w+::"))
+						if (stream.PeekReg(@"[$@]?\w+(\.\w+)*::"))
 						{
 							expression = Attribute.Parse(stream);
 							return true;

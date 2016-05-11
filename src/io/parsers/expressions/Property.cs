@@ -42,8 +42,8 @@ namespace L20nCore
 						{
 							if (property == null)
 							{
-								property = new AST.PropertyExpression(
-									IdentifierExpression.Parse(stream));
+								var obj = IdentifierExpression.Parse(stream);
+								property = new AST.PropertyExpression(obj);
 							}
 
 							char c;

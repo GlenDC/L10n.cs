@@ -57,7 +57,6 @@ namespace L20nCore
 				var global = ctx.GetGlobal(m_Identifier);
 				if (global == null)
 				{
-					Logger.WarningFormat("couldn't find global with key {0}", m_Identifier);
 					return global;
 				}
 

@@ -136,6 +136,22 @@ namespace L20nCore
 						return obj;
 					}
 
+					// check if we are dealing with a string
+					// in which case we want to make it into an identifierExpression
+					var stringObject = obj as StringOutput;
+					if (stringObject != null)
+					{
+						// we do want to fall back to it being just a regular string,
+						// in case that was the actual intention of the user
+						L20nObject alt = new IdentifierExpression(stringObject.Value);
+						alt = alt.Eval(ctx, m_Identifiers [i]);
+						if (alt != null)
+						{
+							obj = alt;
+							continue;
+						}
+					}
+
 					obj = obj.Eval(ctx, m_Identifiers [i]);
 				}
 
@@ -166,12 +182,29 @@ namespace L20nCore
 				// is it a variable?
 				var variable = key as Variable;
 				if (variable != null)
-					return ctx.GetVariable(variable.Identifier) as Entity;
+				{
+					var obj = ctx.GetVariable(variable.Identifier);
+					
+					// a variable can also be a string-reference to an entity
+					var reference = obj as StringOutput;
+					if (reference != null)
+					{
+						return ctx.GetEntity(reference.Value);
+					}
+
+					// otherwise it's simply an entity (or at least it should be)
+					return obj as Entity;
+				}
 
 				// is it a global?
 				var global = key as Global;
 				if (global != null)
 					return ctx.GetGlobal(global.Identifier) as Entity;
+
+				// is it a string?
+				var str = key as StringOutput;
+				if (str != null)
+					return ctx.GetEntity(str.Value);
 
 				return null;
 			}

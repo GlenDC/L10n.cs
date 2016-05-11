@@ -67,7 +67,6 @@ namespace L20nCore
 				var variable = ctx.GetVariable(m_Identifier);
 				if (variable == null)
 				{
-					Logger.WarningFormat("couldn't find variable with key {0}", m_Identifier);
 					return variable;
 				}
 

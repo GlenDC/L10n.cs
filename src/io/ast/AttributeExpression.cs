@@ -36,11 +36,11 @@ namespace L20nCore
 					m_Identifier = identifier;
 					m_PropertyExpression = propertyExpression;
 				}
-				
+
 				public Objects.L20nObject Eval()
 				{
 					var identifier = m_Identifier.Eval();
-					var root = m_Root.Eval() as Objects.Identifier;
+					var root = m_Root.Eval();
 					var propertyExpression =
 						m_PropertyExpression == null ? null : m_PropertyExpression.Eval();
 					if (root == null || identifier == null)
@@ -49,7 +49,7 @@ namespace L20nCore
 					var attributeExpression = new Objects.AttributeExpression(root, identifier, propertyExpression);
 					return attributeExpression.Optimize();
 				}
-				
+
 				public string Display()
 				{
 					var str = String.Format("{0}::[{1}]",
