@@ -4,7 +4,7 @@
 
 <_hidden "123">
 
-<pssst "the password is {{ _hidden }}">
+<pssst "the {{ "password" }} is {{ _hidden }}">
 
 <get_greeting($time) {
     $time < 12 ? morning :
@@ -23,7 +23,7 @@
 <personal_greeting "{{ greeting }} {{ $user }}!">
 <personal_lucky_greeting "{{ personal_greeting }} The lucky number of today is {{ $lucky_number }}!">
 
-<shared_compact "{{ $user.name }} shared your post.">
+<shared_compact "{{ $user.name }} {{ 3 < 4 ? "shared your" : "nope" }} post.">
 
 <plural($n) { $n == 0 ? "zero" :
                 $n == 1 ? "one" : "many" }>
@@ -38,12 +38,12 @@
 <shared[plural($user.followers), $user.gender] {
   zero: "{{ $user.name }} liked your post.",
   one: {
-    masculine: "{{ $user.name }} shared your post to his one follower.",
+    masculine: "{{ $user.name }} shared your {{ "post" }} to his one follower.",
     feminine: "{{ $user.name }} shared your post to her one follower.",
    *default: "{{ $user.name }} shared your post to one follower."
   },
   many: {
-    masculine: "{{ $user.name }} shared your post to his {{ $user.followers }} followers.",
+    masculine: "{{ $user.name }} shared {{ "your post" }} to his {{ $user.followers }} followers.",
     feminine: "{{ $user.name }} shared your post to her {{ $user.followers }} followers.",
    *default: "{{ $user.name }} shared your post to {{ $user.followers }} followers."
   }
@@ -119,7 +119,7 @@
 }>
 
 <about_lion_alt[_lion::gender] {
-    *masculine: "He's a {{ _lion }} and is {{ _lion::info }} years old.",
+    *masculine: "He's a {{ _lion }} {{ 2 == 2 ? "and" : "or" }} is {{ _lion::info }} years old.",
     feminine: "She's a {{ _lion }} and is {{ _lion::info }} years old.",
 }>
 

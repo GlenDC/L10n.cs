@@ -46,7 +46,7 @@ namespace L20nCore
 			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.Objects.StringValue"/> class
 			/// with the format string (<c>value</c>) and the <c>expressions</c>
-			/// given by the callee of this constructor. 
+			/// given by the callee of this constructor.
 			/// </summary>
 			public StringValue(string value, L20nObject[] expressions)
 			{
@@ -119,34 +119,33 @@ namespace L20nCore
 				if (m_Expressions.Length == 0)
 					return new StringOutput(m_Value);
 
-				// we can only optimize this StringValue if all the expressions contained in this
-				// StringValue can be optimized to a primitive value,
-				// if not than we cannot evaluate this and will simply return this instead
+				// We optimize the expressions we can optimize
 				Primitive primitive;
+				bool fullyOptimized = true;
 				for (int i = 0; i < m_EvaluatedExpressions.Length; ++i)
 				{
-					primitive = m_Expressions [i].Optimize() as Primitive;
-					if (primitive == null)
+					m_Expressions [i] = m_Expressions [i].Optimize();
+					primitive = m_Expressions [i] as Primitive;
+					if (primitive == null || (primitive as StringValue) != null)
 					{
-						return this; // we can't optimize this
-					}
-
-					// StringValue is the exception to this rule, as we can't optimize a StringValue
-					// that contains another StringValue that cannot be optimized to a StringOutput itself.
-					// Therefore we also have to early return in this case.
-					if ((primitive as StringValue) != null)
+						fullyOptimized = false;
+					} else if (fullyOptimized)
 					{
-						return this;
+						m_EvaluatedExpressions [i] = primitive.ToString(null);
 					}
-
-					// we can give a null value as the LocaleContext parameters
-					// because we know (see assume) that Primitive values never access
-					// the LocaleContext parameter.
-					m_EvaluatedExpressions [i] = primitive.ToString(null);
 				}
 
-				m_Output.Value = FormatString(m_Value, m_EvaluatedExpressions);
-				return m_Output;
+				// if all expressions have been optimized,
+				// we can return a stringOutput
+				if (fullyOptimized)
+				{
+					m_Output.Value = FormatString(m_Value, m_EvaluatedExpressions);
+					return m_Output;
+				}
+
+				// else we return this object,
+				// which might be partially optimized.
+				return this;
 			}
 
 			/// <summary>
@@ -170,10 +169,10 @@ namespace L20nCore
 			/// </remarks>
 			private string FormatString(string format, string[] argv)
 			{
-				for(int i = 0; i < argv.Length; ++i)
+				for (int i = 0; i < argv.Length; ++i)
 					format = format.Replace(
 						String.Format("{{ {1}{0}{1} }}", i, IO.AST.StringValue.DummyExpressionCharacter),
-						argv[i]);
+						argv [i]);
 				return format;
 			}
 		}
