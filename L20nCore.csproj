@@ -108,7 +108,6 @@
     <Compile Include="src\io\parsers\expressions\IdentifierExpression.cs" />
     <Compile Include="src\io\parsers\expressions\Logic.cs" />
     <Compile Include="src\internal\Manifest.cs" />
-    <Compile Include="src\internal\Database.cs" />
     <Compile Include="src\internal\LocaleContext.cs" />
     <Compile Include="src\utils\DictionaryRef.cs" />
     <Compile Include="src\Translator.cs" />
