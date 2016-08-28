@@ -4,6 +4,12 @@ An implementation of L20n-For-Games in C#, Targeting the Unity Game Engine.
 
 The grammar specs for the "L20n-For-Games" language can be found [here](https://github.com/GlenDC/L20n/blob/master/design/l20n-specs.md).
 
+## L20n.unity
+
+This library can be used for any project that is developed using .NET 2 or higher.
+It was however designed specifically to use well within the Unity environment.
+The source code for the L20n Unity Plugin can be found at [github.com/GlenDC/L20n.unity](https://github.com/GlenDC/L20n.unity).
+
 ## Contributing
 
 Contributions are always welcome.
