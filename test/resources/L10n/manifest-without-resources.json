@@ -1,0 +1,7 @@
+{
+    "locales": [
+        "nl-BE",
+    ],
+    "default_locale": "./{{locale}}.l20n",
+    "version": "l10n"
+}

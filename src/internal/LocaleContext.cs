@@ -150,14 +150,14 @@ namespace L20nCore
 			private readonly LocaleContext m_Parent;
 
 			/// <summary>
-			/// A class used to create an instance of <see cref="L20nCore.Internal.LocaleContext"/>.
+			/// A class used to create an instance of <see cref="L20nCore.Internal.LocaleContext"/> based on the L10n specification.
 			/// </summary>
-			public class Builder
+			public class L10nBuilder
 			{	
 				/// <summary>
 				/// Initializes a new instance of the <see cref="L20nCore.Internal.LocaleContext+Builder"/> class.
 				/// </summary>
-				public Builder()
+				public L10nBuilder()
 				{
 					m_Macros = new Dictionary<string, Macro>();
 					m_Entities = new Dictionary<string, Entity>();

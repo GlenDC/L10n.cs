@@ -1,6 +1,5 @@
 // Glen De Cauwsemaecker licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-
 using System;
 using System.Collections.Generic;
 using L20nCore.Internal;
@@ -170,7 +169,7 @@ namespace L20nCore
 					if (keys [i] == null)
 					{
 						Logger.WarningFormat("couldn't translate {0} because parameter-key #{1} is null" +
-						                     " while expecting an string", id, i);
+							" while expecting an string", id, i);
 						break;
 					}
 					
@@ -527,12 +526,14 @@ namespace L20nCore
 					return id;
 				}
 
-				if (key_a == null) {
+				if (key_a == null)
+				{
 					Logger.Warning("couldn't translate {0} because a given parameter-key is null");
 					return id;
 				}
 				
-				if (value_a == null) {
+				if (value_a == null)
+				{
 					Logger.Warning("couldn't translate {0} because a given parameter-value is null");
 					return id;
 				}
@@ -567,12 +568,14 @@ namespace L20nCore
 					return id;
 				}
 				
-				if (key_a == null || key_b == null) {
+				if (key_a == null || key_b == null)
+				{
 					Logger.Warning("couldn't translate {0} because a given parameter-key is null");
 					return id;
 				}
 				
-				if (value_a == null || value_b == null) {
+				if (value_a == null || value_b == null)
+				{
 					Logger.Warning("couldn't translate {0} because a given parameter-value is null");
 					return id;
 				}
@@ -608,13 +611,26 @@ namespace L20nCore
 			}
 			
 			// build & return the given context.
-			var builder = new LocaleContext.Builder();
-			for (var i = 0; i < localeFiles.Count; ++i)
+			switch (m_Manifest.Version)
 			{
-				builder.Import(localeFiles [i]);
+				case Internal.Version.L10n:
+					{
+						var builder = new LocaleContext.L10nBuilder();
+						for (var i = 0; i < localeFiles.Count; ++i)
+						{
+							builder.Import(localeFiles [i]);
+						}
+					
+						context = builder.Build(m_Globals, parent);
+					}
+					break;
+
+				default:
+					throw new Exceptions.ImportException(
+						String.Format("{0} is a recognized version, but not yet supported.",
+				              m_Manifest.Version));
 			}
-			
-			context = builder.Build(m_Globals, parent);
+
 		}
 		
 		private void AddSystemGlobals()
@@ -675,10 +691,9 @@ namespace L20nCore
 		private LocaleContext m_CurrentContext;
 		private Objects.Dummy m_DummyObject;
 		private readonly Dictionary<string, Objects.L20nObject> m_Globals;
-		
 		private const string TRANSLATION_EXCEPTION_MESSAGE =
 			"A C# exception occured while translating {0}," +
-				" please report this as a bug @ https://github.com/GlenDC/L20nCore.cs." +
-				"\nInclude the <id> you tried to translate and all the L20n files involved; More Info: \n{1}";
+			" please report this as a bug @ https://github.com/GlenDC/L20nCore.cs." +
+			"\nInclude the <id> you tried to translate and all the L20n files involved; More Info: \n{1}";
 	}
 }

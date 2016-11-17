@@ -19,7 +19,7 @@ namespace L20nCore
 			/// Throws a <see cref="L20nCore.Exceptions.ParseException"/> in case something went wrong,
 			/// during the parsing of the given resource.
 			/// </summary>
-			public static void ImportAndParse(string path, Internal.LocaleContext.Builder builder)
+			public static void ImportAndParse(string path, Internal.LocaleContext.L10nBuilder builder)
 			{
 				try
 				{
@@ -28,10 +28,10 @@ namespace L20nCore
 						while (stream.InputLeft())
 						{
 							// Skip WhiteSpace
-							IO.Parsers.WhiteSpace.Parse(stream, true);
+							Parsers.L10n.WhiteSpace.Parse(stream, true);
 							
 							// Read Entry
-							Parsers.Entry.Parse(stream, builder);
+							Parsers.L10n.Entry.Parse(stream, builder);
 						}
 					}
 				} catch (Exception exception)

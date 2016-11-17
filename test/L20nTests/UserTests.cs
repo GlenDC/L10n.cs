@@ -16,7 +16,7 @@ namespace L20nCoreTests
 	/// High level unit tests to check if we can actually parse
 	/// and use a manifest file and its content.
 	/// </summary>
-	public class UserTests
+	public class L10nUserTests
 	{
 		// an example of a custom global external variable
 		private sealed class ScreenInfo : L20nCore.External.IHashValue
@@ -33,13 +33,13 @@ namespace L20nCoreTests
 		{
 			var l20n = new Translator();
 			Assert.Throws<ImportException>(
-				() => l20n.ImportManifest("../../../resources/manifest-without-default.json"));
+				() => l20n.ImportManifest("../../../resources/l10n/manifest-without-default.json"));
 			Assert.Throws<ImportException>(
-				() => l20n.ImportManifest("../../../resources/manifest-with-invalid-default.json"));
+				() => l20n.ImportManifest("../../../resources/l10n/manifest-with-invalid-default.json"));
 			Assert.Throws<ImportException>(
-				() => l20n.ImportManifest("../../../resources/manifest-without-locales.json"));
+				() => l20n.ImportManifest("../../../resources/l10n/manifest-without-locales.json"));
 			Assert.Throws<ImportException>(
-				() => l20n.ImportManifest("../../../resources/manifest-without-resources.json"));
+				() => l20n.ImportManifest("../../../resources/l10n/manifest-without-resources.json"));
 		}
 
 		// an example of a hash external variable
@@ -128,7 +128,7 @@ namespace L20nCoreTests
 			var maria = new User("Maria", User.Gender.Female, 0);
 			john.BestFriend = maria;
 
-			l20n.ImportManifest("../../../resources/eval/identifiers/manifest.json");
+			l20n.ImportManifest("../../../resources/l10n/eval/identifiers/manifest.json");
 
 			Assert.AreEqual("Hello, World!", l20n.Translate("hello"));
 
@@ -316,7 +316,7 @@ namespace L20nCoreTests
 			var pc = new PerformanceClock("SimpleDatabase");
 
 			pc.Clock("start import database");
-			l20n.ImportManifest("../../../resources/manifest.json");
+			l20n.ImportManifest("../../../resources/l10n/manifest.json");
 			pc.Clock("database imported (incl. default)");
 
 			l20n.Translate("l20n");

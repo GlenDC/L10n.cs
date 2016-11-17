@@ -157,7 +157,7 @@ namespace L20nCore
 			{
 				for (int i = 0; i < argv.Length; ++i)
 					format = format.Replace(
-						String.Format("{{ {1}{0}{1} }}", i, IO.AST.StringValue.DummyExpressionCharacter),
+						String.Format("{{ {1}{0}{1} }}", i, IO.AST.L10n.StringValue.DummyExpressionCharacter),
 						argv [i]);
 				return format;
 			}

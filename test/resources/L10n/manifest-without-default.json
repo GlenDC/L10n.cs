@@ -1,0 +1,9 @@
+{
+    "locales": [
+      "nl-BE",
+    ],
+    "resources": [
+      "./{{locale}}.l20n",
+    ],
+    "version": "l10n",
+}

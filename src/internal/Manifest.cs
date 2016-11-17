@@ -1,6 +1,5 @@
 // Glen De Cauwsemaecker licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -47,6 +46,17 @@ namespace L20nCore
 			}
 
 			/// <summary>
+			/// Gets the version as specified by this Version.
+			/// </summary>
+			/// <remarks>
+			/// When no version is specified, the default version is used.
+			/// </remarks>
+			public Version Version
+			{
+				get { return m_Version; }
+			}
+
+			/// <summary>
 			/// Initializes a new instance of the <see cref="L20nCore.Internal.Manifest"/> class.
 			/// </summary>
 			public Manifest()
@@ -54,6 +64,7 @@ namespace L20nCore
 				m_Locales = new List<string>();
 				m_DefaultLocale = null;
 				m_Resources = new List<string>();
+				m_Version = Version.L20n;
 			}
 
 			/// <summary>
@@ -103,6 +114,12 @@ namespace L20nCore
 						{
 							AddResoure(resource.Value, manifest_path);
 						}
+
+						var version = root ["version"].Value;
+						if (version != "")
+						{
+							m_Version = Versions.FromString(version);
+						}
 					}
 				} catch (FileNotFoundException)
 				{
@@ -150,6 +167,7 @@ namespace L20nCore
 			private List<string> m_Locales;
 			private string m_DefaultLocale;
 			private List<string> m_Resources;
+			private Version m_Version;
 		}
 	}
 }
