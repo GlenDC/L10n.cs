@@ -1,0 +1,6 @@
+import('deeper/sub.l10n')
+
+<thing "cup">
+<food "bread">
+<fruit "apple">
+<whatever "banana">

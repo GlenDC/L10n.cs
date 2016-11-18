@@ -1,7 +1,7 @@
 {
     "default_locale": "nl-BE",
     "resources": [
-        "./{{locale}}.l20n",
+        "./{{locale}}.l10n",
     ],
     "version": "l10n",
 }

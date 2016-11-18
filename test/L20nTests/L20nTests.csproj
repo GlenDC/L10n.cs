@@ -37,11 +37,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UserTests.cs" />
-    <Compile Include="PerformanceClock.cs" />
-    <Compile Include="UtilTests.cs" />
-    <Compile Include="L10nEvalTests.cs" />
-    <Compile Include="L10nParserTests.cs" />
+    <Compile Include="common\PerformanceClock.cs" />
+    <Compile Include="common\UtilTests.cs" />
+    <Compile Include="l10n\UserTests.cs" />
+    <Compile Include="l10n\EvalTests.cs" />
+    <Compile Include="l10n\ParserTests.cs" />
+    <Compile Include="l20n\ParserTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -49,5 +50,10 @@
       <Project>{5AA0473C-61F6-45E8-8019-CE1DEF0A973D}</Project>
       <Name>L20nCore</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="common\" />
+    <Folder Include="l10n\" />
+    <Folder Include="l20n\" />
   </ItemGroup>
 </Project>

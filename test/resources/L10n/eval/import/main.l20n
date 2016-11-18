@@ -1,3 +1,0 @@
-<hello "world">
-
-import('core/sub.l20n')
