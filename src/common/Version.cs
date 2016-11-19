@@ -30,9 +30,14 @@ namespace L20nCore
 			public static Version FromString(String str)
 			{
 				if (AreVersionStringsEqual("L10n", str))
+				{
+					Logger.Warning("L10n format is deprecated, please use the L20n format if possible.");
 					return Version.L10n;
+				}
 				if (AreVersionStringsEqual("L20n", str))
+				{
 					return Version.L20n;
+				}
 
 				throw new ImportException(String.Format("{0} is not a recognized version string", str));
 			}
