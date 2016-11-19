@@ -28,22 +28,17 @@ namespace L20nCoreTests
 				var stream = NC("   \t\t  ");
 				
 				// This will read everything
-				WhiteSpace.Parse(stream, false);
+				WhiteSpace.Parse(stream);
 				// This will not read anything, but it's optional
 				// so it will not give an exception
-				WhiteSpace.Parse(stream, true);
-				// This will fail as it's not optional
-				Assert.Throws<ParseException>(
-					() => WhiteSpace.Parse(stream, false));
+				Assert.AreEqual(0, WhiteSpace.Parse(stream));
 
 				
 				stream = NC("   a <- foo");
 				
 				// This will read until 'a'
-				WhiteSpace.Parse(stream, false);
-				// This will fail as it's not optional
-				Assert.Throws<ParseException>(
-					() => WhiteSpace.Parse(stream, false));
+				WhiteSpace.Parse(stream);
+				Assert.AreEqual(0, WhiteSpace.Parse(stream));
 				Assert.AreEqual("a <- foo", stream.ReadUntilEnd());
 			}
 
@@ -53,22 +48,19 @@ namespace L20nCoreTests
 				var stream = NC("\n\r\n\n\n");
 				
 				// This will read everything
-				NewLine.Parse(stream, false);
-				// This will not read anything, but it's optional
-				// so it will not give an exception
-				NewLine.Parse(stream, true);
+				NewLine.Parse(stream);
 				// This will fail as it's not optional
 				Assert.Throws<ParseException>(
-					() => NewLine.Parse(stream, false));
+					() => NewLine.Parse(stream));
 				
 				
 				stream = NC("\n\r\n\n\ra <- foo");
 				
 				// This will read until 'a'
-				NewLine.Parse(stream, false);
+				NewLine.Parse(stream);
 				// This will fail as it's not optional
 				Assert.Throws<ParseException>(
-					() => NewLine.Parse(stream, false));
+					() => NewLine.Parse(stream));
 				Assert.AreEqual("a <- foo", stream.ReadUntilEnd());
 			}
 			
@@ -78,7 +70,7 @@ namespace L20nCoreTests
 				var stream = NC("# a comment in expected form");
 				
 				// This will read everything
-				Comment.Parse(stream);
+				Assert.IsNotNull(Comment.Parse(stream));
 				Assert.IsEmpty(stream.ReadUntilEnd());
 
 				// this will fail
@@ -90,9 +82,58 @@ namespace L20nCoreTests
 
 				// The Comment parser will read the entire stream
 				// once it detirmined it's a legal comment
-				stream = NC("# a comment in expected form\n... Some important stuff \r\n ... \n # end");
-				Comment.Parse(stream);
-				Assert.IsEmpty(stream.ReadUntilEnd());
+				stream = NC("# a comment in expected form\n# new comment");
+				Assert.IsNotNull(Comment.Parse(stream));
+				Assert.AreEqual("\n# new comment", stream.ReadUntilEnd());
+			}
+			
+			[Test()]
+			public void SectionTests()
+			{
+				L20nCore.L20n.IO.AST.INode node;
+
+				// a section starts with '[['
+				Assert.IsFalse(
+					Section.PeekAndParse(NC("not a section"), out node));
+				Assert.Throws<ParseException>(
+					() => Section.PeekAndParse(NC("[not a section either]"), out node));
+				Assert.IsTrue(Section.PeekAndParse(NC("[[ a section ]]"), out node));
+				Assert.AreEqual("[[ a section ]]", node.Display());
+				Assert.Throws<ParseException>(
+					() => Section.PeekAndParse(NC("[[ needs to end with double brackets"), out node));
+				Assert.Throws<ParseException>(
+					() => Section.PeekAndParse(NC("[[ needs to end with double brackets ]"), out node));
+
+				// check keyword tests to see examples
+				// and to see what is and what is not allowed in between the double square brackets
+				Assert.IsNotNull(Section.Parse(NC("[[section]]")));
+			}
+
+			[Test()]
+			public void KeywordTests()
+			{
+				// a normal (and best case example)
+				Assert.IsNotNull(Keyword.Parse(NC("hello")));
+
+				// other legal (but not always great) examples
+				Assert.IsNotNull(Keyword.Parse(NC("this is valid")));
+				Assert.IsNotNull(Keyword.Parse(NC("this_is_also_valid")));
+				Assert.IsNotNull(Keyword.Parse(NC("this-is-also-valid")));
+				Assert.IsNotNull(Keyword.Parse(NC("Could be a sentence.")));
+				Assert.IsNotNull(Keyword.Parse(NC("Or a question?")));
+				Assert.IsNotNull(Keyword.Parse(NC("Room 42")));
+
+				// bad examples
+				Assert.Throws<ParseException>(
+					() => Keyword.Parse(NC("4 cannot start with a number")));
+				Assert.Throws<ParseException>(
+					() => Keyword.Parse(NC("@ is not allowed")));
+				Assert.Throws<ParseException>(
+					() => Keyword.Parse(NC("# is not allowed")));
+				Assert.Throws<ParseException>(
+					() => Keyword.Parse(NC("# is not allowed")));
+				Assert.Throws<ParseException>(
+					() => Keyword.Parse(NC(" cannot start with space")));
 			}
 			
 			private CharStream NC(string buffer)

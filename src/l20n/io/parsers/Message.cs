@@ -14,27 +14,18 @@ namespace L20nCore
 			namespace Parsers
 			{
 				/// <summary>
-				/// The combinator parser used to parse a comment.
+				/// The combinator parser used to parse a message (similar to L10n's entity).
 				/// </summary>
-				public static class Comment
+				public static class Message
 				{
-					public static L20n.IO.AST.Comment Parse(CharStream stream)
+					public static L20n.IO.AST.Message Parse(CharStream stream)
 					{
-						stream.SkipCharacter('#');
-						string value = stream.ReadWhile((x) => !NewLine.Predicate(x));
-						return new L20n.IO.AST.Comment(value);
+						throw new NotImplementedException();
 					}
-						
+					
 					public static bool PeekAndParse(CharStream stream, out L20n.IO.AST.INode comment)
 					{
-						if (stream.PeekNext() != '#')
-						{
-							comment = null;
-							return false;
-						}
-							
-						comment = Comment.Parse(stream);
-						return true;
+						throw new NotImplementedException();
 					}
 				}
 			}

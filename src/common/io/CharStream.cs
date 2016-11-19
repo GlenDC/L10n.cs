@@ -80,7 +80,7 @@ namespace L20nCore
 				/// </summary>
 				public bool ReadNextRange(int length, out string s)
 				{
-					if (EndOfStream() || (m_Position + length) > m_LastPosition)
+					if (EndOfStream() || (m_Position + length) > m_LastPosition + 1)
 					{
 						s = null;
 						return false;
@@ -136,7 +136,7 @@ namespace L20nCore
 
 				/// <summary>
 				/// Read the current character in the stream, and move its position afterwards.
-				/// Throws a <see cref="L20nCore.Exceptions.IOException"/>
+				/// Throws a <see cref="L20nCore.Common.Exceptions.IOException"/>
 				/// in case no characters were left in the stream.
 				/// </summary>
 				public char ForceReadNext(string msg = null)
@@ -296,6 +296,20 @@ namespace L20nCore
 				}
 
 				/// <summary>
+				/// Outputs a string, starting at the current position and based on a given <c>reg</c> expression.
+				/// Offsets the stream afterwards by the length of the output string,
+				/// and return the matched value in case the regex was mathed.
+				/// Throws a <see cref="L20nCore.Common.Exceptions.ParseException"/> otherwise.
+				/// </summary>
+				public string ForceReadReg(string reg)
+				{
+					string value;
+					if (!ReadReg(reg, out value))
+						throw CreateException(string.Format("regex `{0}` could not be matched", reg));
+					return value;
+				}
+
+				/// <summary>
 				/// Return all characters left in the stream in the form of a string,
 				/// and offset the position of the stream 1 position beyond the last position of the stream.
 				/// </summary>
@@ -304,6 +318,21 @@ namespace L20nCore
 					string content = m_Buffer.Substring(m_Position);
 					m_Position = m_LastPosition + 1;
 					return content;
+				}
+
+				/// <summary>
+				/// Keeps reading the stream until EOF was reached,
+				/// or until the given predicate returns <c>false</c>.
+				/// </summary>
+				public string ReadWhile(CharPredicate predicate)
+				{
+					int startPosition = m_Position;
+					while (!EndOfStream() && predicate(m_Buffer[m_Position]))
+					{
+						++m_Position;
+					}
+
+					return m_Buffer.Substring(startPosition, m_Position - startPosition);
 				}
 
 				/// <summary>
@@ -368,7 +397,7 @@ namespace L20nCore
 				}
 
 				/// <summary>
-				/// Returns a <see cref="L20nCore.Exceptions.ParseException"/> notifying the user
+				/// Returns a <see cref="L20nCore.Common.Exceptions.ParseException"/> notifying the user
 				/// that the end of the stream has been reached, while more input was expected.
 				/// </summary>
 				public ParseException CreateEOFException()

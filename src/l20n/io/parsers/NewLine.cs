@@ -19,11 +19,11 @@ namespace L20nCore
 				/// </summary>
 				public static class NewLine
 				{
-					public static int Parse(CharStream stream, bool optional)
+					public static int Parse(CharStream stream, bool optional = false)
 					{
 						int pos = stream.Position;
-						int n = stream.SkipWhile((x) => x == '\r' || x == '\n');
-						if (!optional && n == 0)
+						int n = stream.SkipWhile(Predicate);
+						if (n == 0 && !optional)
 						{
 							throw stream.CreateException(
 								"at least one newline character is required",
@@ -31,6 +31,11 @@ namespace L20nCore
 						}
 						
 						return n;
+					}
+
+					public static bool Predicate(char c)
+					{
+						return c == '\r' || c == '\n';
 					}
 				}
 			}
