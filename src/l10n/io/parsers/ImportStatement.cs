@@ -36,6 +36,11 @@ namespace L20nCore
 							WhiteSpace.Parse(stream, true);
 							stream.SkipCharacter(')');
 
+							if (stream.Path != null && stream.Path != "")
+							{
+								path = Path.Combine(Path.GetDirectoryName(stream.Path), path);
+							}
+
 							LocalizableObjectsList.ImportAndParse(path, builder);
 						} catch (Exception e)
 						{

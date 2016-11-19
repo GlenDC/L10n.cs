@@ -341,6 +341,30 @@ namespace L20nCoreTests
 
 				pc.Stop();
 			}
+			
+			[Test()]
+			public void ImportTests()
+			{
+				var l10n = new Translator();
+				
+				var pc = new PerformanceClock("Deep Database");
+				
+				pc.Clock("start import database");
+				l10n.ImportManifest("../../../resources/l10n/eval/import/manifest.json");
+
+				pc.Clock("Translate Sentences");
+				// # Level 0
+				Assert.AreEqual("world", l10n.Translate("hello"));
+				// # Level 1
+				Assert.AreEqual("cup", l10n.Translate("thing"));
+				Assert.AreEqual("apple", l10n.Translate("fruit"));
+				Assert.AreEqual("bread", l10n.Translate("food"));
+				// # Level 2
+				Assert.AreEqual("lion", l10n.Translate("animal"));
+				Assert.AreEqual("waffy", l10n.Translate("dog"));
+				
+				pc.Stop();
+			}
 		}
 	}
 }
