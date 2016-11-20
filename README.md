@@ -1,8 +1,8 @@
 # L20n.cs
 
-An implementation of L20n-For-Games in C#, Targeting the Unity Game Engine.
+An implementation of L20n in C#, Targeting the Unity Game Engine.
 
-The grammar specs for the "L20n-For-Games" language can be found [here](https://github.com/GlenDC/L20n.design).
+The grammar specs for the L20n language can be found [here](https://github.com/GlenDC/L20n.design).
 
 ## L20n.unity
 
@@ -62,5 +62,6 @@ Some guidelines for contributions:
 ## Credits
 
 + [GlenDC](https://github.com/GlenDC) (developer/maintainer);
++ [Mozilla](https://github.com/l20n) and contributors (developers of L20n);
 
 MIT Licensed, read license in this directory for more information.
