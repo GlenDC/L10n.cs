@@ -6,7 +6,7 @@ namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
 			namespace AST
 			{
@@ -21,7 +21,7 @@ namespace L20nCore
 					/// meaning that the parser doesn't necessarily define the final type of the
 					/// returning <see cref="L20nCore.L20n.Objects.L20nObject"/>.
 					/// </summary>
-					L20n.Objects.L20nObject Eval();
+					L20n.Objects.FTLObject Eval();
 					
 					/// <summary>
 					/// Displays the expression in a string version.

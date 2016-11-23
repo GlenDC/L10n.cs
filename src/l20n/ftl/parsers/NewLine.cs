@@ -9,7 +9,7 @@ namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
 			namespace Parsers
 			{	

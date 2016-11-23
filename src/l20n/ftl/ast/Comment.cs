@@ -6,29 +6,29 @@ namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
 			namespace AST
 			{
 				/// <summary>
-				/// The AST representation for a Keyword.
-				/// More Information: <see cref="L20nCore.L20n.IO.Parsers.Keyword"/>
+				/// The AST representation for a Comment.
+				/// More Information: <see cref="L20nCore.L20n.FTL.Parsers.Comment"/>
 				/// </summary>
-				public sealed class Keyword : INode
+				public sealed class Comment : INode
 				{
-					public Keyword(string value)
+					public Comment(string value)
 					{
 						m_Value = value;
 					}
 					
-					public L20n.Objects.L20nObject Eval()
+					public L20n.Objects.FTLObject Eval()
 					{
-						throw new NotImplementedException();
+						return L20n.Objects.FTLObject.Nop;
 					}
 					
 					public string Display()
 					{
-						return m_Value;
+						return "#" + m_Value;
 					}
 					
 					private readonly string m_Value;

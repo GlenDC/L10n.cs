@@ -2,31 +2,28 @@
 // See the LICENSE file in the project root for more information.
 using System;
 
+using L20nCore.Common.Exceptions;
+using L20nCore.Common.IO;
+
 namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
-			namespace AST
+			namespace Parsers
 			{
 				/// <summary>
-				/// The AST representation for a Message.
-				/// More Information: <see cref="L20nCore.L20n.IO.Parsers.Message"/>
+				/// The combinator parser used to parse a message (similar to L10n's entity).
 				/// </summary>
-				public sealed class Message : INode
+				public static class Message
 				{
-					public Message()
+					public static L20n.FTL.AST.Message Parse(CharStream stream)
 					{
 						throw new NotImplementedException();
 					}
 					
-					public L20n.Objects.L20nObject Eval()
-					{
-						throw new NotImplementedException();
-					}
-					
-					public string Display()
+					public static bool PeekAndParse(CharStream stream, out L20n.FTL.AST.INode comment)
 					{
 						throw new NotImplementedException();
 					}

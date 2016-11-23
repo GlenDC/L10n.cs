@@ -8,13 +8,13 @@ namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
 			namespace AST
 			{
 				/// <summary>
 				/// The AST representation for a Section.
-				/// More Information: <see cref="L20nCore.L20n.IO.Parsers.Section"/>
+				/// More Information: <see cref="L20nCore.L20n.FTL.Parsers.Section"/>
 				/// </summary>
 				public sealed class Section : INode
 				{
@@ -25,7 +25,7 @@ namespace L20nCore
 						m_Keyword = keyword;
 					}
 					
-					public L20n.Objects.L20nObject Eval()
+					public L20n.Objects.FTLObject Eval()
 					{
 						throw new NotImplementedException();
 					}

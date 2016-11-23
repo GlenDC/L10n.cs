@@ -9,7 +9,7 @@ namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
 			namespace Parsers
 			{
@@ -18,14 +18,14 @@ namespace L20nCore
 				/// </summary>
 				public static class Comment
 				{
-					public static L20n.IO.AST.Comment Parse(CharStream stream)
+					public static L20n.FTL.AST.Comment Parse(CharStream stream)
 					{
 						stream.SkipCharacter('#');
 						string value = stream.ReadWhile((x) => !NewLine.Predicate(x));
-						return new L20n.IO.AST.Comment(value);
+						return new L20n.FTL.AST.Comment(value);
 					}
 						
-					public static bool PeekAndParse(CharStream stream, out L20n.IO.AST.INode comment)
+					public static bool PeekAndParse(CharStream stream, out L20n.FTL.AST.INode comment)
 					{
 						if (stream.PeekNext() != '#')
 						{

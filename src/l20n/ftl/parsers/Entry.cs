@@ -9,7 +9,7 @@ namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
 			namespace Parsers
 			{	
@@ -19,7 +19,7 @@ namespace L20nCore
 				/// </summary>
 				public static class Entry
 				{
-					public static bool PeekAndParse(CharStream stream, out L20n.IO.AST.INode result)
+					public static bool PeekAndParse(CharStream stream, out L20n.FTL.AST.INode result)
 					{
 						if (Message.PeekAndParse(stream, out result))
 							return true;

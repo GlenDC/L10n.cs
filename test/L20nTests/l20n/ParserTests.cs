@@ -8,7 +8,7 @@ using NUnit.Framework;
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
 
-using L20nCore.L20n.IO.Parsers;
+using L20nCore.L20n.FTL.Parsers;
 
 namespace L20nCoreTests
 {
@@ -90,7 +90,7 @@ namespace L20nCoreTests
 			[Test()]
 			public void SectionTests()
 			{
-				L20nCore.L20n.IO.AST.INode node;
+				L20nCore.L20n.FTL.AST.INode node;
 
 				// a section starts with '[['
 				Assert.IsFalse(

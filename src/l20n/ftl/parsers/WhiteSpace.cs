@@ -2,26 +2,27 @@
 // See the LICENSE file in the project root for more information.
 using System;
 
-using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using L20nCore.Common.IO;
 
 namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
 			namespace Parsers
 			{	
 				/// <summary>
-				/// The combinator parser used to parse a keyword.
+				/// The parser combinator used to parse all the whitespace.
+				/// The resulting output does not get stored.
 				/// </summary>
-				public static class Keyword
+				public static class WhiteSpace
 				{
-					public static L20n.IO.AST.Keyword Parse(CharStream stream)
+					public static int Parse(CharStream stream)
 					{
-						string value = stream.ForceReadReg(@"[a-zA-Z_.?\-]([a-zA-Z0-9_.?\- ]*[a-zA-Z0-9_.?\-])?");
-						return new L20n.IO.AST.Keyword(value);
+						int n = stream.SkipWhile(char.IsWhiteSpace);
+						return n;
 					}
 				}
 			}

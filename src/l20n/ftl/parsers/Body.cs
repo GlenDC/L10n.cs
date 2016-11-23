@@ -10,7 +10,7 @@ namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
 			namespace Parsers
 			{	
@@ -20,10 +20,10 @@ namespace L20nCore
 				/// </summary>
 				public static class Body
 				{
-					public static List<L20n.IO.AST.INode> Parse(CharStream stream)
+					public static List<L20n.FTL.AST.INode> Parse(CharStream stream)
 					{
-						List<L20n.IO.AST.INode> nodes = new List<L20n.IO.AST.INode>();
-						L20n.IO.AST.INode entry;
+						List<L20n.FTL.AST.INode> nodes = new List<L20n.FTL.AST.INode>();
+						L20n.FTL.AST.INode entry;
 
 						while (Entry.PeekAndParse(stream, out entry))
 						{

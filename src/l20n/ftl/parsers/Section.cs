@@ -9,7 +9,7 @@ namespace L20nCore
 {
 	namespace L20n
 	{
-		namespace IO
+		namespace FTL
 		{
 			namespace Parsers
 			{	
@@ -18,7 +18,7 @@ namespace L20nCore
 				/// </summary>
 				public static class Section
 				{
-					public static L20n.IO.AST.Section Parse(CharStream stream)
+					public static L20n.FTL.AST.Section Parse(CharStream stream)
 					{
 						stream.SkipString("[[");
 						WhiteSpace.Parse(stream);
@@ -28,10 +28,10 @@ namespace L20nCore
 						WhiteSpace.Parse(stream);
 						stream.SkipString("]]");
 
-						return new L20n.IO.AST.Section(keyword);
+						return new L20n.FTL.AST.Section(keyword);
 					}
 					
-					public static bool PeekAndParse(CharStream stream, out L20n.IO.AST.INode section)
+					public static bool PeekAndParse(CharStream stream, out L20n.FTL.AST.INode section)
 					{
 						if (!(stream.PeekNext() == '['))
 						{

@@ -77,9 +77,6 @@
     <Compile Include="src\l10n\external\InfoCollector.cs" />
     <Compile Include="src\l10n\external\IHashValue.cs" />
     <Compile Include="src\l10n\internal\LocaleContext.cs" />
-    <Compile Include="src\l20n\io\parsers\Comment.cs" />
-    <Compile Include="src\l20n\io\parsers\NewLine.cs" />
-    <Compile Include="src\l20n\io\parsers\WhiteSpace.cs" />
     <Compile Include="src\l10n\io\parsers\expressions\Variable.cs" />
     <Compile Include="src\l10n\io\parsers\expressions\Global.cs" />
     <Compile Include="src\l10n\io\parsers\expressions\Primary.cs" />
@@ -134,18 +131,21 @@
     <Compile Include="src\common\utils\Option.cs" />
     <Compile Include="src\common\utils\ObjectPool.cs" />
     <Compile Include="src\l10n\objects\L10nObject.cs" />
-    <Compile Include="src\l20n\io\parsers\Keyword.cs" />
-    <Compile Include="src\l20n\io\ast\Keyword.cs" />
-    <Compile Include="src\l20n\objects\L20nObject.cs" />
     <Compile Include="src\l20n\internal\LocaleContext.cs" />
-    <Compile Include="src\l20n\io\ast\INode.cs" />
-    <Compile Include="src\l20n\io\ast\Section.cs" />
-    <Compile Include="src\l20n\io\parsers\Section.cs" />
-    <Compile Include="src\l20n\io\ast\Comment.cs" />
-    <Compile Include="src\l20n\io\ast\Message.cs" />
-    <Compile Include="src\l20n\io\parsers\Message.cs" />
-    <Compile Include="src\l20n\io\parsers\Entry.cs" />
-    <Compile Include="src\l20n\io\parsers\Body.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Comment.cs" />
+    <Compile Include="src\l20n\ftl\parsers\NewLine.cs" />
+    <Compile Include="src\l20n\ftl\parsers\WhiteSpace.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Keyword.cs" />
+    <Compile Include="src\l20n\ftl\ast\Keyword.cs" />
+    <Compile Include="src\l20n\ftl\ast\INode.cs" />
+    <Compile Include="src\l20n\ftl\ast\Section.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Section.cs" />
+    <Compile Include="src\l20n\ftl\ast\Comment.cs" />
+    <Compile Include="src\l20n\ftl\ast\Message.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Message.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Entry.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Body.cs" />
+    <Compile Include="src\l20n\objects\FTLObject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -155,10 +155,10 @@
     <Folder Include="src\l10n\" />
     <Folder Include="src\l20n\" />
     <Folder Include="src\l10n\io\" />
-    <Folder Include="src\l20n\io\" />
-    <Folder Include="src\l20n\io\parsers\" />
-    <Folder Include="src\l20n\io\ast\" />
     <Folder Include="src\l20n\objects\" />
     <Folder Include="src\l20n\internal\" />
+    <Folder Include="src\l20n\ftl\" />
+    <Folder Include="src\l20n\ftl\parsers\" />
+    <Folder Include="src\l20n\ftl\ast\" />
   </ItemGroup>
 </Project>
