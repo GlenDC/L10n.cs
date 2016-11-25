@@ -20,14 +20,14 @@ namespace L20nCore
 				/// </summary>
 				public static class Body
 				{
-					public static List<L20n.FTL.AST.INode> Parse(CharStream stream)
+					public static L20n.FTL.AST.Body Parse(CharStream stream)
 					{
-						List<L20n.FTL.AST.INode> nodes = new List<L20n.FTL.AST.INode>();
+						L20n.FTL.AST.Body body = new L20n.FTL.AST.Body();
 						L20n.FTL.AST.INode entry;
 
 						while (Entry.PeekAndParse(stream, out entry))
 						{
-							nodes.Add(entry);
+							body.AddEntry(entry);
 							if (NewLine.Parse(stream, true) == 0)
 								break;
 						}
@@ -40,7 +40,7 @@ namespace L20nCore
 								"Any garbage at the bottom of your file?");
 						}
 
-						return nodes;
+						return body;
 					}
 				}
 			}

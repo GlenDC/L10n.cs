@@ -2,8 +2,6 @@
 // See the LICENSE file in the project root for more information.
 using System;
 
-using L20nCore.Common.Exceptions;
-
 namespace L20nCore
 {
 	namespace L20n
@@ -13,14 +11,14 @@ namespace L20nCore
 			namespace AST
 			{
 				/// <summary>
-				/// The AST representation for a Section.
-				/// More Information: <see cref="L20nCore.L20n.FTL.Parsers.Section"/>
+				/// The AST representation for a Builtin.
+				/// More Information: <see cref="L20nCore.L20n.FTL.Parsers.Builtin"/>
 				/// </summary>
-				public sealed class Section : INode
+				public sealed class Builtin : INode
 				{
-					public Section(Keyword keyword)
+					public Builtin(string value)
 					{
-						m_Keyword = keyword;
+						m_Value = value;
 					}
 					
 					public L20n.Objects.FTLObject Eval()
@@ -30,10 +28,10 @@ namespace L20nCore
 					
 					public string Display()
 					{
-						return "[[ " + m_Keyword.Display() + " ]]";
+						return m_Value;
 					}
 					
-					private readonly Keyword m_Keyword;
+					private readonly string m_Value;
 				}
 			}
 		}

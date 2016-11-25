@@ -146,6 +146,18 @@
     <Compile Include="src\l20n\ftl\parsers\Entry.cs" />
     <Compile Include="src\l20n\ftl\parsers\Body.cs" />
     <Compile Include="src\l20n\objects\FTLObject.cs" />
+    <Compile Include="src\l20n\ftl\ast\Body.cs" />
+    <Compile Include="src\l20n\ftl\ast\Identifier.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Identifier.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Variable.cs" />
+    <Compile Include="src\l20n\ftl\ast\Variable.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Number.cs" />
+    <Compile Include="src\l20n\ftl\ast\Number.cs" />
+    <Compile Include="src\l20n\ftl\ast\Builtin.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Builtin.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Expression.cs" />
+    <Compile Include="src\l20n\ftl\ast\MemberExpression.cs" />
+    <Compile Include="src\l20n\ftl\parsers\MemberExpression.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

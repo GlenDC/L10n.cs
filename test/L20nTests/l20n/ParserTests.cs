@@ -136,6 +136,122 @@ namespace L20nCoreTests
 					() => Keyword.Parse(NC(" cannot start with space")));
 			}
 			
+			[Test()]
+			public void IdentifierTests()
+			{
+				// a normal (and best case example)
+				Assert.IsNotNull(Identifier.Parse(NC("hello")));
+				
+				// other legal (but not always great) examples
+				Assert.IsNotNull(Identifier.Parse(NC("this is valid")));
+				Assert.IsNotNull(Identifier.Parse(NC("this_is_also_valid")));
+				Assert.IsNotNull(Identifier.Parse(NC("this-is-also-valid")));
+				Assert.IsNotNull(Identifier.Parse(NC("Could be a sentence.")));
+				Assert.IsNotNull(Identifier.Parse(NC("Or a question?")));
+				Assert.IsNotNull(Identifier.Parse(NC("Room 42")));
+				Assert.IsNotNull(Identifier.Parse(NC("?")));
+				Assert.IsNotNull(Identifier.Parse(NC(".-?_???")));
+				
+				// bad examples
+				Assert.Throws<ParseException>(
+					() => Identifier.Parse(NC("4 cannot start with a number")));
+				Assert.Throws<ParseException>(
+					() => Identifier.Parse(NC("@ is not allowed")));
+				Assert.Throws<ParseException>(
+					() => Identifier.Parse(NC("# is not allowed")));
+				Assert.Throws<ParseException>(
+					() => Identifier.Parse(NC("# is not allowed")));
+				Assert.Throws<ParseException>(
+					() => Identifier.Parse(NC(" cannot start with space")));
+			}
+			
+			[Test()]
+			public void BuiltinTests()
+			{
+				// a normal (and best case example)
+				Assert.IsNotNull(Builtin.Parse(NC("NUMBER")));
+				
+				// other legal (but not always great) examples
+				Assert.IsNotNull(Builtin.Parse(NC("SOME_BUILT-IN")));
+				Assert.IsNotNull(Builtin.Parse(NC("?-._A-Z")));
+				
+				// bad examples
+				Assert.Throws<ParseException>(
+					() => Builtin.Parse(NC("4 cannot start with a number")));
+				Assert.Throws<ParseException>(
+					() => Builtin.Parse(NC("@ is not allowed")));
+				Assert.Throws<ParseException>(
+					() => Builtin.Parse(NC("# is not allowed")));
+				Assert.Throws<ParseException>(
+					() => Builtin.Parse(NC("# is not allowed")));
+				Assert.Throws<ParseException>(
+					() => Builtin.Parse(NC(" cannot start with space")));
+				Assert.Throws<ParseException>( // cannot contain lowercase letters
+					() => Builtin.Parse(NC("aNOPE")));
+			}
+
+			[Test()]
+			public void VariableTests()
+			{
+				// As long as it's an identifier prefixed with '$' it's fine
+				Assert.IsNotNull(Variable.Parse(NC("$hello")));
+				Assert.IsNotNull(Variable.Parse(NC("$Whatever")));
+
+				// otherwise we get an exception
+				Assert.Throws<ParseException>( // no '$' prefix
+					() => Variable.Parse(NC("nope")));
+				Assert.Throws<ParseException>( // illegal identifier
+					() => Variable.Parse(NC("$4")));
+			}
+			
+			[Test()]
+			public void MemberExpressionTests()
+			{
+				Assert.IsTrue(MemberExpression.Peek(NC("[")));
+				Assert.IsFalse(MemberExpression.Peek(NC("foo")));
+
+				var id = Identifier.Parse(NC("foo"));
+
+				// MemberExpressionParsing starts from the '['
+				Assert.AreEqual("foo[bar]", MemberExpression.Parse(NC("[bar]"), id).Display());
+				Assert.AreEqual("foo[this_is-ok?42]", MemberExpression.Parse(NC("[this_is-ok?42]"), id).Display());
+				
+				// otherwise we get an exception
+				Assert.Throws<ParseException>( // no '[' prefix
+					() => MemberExpression.Parse(NC("nope"), id));
+				Assert.Throws<ParseException>( // no ']' postfix
+					() => MemberExpression.Parse(NC("[nope"), id));
+				Assert.Throws<ParseException>( // illegal keyword
+					() => MemberExpression.Parse(NC("[42]"), id));
+			}
+			
+			[Test()]
+			public void NumberTests()
+			{
+				// legal examples
+				Assert.AreEqual("42", Number.Parse(NC("42")).Display());
+				Assert.AreEqual("123.456", Number.Parse(NC("123.456")).Display());
+
+				// bad examples that do not make it throw an exception,
+				// but just stop parsing instead
+
+				var nc = NC("42.");
+				Assert.AreEqual("42", Number.Parse(nc).Display());
+				Assert.AreEqual(".", nc.ReadUntilEnd());
+				
+				nc = NC("42,00");
+				Assert.AreEqual("42", Number.Parse(nc).Display());
+				Assert.AreEqual(",00", nc.ReadUntilEnd());
+				
+				// bad examples
+				Assert.Throws<ParseException>(// '-' not allowed
+					() => Number.Parse(NC("-42")));
+				Assert.Throws<ParseException>(// '+' not allowed
+					() => Number.Parse(NC("+42")));
+				Assert.Throws<ParseException>(// only numbers allowed
+				    () => Number.Parse(NC("hello")));
+			}
+			
 			private CharStream NC(string buffer)
 			{
 				return new CharStream(buffer);

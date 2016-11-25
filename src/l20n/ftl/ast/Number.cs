@@ -13,14 +13,21 @@ namespace L20nCore
 			namespace AST
 			{
 				/// <summary>
-				/// The AST representation for a Section.
-				/// More Information: <see cref="L20nCore.L20n.FTL.Parsers.Section"/>
+				/// The AST representation for a NUmber.
+				/// More Information: <see cref="L20nCore.L20n.FTL.Parsers.Number"/>
 				/// </summary>
-				public sealed class Section : INode
+				public sealed class Number : INode
 				{
-					public Section(Keyword keyword)
+					public Number(string rawValue)
 					{
-						m_Keyword = keyword;
+						try
+						{
+							m_Value = Convert.ToDouble(rawValue);
+						}
+						catch(Exception e)
+						{
+							throw new ParseException("<number> instance could not be created", e);
+						}
 					}
 					
 					public L20n.Objects.FTLObject Eval()
@@ -30,10 +37,10 @@ namespace L20nCore
 					
 					public string Display()
 					{
-						return "[[ " + m_Keyword.Display() + " ]]";
+						return m_Value.ToString();
 					}
 					
-					private readonly Keyword m_Keyword;
+					private readonly double m_Value;
 				}
 			}
 		}

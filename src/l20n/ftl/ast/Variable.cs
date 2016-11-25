@@ -13,12 +13,12 @@ namespace L20nCore
 			namespace AST
 			{
 				/// <summary>
-				/// The AST representation for a Section.
-				/// More Information: <see cref="L20nCore.L20n.FTL.Parsers.Section"/>
+				/// The AST representation for a variable.
+				/// More Information: <see cref="L20nCore.L20n.FTL.Parsers.Variable"/>
 				/// </summary>
-				public sealed class Section : INode
+				public sealed class Variable : INode
 				{
-					public Section(Keyword keyword)
+					public Variable(Keyword keyword)
 					{
 						m_Keyword = keyword;
 					}
@@ -30,7 +30,7 @@ namespace L20nCore
 					
 					public string Display()
 					{
-						return "[[ " + m_Keyword.Display() + " ]]";
+						return "$" + m_Keyword.Display();
 					}
 					
 					private readonly Keyword m_Keyword;
