@@ -4,6 +4,7 @@ using System;
 
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -18,10 +19,12 @@ namespace L20nCore
 				/// </summary>
 				public static class Builtin
 				{
-					public static L20n.FTL.AST.Builtin Parse(CharStream stream)
+					public static readonly Regex Regex = new Regex(@"[A-Z_.?\-]+");
+
+					public static L20n.FTL.AST.StringPrimitive Parse(CharStream stream)
 					{
-						string value = stream.ForceReadReg(@"[A-Z_.?\-]+");
-						return new L20n.FTL.AST.Builtin(value);
+						string value = stream.ForceReadReg(Regex);
+						return new L20n.FTL.AST.StringPrimitive(value, L20n.FTL.AST.StringPrimitive.Kind.Builtin);
 					}
 				}
 			}

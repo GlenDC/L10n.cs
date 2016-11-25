@@ -33,7 +33,7 @@ namespace L20nCore
 						{
 							if(MemberExpression.Peek(stream))
 							{
-								return MemberExpression.Parse(stream, result as L20n.FTL.AST.Identifier);
+								return MemberExpression.Parse(stream, result as L20n.FTL.AST.StringPrimitive);
 							}
 							
 							return result;

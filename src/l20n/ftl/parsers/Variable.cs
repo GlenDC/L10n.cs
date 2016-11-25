@@ -21,7 +21,7 @@ namespace L20nCore
 					public static L20n.FTL.AST.Variable Parse(CharStream stream)
 					{
 						stream.SkipCharacter('$');
-						L20n.FTL.AST.Keyword keyword = Keyword.Parse(stream);
+						L20n.FTL.AST.StringPrimitive keyword = Keyword.Parse(stream);
 						return new L20n.FTL.AST.Variable(keyword);
 					}
 

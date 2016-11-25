@@ -18,7 +18,7 @@ namespace L20nCore
 				/// </summary>
 				public sealed class MemberExpression : INode
 				{
-					public MemberExpression(Identifier identifier, Keyword keyword)
+					public MemberExpression(StringPrimitive identifier, StringPrimitive keyword)
 					{
 						m_Identifier = identifier;
 						m_Keyword = keyword;
@@ -36,8 +36,8 @@ namespace L20nCore
 						                     m_Keyword.Display());
 					}
 					
-					private readonly Identifier m_Identifier;
-					private readonly Keyword m_Keyword;
+					private readonly StringPrimitive m_Identifier;
+					private readonly StringPrimitive m_Keyword;
 				}
 			}
 		}

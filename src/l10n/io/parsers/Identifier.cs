@@ -4,6 +4,7 @@ using System;
 
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -34,12 +35,12 @@ namespace L20nCore
 
 					public static bool Peek(CharStream stream)
 					{
-						return stream.PeekReg(@"[_a-zA-Z]");
+						return stream.PeekReg(s_RegPeek);
 					}
 
 					public static bool PeekAndParse(CharStream stream, out string identifier, bool allow_underscore)
 					{
-						var reg = allow_underscore ? @"[_a-zA-Z]\w*" : @"[a-zA-Z]\w*";
+						var reg = allow_underscore ? s_RegWithUnderscore : s_RegWithoutUnderscore;
 						if (!stream.EndOfStream() && stream.ReadReg(reg, out identifier))
 						{
 							return true;
@@ -48,6 +49,10 @@ namespace L20nCore
 						identifier = null;
 						return false;
 					}
+
+					private static readonly Regex s_RegWithUnderscore = new Regex(@"[_a-zA-Z]\w*");
+					private static readonly Regex s_RegWithoutUnderscore = new Regex(@"[a-zA-Z]\w*");
+					private static readonly Regex s_RegPeek = new Regex(@"[_a-zA-Z]");
 				}
 			}
 		}

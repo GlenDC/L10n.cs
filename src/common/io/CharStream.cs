@@ -126,10 +126,9 @@ namespace L20nCore
 				/// Returns <c>true</c> if the given regular expression
 				/// matches the stream at the current position.
 				/// </summary>
-				public bool PeekReg(string reg)
+				public bool PeekReg(Regex reg)
 				{
-					var re = new Regex(reg);
-					var match = re.Match(m_Buffer, m_Position);
+					var match = reg.Match(m_Buffer, m_Position);
 
 					return match.Success && (match.Index == m_Position);
 				}
@@ -279,10 +278,9 @@ namespace L20nCore
 				/// and return <c>true</c> in case the regex was mathed.
 				/// Returns <c>false</c> otherwise.
 				/// </summary>
-				public bool ReadReg(string reg, out string c)
+				public bool ReadReg(Regex reg, out string c)
 				{
-					var re = new Regex(reg);
-					var match = re.Match(m_Buffer, m_Position);
+					var match = reg.Match(m_Buffer, m_Position);
 
 					if (match.Success && match.Index == m_Position)
 					{
@@ -301,7 +299,7 @@ namespace L20nCore
 				/// and return the matched value in case the regex was mathed.
 				/// Throws a <see cref="L20nCore.Common.Exceptions.ParseException"/> otherwise.
 				/// </summary>
-				public string ForceReadReg(string reg)
+				public string ForceReadReg(Regex reg)
 				{
 					string value;
 					if (!ReadReg(reg, out value))
@@ -353,8 +351,7 @@ namespace L20nCore
 					if (EndOfStream())
 						return false;
 
-					var re = new Regex(@"[^\s]+");
-					return re.IsMatch(m_Buffer, m_Position);
+					return s_ReNoWhitespace.IsMatch(m_Buffer, m_Position);
 				}
 
 				/// <summary>
@@ -364,8 +361,7 @@ namespace L20nCore
 				/// </summary>
 				public string ComputeDetailedPosition(int pos)
 				{
-					var re = new Regex(@"(\r\n|\n|\r)");
-					var matches = re.Matches(m_Buffer.Substring(0, pos));
+					var matches = s_ReNewline.Matches(m_Buffer.Substring(0, pos));
 					int lineNumber = 1;
 					int linePosition = pos;
 					if (matches.Count > 0)
@@ -424,6 +420,9 @@ namespace L20nCore
 				private String m_Buffer = null;
 				// the current position in the buffer
 				private int m_Position;
+				// regex used to check if any input is left;
+				private static readonly Regex s_ReNoWhitespace = new Regex(@"[^\s]+");
+				private static readonly Regex s_ReNewline = new Regex(@"(\r\n|\n|\r)");
 			}
 		}
 	}

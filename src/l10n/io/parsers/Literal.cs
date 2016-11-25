@@ -3,6 +3,7 @@
 using System;
 
 using L20nCore.Common.IO;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -21,7 +22,7 @@ namespace L20nCore
 					public static L10n.IO.AST.INode Parse(CharStream stream)
 					{
 						string raw;
-						if (!stream.ReadReg(@"[\-\+]?[0-9]+", out raw))
+						if (!stream.ReadReg(s_RegParse, out raw))
 						{
 							throw stream.CreateException("a number literal whas expected");
 						}
@@ -31,7 +32,7 @@ namespace L20nCore
 
 					public static bool Peek(CharStream stream)
 					{
-						return stream.PeekReg(@"[\-\+0-9]");
+						return stream.PeekReg(s_RegPeek);
 					}
 
 					public static bool PeekAndParse(
@@ -46,6 +47,9 @@ namespace L20nCore
 						literal = Literal.Parse(stream);
 						return true;
 					}
+
+					private static readonly Regex s_RegPeek = new Regex(@"[\-\+0-9]");
+					private static readonly Regex s_RegParse = new Regex(@"[\-\+]?[0-9]+");
 				}
 			}
 		}

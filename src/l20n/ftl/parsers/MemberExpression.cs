@@ -18,10 +18,10 @@ namespace L20nCore
 				/// </summary>
 				public static class MemberExpression
 				{
-					public static L20n.FTL.AST.MemberExpression Parse(CharStream stream, L20n.FTL.AST.Identifier identifier)
+					public static L20n.FTL.AST.MemberExpression Parse(CharStream stream, L20n.FTL.AST.StringPrimitive identifier)
 					{
 						stream.SkipCharacter('[');
-						L20n.FTL.AST.Keyword keyword = Keyword.Parse(stream);
+						L20n.FTL.AST.StringPrimitive keyword = Keyword.Parse(stream);
 						stream.SkipCharacter(']');
 
 						return new L20n.FTL.AST.MemberExpression(identifier, keyword);

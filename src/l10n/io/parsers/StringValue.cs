@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -130,7 +131,7 @@ namespace L20nCore
 					private static char ReadUnicodeCharacter(CharStream stream)
 					{
 						string unicodeValue;
-						if (stream.ReadReg("(0|1)?[0-9a-fA-F]{4,5}", out unicodeValue))
+						if (stream.ReadReg(s_RegUnicode, out unicodeValue))
 						{
 							return (char)Convert.ToInt32(unicodeValue, 16);
 						} else
@@ -138,6 +139,8 @@ namespace L20nCore
 							throw stream.CreateException("not a valid unicode character");
 						}
 					}
+
+					private static readonly Regex s_RegUnicode = new Regex("(0|1)?[0-9a-fA-F]{4,5}");
 				}
 			}
 		}

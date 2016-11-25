@@ -18,7 +18,7 @@ namespace L20nCore
 				/// </summary>
 				public sealed class Section : INode
 				{
-					public Section(Keyword keyword)
+					public Section(StringPrimitive keyword)
 					{
 						m_Keyword = keyword;
 					}
@@ -33,7 +33,7 @@ namespace L20nCore
 						return "[[ " + m_Keyword.Display() + " ]]";
 					}
 					
-					private readonly Keyword m_Keyword;
+					private readonly StringPrimitive m_Keyword;
 				}
 			}
 		}

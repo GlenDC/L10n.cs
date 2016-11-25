@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -66,7 +67,7 @@ namespace L20nCore
 
 					public static bool Peek(CharStream stream)
 					{
-						return stream.PeekReg(@"\s+[a-zA-Z]");
+						return stream.PeekReg(s_RegPeek);
 					}
 				
 					public static bool PeekAndParse(CharStream stream, out L10n.IO.AST.Attributes.Item item)
@@ -80,6 +81,8 @@ namespace L20nCore
 						item = null;
 						return false;
 					}
+
+					private static readonly Regex s_RegPeek = new Regex(@"\s+[a-zA-Z]");
 				}
 			}
 		}

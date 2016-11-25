@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -24,6 +25,7 @@ namespace L20nCore
 					/// </summary>
 					public static class Property
 					{
+
 						public static L10n.IO.AST.INode Parse(CharStream stream, L10n.IO.AST.PropertyExpression property = null)
 						{
 							var startingPos = stream.Position;
@@ -65,7 +67,7 @@ namespace L20nCore
 						public static bool PeekAndParse(
 						CharStream stream, out L10n.IO.AST.INode expression)
 						{
-							if (stream.PeekReg(@"(\$|\@|\_|)?\w+(\.|\[)"))
+							if (stream.PeekReg(s_RegPeek))
 							{
 								expression = Property.Parse(stream);
 								return true;
@@ -74,6 +76,8 @@ namespace L20nCore
 							expression = null;
 							return false;
 						}
+
+						private static readonly Regex s_RegPeek = new Regex(@"(\$|\@|\_|)?\w+(\.|\[)");
 					}
 				}
 			}

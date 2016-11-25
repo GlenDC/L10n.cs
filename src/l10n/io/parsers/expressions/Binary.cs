@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -30,7 +31,7 @@ namespace L20nCore
 							{
 								var first = Unary.Parse(stream);
 								string raw;
-								if (stream.ReadReg(@"\s*(\=\=|\!\=|\<\=|\>\=|\<|\>|\+|\-|\*|\/|\%)", out raw))
+								if (stream.ReadReg(s_RegOperator, out raw))
 								{
 									var chain = new Chain(stream, first, raw);
 									return chain.Build();
@@ -70,7 +71,7 @@ namespace L20nCore
 									m_Nodes.Add(new Node(node, op));
 									WhiteSpace.Parse(stream, true);
 									node = Unary.Parse(stream);
-								} while(stream.ReadReg (@"\s*(\=\=|\!\=|\<\=|\>\=|\<|\>|\+|\-|\*|\/|\%)", out op));
+								} while(stream.ReadReg(s_RegOperator, out op));
 						
 								m_Nodes.Add(new Node(node));
 							}
@@ -241,6 +242,8 @@ namespace L20nCore
 								}
 							}
 						}
+
+						private static readonly Regex s_RegOperator = new Regex(@"\s*(\=\=|\!\=|\<\=|\>\=|\<|\>|\+|\-|\*|\/|\%)");
 					}
 				}
 			}

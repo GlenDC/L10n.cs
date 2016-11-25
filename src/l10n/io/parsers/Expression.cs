@@ -4,6 +4,7 @@ using System;
 
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -34,7 +35,7 @@ namespace L20nCore
 
 							// check if we have an IfElse case or simply a logical expression
 							string s;
-							if (stream.ReadReg(@"\s*\?\s*", out s))
+							if (stream.ReadReg(s_RegIfElsePeek, out s))
 							{
 								var first = Expression.Parse(stream);
 								WhiteSpace.Parse(stream, true);
@@ -54,6 +55,8 @@ namespace L20nCore
 							throw new ParseException(msg, e);
 						}
 					}
+
+					private static readonly Regex s_RegIfElsePeek = new Regex(@"\s*\?\s*");
 				}
 			}
 		}

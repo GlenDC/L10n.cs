@@ -5,6 +5,7 @@ using System.IO;
 
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -62,7 +63,7 @@ namespace L20nCore
 						string output;
 						int pos = stream.Position;
 
-						if (!stream.ReadReg("(\'|\")", out output))
+						if (!stream.ReadReg(s_RegQuote, out output))
 						{
 							throw new ParseException(
 							String.Format(
@@ -105,6 +106,8 @@ namespace L20nCore
 						char next = stream.PeekNext();
 						return next == '\'' || next == '\"';
 					}
+
+					private static readonly Regex s_RegQuote = new Regex("(\'|\")");
 				}
 			}
 		}

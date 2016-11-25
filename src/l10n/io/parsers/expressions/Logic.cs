@@ -4,6 +4,7 @@ using System;
 
 using L20nCore.Common.IO;
 using L20nCore.Common.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace L20nCore
 {
@@ -30,7 +31,7 @@ namespace L20nCore
 							{
 								var first = Binary.Parse(stream);
 								string op;
-								if (stream.ReadReg(@"\s*(\|\||\&\&)", out op))
+								if (stream.ReadReg(s_RegOperator, out op))
 								{
 									WhiteSpace.Parse(stream, true);
 									var second = Logic.Parse(stream);
@@ -48,6 +49,8 @@ namespace L20nCore
 								throw new ParseException(msg, e);
 							}
 						}
+
+						private static readonly Regex s_RegOperator = new Regex(@"\s*(\|\||\&\&)");
 					}
 				}
 			}
