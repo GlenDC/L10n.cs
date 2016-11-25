@@ -23,44 +23,29 @@ namespace L20nCore
 					public static L20n.FTL.AST.INode Parse(CharStream stream)
 					{
 						L20n.FTL.AST.INode result;
+						
+						if (Identifier.PeekAndParse(stream, out result))
+						{
+							if (MemberExpression.Peek(stream))
+								return MemberExpression.Parse(stream, result as L20n.FTL.AST.StringPrimitive);
+							
+							if (CallExpression.Peek(stream))
+								return CallExpression.Parse(stream, result as L20n.FTL.AST.StringPrimitive);
+							
+							return result;
+						}
+						
+						if (Variable.PeekAndParse(stream, out result))
+							return result;
 
-						// TODO: quoted-pattern
+						if (QuotedPattern.PeekAndParse(stream, out result))
+							return result;
 
 						if (Number.PeekAndParse(stream, out result))
 							return result;
 
-						if (Identifier.PeekAndParse(stream, out result))
-						{
-							if(MemberExpression.Peek(stream))
-							{
-								return MemberExpression.Parse(stream, result as L20n.FTL.AST.StringPrimitive);
-							}
-							
-							return result;
-						}
-
-						if (Variable.PeekAndParse(stream, out result))
-							return result;
-
-						// TODO call-expression
-
 						throw stream.CreateException(
 							"no <expression> could be found, while one was expected");
-					}
-
-					public static bool PeekAndParse(CharStream stream, out L20n.FTL.AST.INode result)
-					{
-						if (Message.PeekAndParse(stream, out result))
-							return true;
-						
-						if (Comment.PeekAndParse(stream, out result))
-							return true;
-						
-						if (Section.PeekAndParse(stream, out result))
-							return true;
-						
-						result = null;
-						return false;
 					}
 				}
 			}

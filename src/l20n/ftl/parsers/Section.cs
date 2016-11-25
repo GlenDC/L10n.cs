@@ -30,8 +30,16 @@ namespace L20nCore
 
 						return new L20n.FTL.AST.Section(keyword);
 					}
+
+					public static void ParseAndForget(CharStream stream)
+					{
+						stream.SkipString("[[");
+						// this does mean that for applications the section could be bullox, but that's fine
+						// tooling should prevent such things
+						stream.SkipWhile(IsNotNewLine);
+					}
 					
-					public static bool PeekAndParse(CharStream stream, out L20n.FTL.AST.INode section)
+					public static bool PeekAndParse(CharStream stream, Context ctx, out L20n.FTL.AST.INode section)
 					{
 						if (!(stream.PeekNext() == '['))
 						{
@@ -39,8 +47,20 @@ namespace L20nCore
 							return false;
 						}
 
-						section = Parse(stream);
+						if (ctx.ASTType == Context.ASTTypes.Full)
+						{
+							section = Parse(stream);
+							return true;
+						}
+
+						ParseAndForget(stream);
+						section = null;
 						return true;
+					}
+					
+					private static bool IsNotNewLine(char c)
+					{
+						return !NewLine.Predicate(c);
 					}
 				}
 			}

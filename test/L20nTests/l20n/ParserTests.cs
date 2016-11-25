@@ -88,21 +88,23 @@ namespace L20nCoreTests
 			}
 			
 			[Test()]
-			public void SectionTests()
+			public void SectionFullASTTests()
 			{
 				L20nCore.L20n.FTL.AST.INode node;
 
+				var ctx = new L20nCore.L20n.FTL.Parsers.Context(Context.ASTTypes.Full);
+
 				// a section starts with '[['
 				Assert.IsFalse(
-					Section.PeekAndParse(NC("not a section"), out node));
+					Section.PeekAndParse(NC("not a section"), ctx, out node));
 				Assert.Throws<ParseException>(
-					() => Section.PeekAndParse(NC("[not a section either]"), out node));
-				Assert.IsTrue(Section.PeekAndParse(NC("[[ a section ]]"), out node));
+					() => Section.PeekAndParse(NC("[not a section either]"), ctx, out node));
+				Assert.IsTrue(Section.PeekAndParse(NC("[[ a section ]]"),ctx,  out node));
 				Assert.AreEqual("[[ a section ]]", node.Display());
 				Assert.Throws<ParseException>(
-					() => Section.PeekAndParse(NC("[[ needs to end with double brackets"), out node));
+					() => Section.PeekAndParse(NC("[[ needs to end with double brackets"), ctx, out node));
 				Assert.Throws<ParseException>(
-					() => Section.PeekAndParse(NC("[[ needs to end with double brackets ]"), out node));
+					() => Section.PeekAndParse(NC("[[ needs to end with double brackets ]"), ctx, out node));
 
 				// check keyword tests to see examples
 				// and to see what is and what is not allowed in between the double square brackets

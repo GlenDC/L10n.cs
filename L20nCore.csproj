@@ -156,6 +156,13 @@
     <Compile Include="src\l20n\ftl\ast\MemberExpression.cs" />
     <Compile Include="src\l20n\ftl\parsers\MemberExpression.cs" />
     <Compile Include="src\l20n\ftl\ast\StringPrimitive.cs" />
+    <Compile Include="src\l20n\ftl\parsers\CallExpression.cs" />
+    <Compile Include="src\l20n\ftl\ast\CallExpression.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Argument.cs" />
+    <Compile Include="src\l20n\ftl\parsers\QuotedPattern.cs" />
+    <Compile Include="src\l20n\ftl\ast\KeywordArgument.cs" />
+    <Compile Include="src\l20n\ftl\parsers\ArgumentsList.cs" />
+    <Compile Include="src\l20n\ftl\parsers\Context.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

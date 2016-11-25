@@ -21,20 +21,43 @@ namespace L20nCore
 					public static L20n.FTL.AST.Comment Parse(CharStream stream)
 					{
 						stream.SkipCharacter('#');
-						string value = stream.ReadWhile((x) => !NewLine.Predicate(x));
+						string value = stream.ReadWhile(IsNotNewLine);
 						return new L20n.FTL.AST.Comment(value);
 					}
+
+					public static void ParseAndForget(CharStream stream)
+					{
+						stream.SkipCharacter('#');
+						stream.SkipWhile(IsNotNewLine);
+					}
+
+					public static bool Peek(CharStream stream)
+					{
+						return stream.PeekNext() == '#';
+					}
 						
-					public static bool PeekAndParse(CharStream stream, out L20n.FTL.AST.INode comment)
+					public static bool PeekAndParse(CharStream stream, Context ctx, out L20n.FTL.AST.INode comment)
 					{
 						if (stream.PeekNext() != '#')
 						{
 							comment = null;
 							return false;
 						}
-							
-						comment = Comment.Parse(stream);
+
+						if (ctx.ASTType == Context.ASTTypes.Full)
+						{
+							comment = Parse(stream);
+							return true;
+						}
+
+						ParseAndForget(stream);
+						comment = null;
 						return true;
+					}
+
+					private static bool IsNotNewLine(char c)
+					{
+						return !NewLine.Predicate(c);
 					}
 				}
 			}

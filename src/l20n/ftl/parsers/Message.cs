@@ -18,12 +18,12 @@ namespace L20nCore
 				/// </summary>
 				public static class Message
 				{
-					public static L20n.FTL.AST.Message Parse(CharStream stream)
+					public static L20n.FTL.AST.Message Parse(CharStream stream, Context ctx)
 					{
 						throw new NotImplementedException();
 					}
 					
-					public static bool PeekAndParse(CharStream stream, out L20n.FTL.AST.INode comment)
+					public static bool PeekAndParse(CharStream stream, Context ctx, out L20n.FTL.AST.INode comment)
 					{
 						throw new NotImplementedException();
 					}

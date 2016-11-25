@@ -20,14 +20,15 @@ namespace L20nCore
 				/// </summary>
 				public static class Body
 				{
-					public static L20n.FTL.AST.Body Parse(CharStream stream)
+					public static L20n.FTL.AST.Body Parse(CharStream stream, Context ctx)
 					{
 						L20n.FTL.AST.Body body = new L20n.FTL.AST.Body();
 						L20n.FTL.AST.INode entry;
 
-						while (Entry.PeekAndParse(stream, out entry))
+						while (Entry.PeekAndParse(stream, ctx, out entry))
 						{
-							body.AddEntry(entry);
+							if (entry != null) // could have been ommitted because of partial AST
+								body.AddEntry(entry);
 							if (NewLine.Parse(stream, true) == 0)
 								break;
 						}

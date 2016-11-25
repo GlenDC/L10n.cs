@@ -19,15 +19,15 @@ namespace L20nCore
 				/// </summary>
 				public static class Entry
 				{
-					public static bool PeekAndParse(CharStream stream, out L20n.FTL.AST.INode result)
+					public static bool PeekAndParse(CharStream stream, Context ctx, out L20n.FTL.AST.INode result)
 					{
-						if (Message.PeekAndParse(stream, out result))
+						if (Message.PeekAndParse(stream, ctx, out result))
 							return true;
 						
-						if (Comment.PeekAndParse(stream, out result))
+						if (Section.PeekAndParse(stream, ctx, out result))
 							return true;
 						
-						if (Section.PeekAndParse(stream, out result))
+						if (Comment.PeekAndParse(stream, ctx, out result))
 							return true;
 
 						result = null;
